@@ -19,6 +19,11 @@
 \usepackage{url}
 \usepackage[height=21.6cm,width=15cm,centering]{geometry}
 
+\usepackage[bookmarks=true,hyperindex,colorlinks=false,
+            pdfborder={0 0 0},pdfstartview=FitH,pdfpagelayout=SinglePage,
+            pdfauthor={Marco Edemanti},
+            pdftitle={TITOLO},
+            pdfsubject={}]{hyperref}
 
 \title{RASD WeatherCal}
 \author{Edemanti Marco}
@@ -71,12 +76,13 @@
              \vspace*{0.3cm}
             {\bf   {MARCO EDEMANTI} }
     \end{flushright}
+
+\doublespacing    
 \tableofcontents
 \listoffigures
 
+
 \input{./introduzione.tex}
-\input{./requirements.tex}
-\input{./Actors&Scenario.tex}
-\input{./UML.tex}
-\input{./Alloy.tex}
+\input{./overalldescription.tex}
+\input{./requirementspecification.tex}
 \end{document}
