@@ -37,14 +37,19 @@ The WeatherCal system should offer and fulfill these main features:
 \item A simple management for the users' agendas
 \item A swift way to schedule an event according to the weather forecast 
 \item Invite other registered users to an event
-\item Preserve the privacy of the users since only the user himself can make their infos visibile to all.
+\item Preserve the privacy of the users since only the user himself can make their info visibile to everyone.
 \end{itemize}
 \section{Non Functional Requirements}
 \subsection{User Interfaces}
-The WeatherCal system is a Web application intended to be used trough a wide screen device such as a tablet or a desktop device.  \\
-Once that a user logs in to the system trough a defined web page he is redirected to the main page. This page is divided in two portion. The left one displays a monthly calendar in which the user manage its events while the right one shows the weather forecast for the following five day and also shows the closet events to the current day.
+The WeatherCal system is a Web application intended to be used trough desktop device.  \\
+Once that a user logs in to the system trough a defined web page he is redirected to the main page. This page is divided in two portion. The left one, which occupies most of the page, displays a monthly calendar in which the user manages its events while the right one shows the weather forecast for the following days and also shows the closest events.
 \subsection{Performance}
+The system offers the users the possibility to use it without major slowdowns. Multiuser usage is allowed and it can be bore by the server application under reasonable conditions, basing on the server hardware.
 \subsection{Security}
-\subsection{System Interfaces}
-\subsubsection{Hardware Interfaces}
-\subsubsection{Software Interfaces}
+The system relies on HTTP protocol for transferring data over the Internet, so information sent both from the user to the server and vice-versa will be exposed to possible man-in-the-middle attacks. Unless this issue data stored on the server will be accessible only if valid credentials are provided and there is no possibility for a user to bypass privacy constraints, i.e. users will not be able to see non-public events of other users and modify events for which they are not owners.
+\subsection{Business}
+No major role are involved in WeatherCal system
+\section{System Interfaces}
+\subsection{User Interfaces}
+\subsection{Hardware Interfaces}
+\subsection{Software Interfaces}
