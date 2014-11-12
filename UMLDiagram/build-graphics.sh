@@ -6,7 +6,7 @@ IFS=$AVEIFS
 for i in "${!list[@]}"; do
     /usr/lib/astah_professional/astah-command.sh -f "${list[$i]}" -image -t png -o ${list[$i]%/*}
     a=${list[$i]##*/}
-    pct=$(bc <<< "scale=2; $i*100/${#list[@]}")
-    printf "%-30s  %-30s \n" "Image for ${a%.*} created!" "[ $pct% ]"
+    pct=$(echo $(bc <<< "scale=2; ($i+1)*100/${#list[@]}") | sed -r "/[0-9]+\.[0-9]+/s/\./,/g")
+    printf "%-70s  %s%6.2f%s \n" "Image for ${a%.*} created!" "[ " "$pct" "% ]"
 done
 exit 0
