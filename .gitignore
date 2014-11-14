@@ -276,3 +276,4 @@ sympy-plots-for-*.tex/
 #astah ignores
 
 *.asta.lock
+*.DS_Store
