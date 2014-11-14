@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ -s "/Applicazioni/astah professional/astah-command.sh" ]; then
-    acmd="/Applicazioni/astah\ professional/astah-command.sh"
+if [ -s "/Applications/astah professional/astah-command.sh" ]; then
+    acmd="/Applications/astah professional/astah-command.sh"
 else
     acmd="/usr/lib/astah_professional/astah-command.sh"
 fi
