@@ -48,13 +48,15 @@ The use case in figure \ref{fig:otherprofileusecase} explains how an user can be
    \end{center}  
 \subsection{State Diagrams}
 \subsubsection{Invitation}
+In figure \ref{fig:invstatediagram} the state diagram of an invitation to an event is shown.
  \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth ]{../UMLDiagram/InvitationStatechart/InvitationStatechart.png}
     \caption{Invitation State Diagram}
      \label{fig:invstatediagram}
      \end{figure}
-   \end{center}  
+   \end{center}
+As the event owner invites a user, an invitation is created, having an unknown participation, which is defined by the first state. When an invitation is in this state means that an invitation for a user to an event has been made, but he didn't respond to the invitation or he don't even seen that yet. As the user responds to the notification, the state of the invitation becomes definite, so in can be "Yes", "No" or "Maybe". The user can then change that state among these three states, until the event has ended. Infact, after the end of the event the modification of the participation will be disallowed.
  \subsection{Sequence Diagrams}
 \subsubsection{User Registration}
 \begin{center}
