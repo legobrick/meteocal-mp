@@ -48,7 +48,7 @@ Once that the requirements of our platform have been defined we are able to comp
      \end{figure}
    \end{center}  
 \subsection{State Diagrams}
-\subsubsection{Invitation}
+\subsubsection{Invitation}\label{sssec:invitationstate} 
 In figure \ref{fig:invstatediagram} the state diagram of an invitation to an event is shown.
  \begin{center}
  \begin{figure}[H]
@@ -57,7 +57,7 @@ In figure \ref{fig:invstatediagram} the state diagram of an invitation to an eve
      \label{fig:invstatediagram}
      \end{figure}
    \end{center}
-As the event owner invites a user, an invitation is created, having an unknown participation, which is defined by the first state. When an invitation is in this state means that an invitation for a user to an event has been made, but he didn't respond to the invitation or he don't even seen that yet. As the user responds to the notification, the state of the invitation becomes definite, so in can be "Yes", "No" or "Maybe". The user can then change that state among these three states, until the event has ended. Infact, after the end of the event the modification of the participation will be disallowed.
+As the event owner invites a user, an invitation is created, having an unknown participation, which is defined by the first state. When an invitation is in this state means that an invitation for a user to an event has been made, but he didn't seen that yet. When he logs onto the platform the state of the invitation changes to unresponded, since it has been shown to the user, but he didn't choose what to do yet. As the user responds to the notification, the state of the invitation becomes definite, so in can be "Yes", "No" or "Maybe". This will not necessarily happen when the user is notified about an invitation. After the user chosen what to do, he can then change his participation among the defined states (marked in green), and consequentially the state, until the event has ended. Infact, after the end of the event the modification of the participation will be disallowed.
  \subsection{Sequence Diagrams}
 \subsubsection{User Registration}
 Figure \ref{fig:regseqdiag} shows the process for the registration of a new user into the WeatherCal platform. As a user accesses the system, it will prompt it either to login or to register to the system. If the user chooses the latter this is what happens.
@@ -69,47 +69,59 @@ Figure \ref{fig:regseqdiag} shows the process for the registration of a new user
      \end{figure}
    \end{center}  
 The user will see a registration form in which he will input his data and the credentials he wants to use for accessing the system. As the user submits the form and data is sent to the server the validation occurs. It can happen that, for instance, a new user chooses an already taken nickname, or he registers with an email which is yet on the system. These cases will cause an exception to be thrown and an error to be displayed to the user. However, in this diagram, the case in which the validation succedes is represented. After that, the user data will be stored and the credentials can be used for authentication purposes.
+\newpage
 \subsubsection{Login}
+The diagram represented in figure \ref{fig:logseqdiag} describes the login phase for a registered user in the system. As the user enters the platform the login form is showed him and this process begins.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/LoginDiagram/LoginDiagram.png}
     \caption{Login Sequence Diagram}
      \label{fig:logseqdiag}
      \end{figure}
-   \end{center}  
+   \end{center}
+First of all the user fills the form with his username and password, which he decided during the registration. As he submits his credentials they are sent to the server. The server then tries to fetch a User from the persistance, but if not found an exception will be thrown and the user will be notified about the wrong data inputed. In this sequence diagram, however, the credentials in the form are supposed to be valid, and so the user will be authenticated to the system and identified by his own session, so he won't need to login for every action he wants to perform.
 \subsubsection{Event creation}
+In the diagram represented in figure \ref{fig:createseqdiag} the user will create a new event and customize it as he wants. The user will be able to start this procedure by clicking on the calendar and choosing to create a new event, making a form for inputing event data appear.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/CreateEvent/CreateEvent.png}
     \caption{Create Event Sequence Diagram}
      \label{fig:createseqdiag}
      \end{figure}
-   \end{center}  
+   \end{center}
+As the form opens the user is able to set all the parameters he desires for the event, such name, place, time, visibility and so on. He will be also able to set the constraints he prefers for the event, i.e. a temperature higher than a certain value, or that the sky must be sunny. After that all the required fields are filled, inputed data is valid and the user submits the form, the event is created and shown in his calendar. If data is not valid or required fields were not filled, an appropriate exception will be thrown and the user will be warned.
 \subsubsection{Event modification}
+When a user selects an event he will be able to enter a form in which he can modify certain parameters. This behaviour is described in figure \ref{fig:modseqdiag}.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/ModifyEvent/ModifyEvent.png}
     \caption{Sequence Diagram of event's modification}
      \label{fig:modseqdiag}
      \end{figure}
-   \end{center}  
+   \end{center}
+When a modification of an event is requested, it is fetched and displayed to the user, in a form similar to the creation form. He can so change whatever is shown as editable and then, when he confirms the modification, they are saved serverside and showed both to his and to the invited users' calendars.
 \subsubsection{Event deletion}
+In this diagram, shown in figure \ref{fig:delseqdiag}, the process with which a user deletes an event is described.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/DeleteEvent/DeleteEvent.png}
     \caption{Sequence Diagram of event's deletion}
      \label{fig:delseqdiag}
      \end{figure}
-   \end{center}  
+   \end{center}
+Starting from the calendar, a user selects an event for which is owner, and clicks the deletion button. The first selection makes the event to be loaded and then the click on the button, makes it to be deleted. Thus, this last action must be performed by the owner of the event, and an authorization check must be performed during the deletion, throwing an exception and so an error if a user tries to delete an event for which he is not the owner.
 \subsubsection{Invitation}
+Figure \ref{fig:invitseqdiag} shows the steps for inviting a user to an event. This process begins with a user selecting an event for which he is the owner.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth,height=1\textwidth]{../UMLDiagram/sequence/InvitationDiagram/InvitationDiagram.png}
     \caption{Sequence Diagram of an invitation}
      \label{fig:invitseqdiag}
      \end{figure}
-   \end{center}  
+   \end{center}
+As he does so, the event is loaded and the user is able to look for people to invite to his event. As the users are selected, and the modification is confirmed, the invitation are created. This makes the invitation to be notified at the invited users' next login. Anyway this process can end with an error, and then an exception, when a user tries to invite people for an event for which he is not owner. This will be not allowed as an authorization politic and so any invitation will be created.
 \subsubsection{Invite notification}
+Here the invite notification is described, and shown in figure \ref{fig:notseqdiagr}. The behaviour described in the former paragraph asynchronously triggers this procedure.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth,height=1\textwidth]{../UMLDiagram/sequence/InvitationNotificationDiagram/InvitationNotificationDiagram.png}
@@ -117,14 +129,17 @@ The user will see a registration form in which he will input his data and the cr
      \label{fig:notseqdiagr}
      \end{figure}
    \end{center}  
+As the user logs onto the platform and his calendar starts to be loaded he can notice that he was invited to an event (or more than just one). This happens because as the server notices that that user opens the calendar, it looks for unseen notifications. If it finds at least one notification it shows the user a message that informs him about that, giving him the possibility to choose what to do or even ignore that notification. 
 \subsubsection{Modify participation}
+In the figure \ref{fig:modpartseqdiag} a description of what happens when the user changes his mind about the participation to an event is illustrated.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/ModifyParticipation/ModifyParticipation.png}
     \caption{Modify participation Sequence Diagram}
      \label{fig:modpartseqdiag}
      \end{figure}
-   \end{center}  
+   \end{center}
+As he selects an event from his calendar, its data is fetched and, in case he is an invited to the event, the invited is fetched too. In this case he will be able to change the state of the participation, as described in the related diagram in section \ref{sssec:invitationstate}. As he modifies it the change is reported onto the server. If invalid values for the state are sent to the server, it will throw an exception and no modification will occur. 
 \section{Alloy}
 We use Alloy Analyzer to figure out if our Class Diagram was designed in a consistent way so that even our system will be implemented in a consistent style.\\
 Below are reported the code used to represent our system and some models generated by the Alloy Analyzer tool.
