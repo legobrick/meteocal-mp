@@ -59,6 +59,7 @@ In figure \ref{fig:invstatediagram} the state diagram of an invitation to an eve
 As the event owner invites a user, an invitation is created, having an unknown participation, which is defined by the first state. When an invitation is in this state means that an invitation for a user to an event has been made, but he didn't respond to the invitation or he don't even seen that yet. As the user responds to the notification, the state of the invitation becomes definite, so in can be "Yes", "No" or "Maybe". The user can then change that state among these three states, until the event has ended. Infact, after the end of the event the modification of the participation will be disallowed.
  \subsection{Sequence Diagrams}
 \subsubsection{User Registration}
+Figure \ref{fig:regseqdiag} shows the process for the registration of a new user into the WeatherCal platform. As a user accesses the system, it will prompt it either to login or to register to the system. If the user chooses the latter this is what happens.
 \begin{center}
  \begin{figure}[H]
     \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/UserRegister/UserRegister.png}
@@ -66,7 +67,7 @@ As the event owner invites a user, an invitation is created, having an unknown p
      \label{fig:regseqdiag}
      \end{figure}
    \end{center}  
-
+The user will see a registration form in which he will input his data and the credentials he wants to use for accessing the system. As the user submits the form and data is sent to the server the validation occurs. It can happen that, for instance, a new user chooses an already taken nickname, or he registers with an email which is yet on the system. These cases will cause an exception to be thrown and an error to be displayed to the user. However, in this diagram, the case in which the validation succedes is represented. After that, the user data will be stored and the credentials can be used for authentication purposes.
 \subsubsection{Login}
 \begin{center}
  \begin{figure}[H]
