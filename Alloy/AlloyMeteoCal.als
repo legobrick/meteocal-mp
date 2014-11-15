@@ -4,7 +4,7 @@ calendar:one Calendar
 }
 
 sig Invitation{
-Receiver: some RegisteredUser,
+Guest: some RegisteredUser,
 event:one Event
 }
 sig WeatherConstrain{
@@ -32,9 +32,9 @@ no disj e1,e2:Event | e1.constrain=e2.constrain
 }
 fact invitationConstrain{
 //two or more Invitation cannot refer to the same event 
-no disj r,p:Invitation | p.event=r.event //and p.Receiver = r.Receiver
+no disj r,p:Invitation | p.event=r.event
 //the owner of an event cannot receive the invitation of its event
-all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Receiver
+all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Guest
 }
 
 
@@ -45,11 +45,11 @@ no disj r1,r2:RegisteredUser | r1.calendar=r2.calendar
 }
 //check oneCalendarforUser
 assert  ownerNotReceveir{
-all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Receiver 
+all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Guest 
 }
 //check ownerNotReceveir
 assert oneInvitationforEvent{
-no disj r,p:Invitation | p.event=r.event and p.Receiver = r.Receiver
+no disj r,p:Invitation | p.event=r.event and p.Guest = r.Guest
 }
 //check oneInvitationforEvent
 assert onecal{
