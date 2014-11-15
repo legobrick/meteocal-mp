@@ -1,8 +1,10 @@
+//SIGNATURE
 sig RegisteredUser{
 //Participant:some Event
 calendar:one Calendar
 }
 {
+//the number of Calendar must be equals to RegisteredUser
 #Calendar=#RegisteredUser
 }
 sig Invitation{
@@ -16,29 +18,45 @@ sig Event{
  Owner:one RegisteredUser
 }
 {
+//the number of Invitation must be equals to Event
 #Event=#Invitation
 }
-fact{
+//FACTS
+fact oneCalendar{
+//two or more RegisteredUser cannot refer to the same calendar
+no disj r1,r2:RegisteredUser | r1.calendar=r2.calendar
+//if there is a calendar then there is a registered user
+#RegisteredUser-#Calendar=0
+ #Calendar>0 implies RegisteredUser.calendar in Calendar
+}
+fact oneInvitation{
+//two or more Invitation cannot refer to the same event 
+no disj r,p:Invitation | p.event=r.event //and p.Receiver = r.Receiver
+}
+
+fact NotReceveir{
+//the owner of an event cannot receive the invitation of its event
+all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Receiver 
+}
+//ASSERTION
+assert oneCalendarforUser{
 no disj r1,r2:RegisteredUser | r1.calendar=r2.calendar
 }
-fact{
-no disj r,p:Invitation | p.event=r.event and p.Receiver = r.Receiver
-//all the owner's event are also participant
- //all disj r:RegisteredUser, e:Event | r=e.Owner implies  r.Participant not in e 
-//no   e:Event |  e.Owner= e.Participant
-}
-
-fact{
-//no i:Invitation,i3:Invitation| i.event=i3.event
-//a owner cannot be the receiver
-//all disj r:RegisteredUser , i: Invitation | i.Sender=r implies r not in i.Receiver
-//the sender is the owner of the event
+//check oneCalendarforUser
+assert  ownerNotReceveir{
 all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Receiver 
-//chi riceve l'invit partecipa all'evento relativ a quell'invito
-//all  disj r2:RegisteredUser , i2: Invitation  | i2.Receiver=r2 implies r2.Participant = i2.event
-//partecipa solo chi è invitato
-//all disj  r3:RegisteredUser , i3: Invitation  | r3 not in i3.Receiver implies r3.Participant not in i3.event 
 }
+//check ownerNotReceveir
+assert oneInvitationforEvent{
+no disj r,p:Invitation | p.event=r.event and p.Receiver = r.Receiver
+}
+assert cal{
+#RegisteredUser-#Calendar=0
+}
+//check cal
+//check oneInvitationforEvent
+
+//PREDICATE
 
 pred show(){} 
-run show
+run show 
