@@ -37,6 +37,7 @@
 \definecolor{lightgray}{rgb}{.9,.9,.9}
 \definecolor{darkgray}{rgb}{.4,.4,.4}
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{lightgreen}{rgb}{0.06,0.60,0.34}
 \lstdefinelanguage{alloy}{
   keywords={t assert, pred, all, no, lone, one, some, check, run,
       but, let, implies, not, iff, in, and, or, set, sig, Int, int,
@@ -49,7 +50,7 @@
   sensitive=false,
   comment=[l]{//},
   morecomment=[s]{/*}{*/},
-  commentstyle=\color{green}\bfseries,
+  commentstyle=\color{lightgreen}\bfseries,
   stringstyle=\color{red}\ttfamily,
   morestring=[b]',
   morestring=[b]"
@@ -108,6 +109,4 @@
 \input{./introduzione.tex}
 \input{./overalldescription.tex}
 \input{./systemmodeling.tex}
-
 \end{document}
-

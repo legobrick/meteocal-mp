@@ -110,6 +110,7 @@ In this diagram, shown in figure \ref{fig:delseqdiag}, the process with which a 
      \end{figure}
    \end{center}
 Starting from the calendar, a user selects an event for which is owner, and clicks the deletion button. The first selection makes the event to be loaded and then the click on the button, makes it to be deleted. Thus, this last action must be performed by the owner of the event, and an authorization check must be performed during the deletion, throwing an exception and so an error if a user tries to delete an event for which he is not the owner.
+\newpage
 \subsubsection{Invitation}
 Figure \ref{fig:invitseqdiag} shows the steps for inviting a user to an event. This process begins with a user selecting an event for which he is the owner.
 \begin{center}
@@ -120,6 +121,7 @@ Figure \ref{fig:invitseqdiag} shows the steps for inviting a user to an event. T
      \end{figure}
    \end{center}
 As he does so, the event is loaded and the user is able to look for people to invite to his event. As the users are selected, and the modification is confirmed, the invitation are created. This makes the invitation to be notified at the invited users' next login. Anyway this process can end with an error, and then an exception, when a user tries to invite people for an event for which he is not owner. This will be not allowed as an authorization politic and so any invitation will be created.
+\newpage
 \subsubsection{Invite notification}
 Here the invite notification is described, and shown in figure \ref{fig:notseqdiagr}. The behaviour described in the former paragraph asynchronously triggers this procedure.
 \begin{center}
@@ -215,7 +217,7 @@ As shown in figure~\ref{fig:asser} the {\it Assertion} hence even the {\it Facts
      \label{fig:asser}
      \end{figure}
    \end{center} 
-
+\newpage
 \subsection{Model generated}
 In this section are reported some of the various scenarios representing the model of our system.
 \subsubsection{Interaction between all users}
@@ -245,11 +247,3 @@ The model in figure ~\ref{fig:noint} represents a scenario in which the users ar
      \label{fig:noint}
      \end{figure}
    \end{center} 
-
-
-
-
-
-
-
-
