@@ -7,33 +7,37 @@ sig Invitation{
 Receiver: some RegisteredUser,
 event:one Event
 }
-
+sig WeatherConstrain{
+}
 sig Calendar{
 }
 
 sig Event{
- Owner:one RegisteredUser
-}{
-//the number of Invitation must be equals to Event
-#Event=#Invitation
+ Owner:one RegisteredUser,
+ constrain:one WeatherConstrain
 }
 //FACTS
-fact oneCalendar{
+fact calendarConstrain{
 //the number of Calendar must be equals to the RegisteredUser
 #Calendar=#RegisteredUser
 //two or more RegisteredUser cannot refer to the same calendar
 no disj r1,r2:RegisteredUser | r1.calendar=r2.calendar
 }
-
-fact oneInvitation{
+fact eventConstrain{
+//the number of Invitation must be equals to Event
+#Event=#Invitation
+//each event refer to a different weather constrain
+#WeatherConstrain=#Event
+no disj e1,e2:Event | e1.constrain=e2.constrain
+}
+fact invitationConstrain{
 //two or more Invitation cannot refer to the same event 
 no disj r,p:Invitation | p.event=r.event //and p.Receiver = r.Receiver
+//the owner of an event cannot receive the invitation of its event
+all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Receiver
 }
 
-fact NotReceveir{
-//the owner of an event cannot receive the invitation of its event
-all  disj e:Event , i1: Invitation | i1.event=e implies e.Owner not in i1.Receiver 
-}
+
 //ASSERTION
 
 assert oneCalendarforUser{
@@ -48,12 +52,13 @@ assert oneInvitationforEvent{
 no disj r,p:Invitation | p.event=r.event and p.Receiver = r.Receiver
 }
 //check oneInvitationforEvent
-assert cal{
+assert onecal{
 #Calendar=#RegisteredUser
 }
-//check cal
-
-
-
+//check onecal
+assert oneConstrain{
+no disj e1,e2:Event | e1.constrain=e2.constrain
+}
+//check oneConstrain
 pred show(){} 
 run show 
