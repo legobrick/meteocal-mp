@@ -6,29 +6,24 @@ This document is intended for both the stakeholders and the developers of the sy
 
 \section{Scope}
 We want to project and implement WheaterCal. The aim of this project is to develop a system that offers an online calendar in which user can schedule their events according to the weather conditions.\\ A registered user can create, delete and update an event and moreover he should provide information about where and when this event will take place and information about the invited user.
-Once the event is created the system should provide to its creator the weather forecast information regarding the scheduled day, and most of all it should notify a bad weather condition one day in advance to all the participants's event.\\
+Once the event is created the system should provide to its creator the weather forecast information regarding the scheduled day, and most of all it should notify a bad weather condition one day in advance to all the participants.\\
 Also a user is able to make his/her calendar visible to all other registered user showing them only the time slots in which they are busy without letting know the event information unless either the event is public.
 In addition in case of bad weather, three day before the scheduled data of an event, the system will inform the event's owner and propose to him the closest sunny day.
 
 \section{Glossary}
 \begin{tabularx}{\linewidth}{|r|X|}
-  \hline  {\bf User} & La pagina non subisce variazioni e rimane ferma jjkjkjkkjklkldldldldlldldldldlaaaaaaaaa\\ 
-  \hline  {\bf Event} & La pagina si sposta verso l'alto \\ 
-  \hline  {\bf Event's Owner} & La pagina si sposta verso destra\\
-  \hline  {\bf Participant}&  La pagina si sposta verso il basso\\
-  \hline  {\bf Calendar} & La pagina si sposta verso sinistra\\
+  \hline  {\bf Anonymous User} & People who access the system but didn't authenticate\\ 
+  \hline  {\bf Registered User} & People who both registered to the platform and logged in. Sometimes referred to as "User"\\ 
+  \hline  {\bf Platform, System} & The WeatherCal application\\
+  \hline  {\bf Bad Weather}&  Undesired conditions for an event to take place basing on the event owner's choices\\
+  \hline  {\bf Notification} & A message that arrives to the user in dedicated area, which can be easily identified by the user at first sight\\
+  \hline  {\bf Event owner} & The user who created the event and for which is responsibile of the organization\\
+  \hline  {\bf Event invited} & A user invited to an event for which can decide if he wants to be a participant or not\\
+  \hline  {\bf Event participant} & A user invited to an event for which decided to participate\\
+  \hline  {\bf Event} & An occurrence, which was inserted in the system which should happen in a certain date and a certain time\\
+  \hline  {\bf Calendar} & The set of all the events for a user, shown in a per-month view\\
   \hline
 \end{tabularx}\\
-
-\begin{itemize}
-
-
-\item User
-\item Event's Owner
-\item Event
-\item Calendar
-\item Participant 
-\end{itemize}
 \section{References}
 IEEE,{\it IEEE Std 830-1998,IEEE Recommended Practice for Software Requirements Specifications},  IEEE Computer Society 1998
 
