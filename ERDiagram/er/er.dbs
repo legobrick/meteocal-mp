@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="WeatherCal" id="Project6009123" database="MySql" >
+	<schema name="weathercal" schemaname="weathercal" defo="y" >
+		<table name="calendar" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="is_public" type="bool" jt="-7" mandatory="y" >
+				<comment><![CDATA[visibility of the calendar]]></comment>
+			</column>
+			<index name="pk_calendar" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+		<table name="event" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="place_latitude" type="decimal" length="9" decimal="6" jt="3" />
+			<column name="place_longitude" type="decimal" length="9" decimal="6" jt="3" />
+			<column name="is_public" type="bool" jt="-7" mandatory="y" />
+			<column name="when" type="datetime" jt="93" mandatory="y" />
+			<column name="timezone" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="place_description" type="varchar" length="500" jt="12" mandatory="y" />
+			<index name="pk_event" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+		<table name="owner" >
+			<comment>ownage of event implies participation to it</comment>
+			<column name="id_user" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<column name="id_event" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<index name="pk_owner" unique="PRIMARY_KEY" >
+				<column name="id_user" />
+				<column name="id_event" />
+			</index>
+			<index name="idx_owner" unique="NORMAL" >
+				<column name="id_user" />
+			</index>
+			<index name="idx_owner" unique="NORMAL" >
+				<column name="id_event" />
+			</index>
+			<fk name="fk_owner_user" to_schema="weathercal" to_table="user" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_user" pk="email" />
+			</fk>
+			<fk name="fk_owner_event" to_schema="weathercal" to_table="event" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_event" pk="id" />
+			</fk>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+		<table name="participation" >
+			<column name="id_user" type="int" jt="4" mandatory="y" unsigned="y" />
+			<column name="id_event" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<column name="availability" type="varchar" length="50" jt="12" mandatory="y" />
+			<index name="pk_participation" unique="PRIMARY_KEY" >
+				<column name="id_user" />
+				<column name="id_event" />
+			</index>
+			<index name="idx_participation" unique="NORMAL" >
+				<column name="id_user" />
+			</index>
+			<index name="idx_participation" unique="NORMAL" >
+				<column name="id_event" />
+			</index>
+			<fk name="fk_participation_user" to_schema="weathercal" to_table="user" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_user" pk="email" />
+			</fk>
+			<fk name="fk_participation_event" to_schema="weathercal" to_table="event" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_event" pk="id" />
+			</fk>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+		<table name="user" >
+			<column name="email" type="varchar" length="320" jt="12" mandatory="y" >
+				<comment><![CDATA[RFC 3696 end of page 6]]></comment>
+			</column>
+			<column name="first_name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="last_name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="password" type="varchar" length="128" jt="12" mandatory="y" >
+				<comment><![CDATA[SHA-512]]></comment>
+			</column>
+			<index name="pk_user" unique="PRIMARY_KEY" >
+				<column name="email" />
+			</index>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+		<table name="user_has_calendar" >
+			<column name="id_user" type="varchar" length="320" jt="12" mandatory="y" />
+			<column name="id_calendar" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<index name="pk_user_has_calendar" unique="PRIMARY_KEY" >
+				<column name="id_user" />
+				<column name="id_calendar" />
+			</index>
+			<index name="idx_user_has_calendar" unique="NORMAL" >
+				<column name="id_calendar" />
+			</index>
+			<index name="idx_user_has_calendar_0" unique="NORMAL" >
+				<column name="id_user" />
+			</index>
+			<fk name="fk_user_has_calendar_calendar" to_schema="weathercal" to_table="calendar" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_calendar" pk="id" />
+			</fk>
+			<fk name="fk_user_has_calendar_user" to_schema="weathercal" to_table="user" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_user" pk="email" />
+			</fk>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+		<table name="weather_constraint" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="temperature" type="decimal" length="5" decimal="2" jt="3" mandatory="y" />
+			<column name="is_temperature_lower_than" type="bool" jt="-7" mandatory="y" />
+			<column name="id_event" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<index name="pk_weather_constraint" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_weather_constraint" unique="NORMAL" >
+				<column name="id_event" />
+			</index>
+			<fk name="fk_weather_constraint_event" to_schema="weathercal" to_table="event" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_event" pk="id" />
+			</fk>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+		<table name="weather_state_constraint" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="weather_state" type="varchar" length="50" jt="12" mandatory="y" />
+			<column name="id_weather_constraint" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<index name="pk_weather_state_constraint" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_weather_state_constraint" unique="NORMAL" >
+				<column name="id_weather_constraint" />
+			</index>
+			<fk name="fk_weather_state_constraint" to_schema="weathercal" to_table="weather_constraint" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_weather_constraint" pk="id" />
+			</fk>
+			<storage><![CDATA[engine=InnoDB]]></storage>
+		</table>
+	</schema>
+	<layout id="Layout6009123" name="WeatherCal" show_relation_columns="y" >
+		<entity schema="weathercal" name="user" color="b2cdf7" x="45" y="225" />
+		<entity schema="weathercal" name="owner" color="b2cdf7" x="255" y="390" />
+		<entity schema="weathercal" name="weather_constraint" color="b2cdf7" x="600" y="45" />
+		<entity schema="weathercal" name="weather_state_constraint" color="b2cdf7" x="585" y="405" />
+		<entity schema="weathercal" name="participation" color="b2cdf7" x="270" y="225" />
+		<entity schema="weathercal" name="user_has_calendar" color="b2cdf7" x="60" y="60" />
+		<entity schema="weathercal" name="calendar" color="b2cdf7" x="285" y="60" />
+		<entity schema="weathercal" name="event" color="b2cdf7" x="405" y="225" />
+		<group name="weather" color="bdeef0" >
+			<entity schema="weathercal" name="weather_constraint" />
+			<entity schema="weathercal" name="weather_state_constraint" />
+		</group>
+		<group name="user-event" color="a1feab" >
+			<entity schema="weathercal" name="user" />
+			<entity schema="weathercal" name="owner" />
+			<entity schema="weathercal" name="participation" />
+		</group>
+		<group name="user-calendar" color="fec888" >
+			<entity schema="weathercal" name="calendar" />
+			<entity schema="weathercal" name="user_has_calendar" />
+		</group>
+	</layout>
+</project>
