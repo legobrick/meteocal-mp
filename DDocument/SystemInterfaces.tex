@@ -4,10 +4,9 @@
 The system will implement a calendar as a web application, splitted into client-side and server-side. The former will be used for implementing the asyncronous facilities delivered in the calendar, while the ladder will be used both as an interface for the former to interact with the persistency and for providing web pages to the client.
 
 \section{Design Constraints}
-Describe the general constraints implied by the design process and what are the impacts on the system architecture and modules design (time, tools, resources, etc.).\\
-Describe constraints imposed by limited hardware resources.
-SW Constraints.\\
-Describe constraints imposed by software environment (e.g. OS, languages, etc.)
+The application, first, will have some constraints on the system proposed by the client explicitly. These include the use of J2EE as server-side application. To this requirement we decided to add Java Server Faces framework for facilitating the development of the structure taking advantage of the MVC design pattern and the facilities brought with the framework. The application also needs to persist data, so we decided to use <NAME OF DBMS> free RDBMS to accomplish this task. The related client for this server application will be developed using both the Web tier provided by JSF and Marionette.js, a Javascript framework, with its dependecies, for making the client responsive and interactive.\\
+Client constraints even include the time for the system development, which is due to January \nth{25}, 2015.\\
+Constraint imposed by the client does not include any strict restraint on the hardware and the software over which the system will need to be deployed and any further requirement will be added, giving the possibility to be platform independant. Anyway the system on which the platform will be deployed on will have an impact on the server-side application performances and both the client-side environment and the network connecting the client and the server will impact the client-side application performances. Even though both the client and the server software involved in this project have some requirements on the hardware and the software to be used, so they will make our constraint.
 
 \section{System Architecture}
 Describe the chosen system architecture. For instance, architectural design patterns can be used to describe the system: peer-to-peer, client/server, stand-alone or embebbed systems, etc. 
