@@ -28,6 +28,9 @@
 			<comment>ownage of event implies participation to it</comment>
 			<column name="id_user" type="bigint" jt="-5" mandatory="y" unsigned="y" />
 			<column name="id_event" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<column name="was_notified" type="bool" jt="-7" mandatory="y" >
+				<defo>&#039;FALSE&#039;</defo>
+			</column>
 			<index name="pk_owner" unique="PRIMARY_KEY" >
 				<column name="id_user" />
 				<column name="id_event" />
@@ -50,6 +53,9 @@
 			<column name="id_user" type="int" jt="4" mandatory="y" unsigned="y" />
 			<column name="id_event" type="bigint" jt="-5" mandatory="y" unsigned="y" />
 			<column name="availability" type="varchar" length="50" jt="12" mandatory="y" />
+			<column name="was_notified" type="bool" jt="-7" mandatory="y" >
+				<defo>&#039;FALSE&#039;</defo>
+			</column>
 			<index name="pk_participation" unique="PRIMARY_KEY" >
 				<column name="id_user" />
 				<column name="id_event" />
@@ -137,13 +143,13 @@
 	</schema>
 	<layout id="Layout6009123" name="WeatherCal" show_relation_columns="y" >
 		<entity schema="weathercal" name="user" color="b2cdf7" x="45" y="225" />
-		<entity schema="weathercal" name="owner" color="b2cdf7" x="255" y="390" />
 		<entity schema="weathercal" name="weather_constraint" color="b2cdf7" x="600" y="45" />
 		<entity schema="weathercal" name="weather_state_constraint" color="b2cdf7" x="585" y="405" />
-		<entity schema="weathercal" name="participation" color="b2cdf7" x="270" y="225" />
 		<entity schema="weathercal" name="user_has_calendar" color="b2cdf7" x="60" y="60" />
 		<entity schema="weathercal" name="calendar" color="b2cdf7" x="285" y="60" />
 		<entity schema="weathercal" name="event" color="b2cdf7" x="405" y="225" />
+		<entity schema="weathercal" name="participation" color="b2cdf7" x="270" y="225" />
+		<entity schema="weathercal" name="owner" color="b2cdf7" x="255" y="390" />
 		<group name="weather" color="bdeef0" >
 			<entity schema="weathercal" name="weather_constraint" />
 			<entity schema="weathercal" name="weather_state_constraint" />
