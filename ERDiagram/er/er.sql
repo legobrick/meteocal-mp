@@ -63,7 +63,7 @@ CREATE INDEX idx_weather_state_constraint ON weathercal.weather_state_constraint
 CREATE TABLE weathercal.owner ( 
 	id_user              bigint UNSIGNED NOT NULL  ,
 	id_event             bigint UNSIGNED NOT NULL  ,
-	was_notified         bool  NOT NULL DEFAULT 'FALSE' ,
+	notification         datetime   DEFAULT 'NULL' ,
 	CONSTRAINT pk_owner PRIMARY KEY ( id_user, id_event )
  ) engine=InnoDB;
 
@@ -77,7 +77,7 @@ CREATE TABLE weathercal.participation (
 	id_user              int UNSIGNED NOT NULL  ,
 	id_event             bigint UNSIGNED NOT NULL  ,
 	availability         varchar(50)  NOT NULL  ,
-	was_notified         bool  NOT NULL DEFAULT 'FALSE' ,
+	notification         datetime   DEFAULT 'NULL' ,
 	CONSTRAINT pk_participation PRIMARY KEY ( id_user, id_event )
  ) engine=InnoDB;
 
