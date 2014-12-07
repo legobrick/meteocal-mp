@@ -18,6 +18,7 @@
 			<column name="is_public" type="bool" jt="-7" mandatory="y" />
 			<column name="when" type="datetime" jt="93" mandatory="y" />
 			<column name="place_description" type="varchar" length="500" jt="12" mandatory="y" />
+			<column name="is_outdoor" type="bool" jt="-7" mandatory="y" />
 			<index name="pk_event" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -161,8 +162,8 @@
 		<entity schema="weathercal" name="calendar" color="b2cdf7" x="45" y="60" />
 		<entity schema="weathercal" name="user_has_calendar" color="b2cdf7" x="180" y="60" />
 		<entity schema="weathercal" name="participation" color="b2cdf7" x="45" y="300" />
-		<entity schema="weathercal" name="event" color="b2cdf7" x="360" y="240" />
 		<entity schema="weathercal" name="user" color="b2cdf7" x="360" y="45" />
+		<entity schema="weathercal" name="event" color="b2cdf7" x="360" y="240" />
 		<group name="weather" color="bdeef0" >
 			<entity schema="weathercal" name="weather_constraint" />
 			<entity schema="weathercal" name="weather_state_constraint" />
