@@ -87,11 +87,11 @@ CREATE INDEX idx_weather_constraint ON weather_constraint ( id_event );
 CREATE TABLE weather_state_constraint ( 
 	id                   bigint UNSIGNED NOT NULL  AUTO_INCREMENT,
 	weather_state        varchar(50)  NOT NULL  ,
-	id_weather_constraint bigint UNSIGNED NOT NULL  ,
+	id_event             bigint UNSIGNED NOT NULL  ,
 	CONSTRAINT pk_weather_state_constraint PRIMARY KEY ( id )
  ) engine=InnoDB;
 
-CREATE INDEX idx_weather_state_constraint ON weather_state_constraint ( id_weather_constraint );
+CREATE INDEX idx_weather_state_constraint_0 ON weather_state_constraint ( id_event );
 
 ALTER TABLE owner ADD CONSTRAINT fk_owner_event FOREIGN KEY ( id_event ) REFERENCES event( id ) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -107,5 +107,5 @@ ALTER TABLE user_has_calendar ADD CONSTRAINT fk_user_has_calendar_user FOREIGN K
 
 ALTER TABLE weather_constraint ADD CONSTRAINT fk_weather_constraint_event FOREIGN KEY ( id_event ) REFERENCES event( id ) ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE weather_state_constraint ADD CONSTRAINT fk_weather_state_constraint FOREIGN KEY ( id_weather_constraint ) REFERENCES weather_constraint( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE weather_state_constraint ADD CONSTRAINT fk_weather_state_constraint_event FOREIGN KEY ( id_event ) REFERENCES event( id ) ON DELETE CASCADE ON UPDATE CASCADE;
 

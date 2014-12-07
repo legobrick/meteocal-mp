@@ -142,28 +142,28 @@
 		<table name="weather_state_constraint" >
 			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
 			<column name="weather_state" type="varchar" length="50" jt="12" mandatory="y" />
-			<column name="id_weather_constraint" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<column name="id_event" type="bigint" jt="-5" mandatory="y" unsigned="y" />
 			<index name="pk_weather_state_constraint" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<index name="idx_weather_state_constraint" unique="NORMAL" >
-				<column name="id_weather_constraint" />
+			<index name="idx_weather_state_constraint_0" unique="NORMAL" >
+				<column name="id_event" />
 			</index>
-			<fk name="fk_weather_state_constraint" to_schema="weathercal" to_table="weather_constraint" delete_action="cascade" update_action="cascade" >
-				<fk_column name="id_weather_constraint" pk="id" />
+			<fk name="fk_weather_state_constraint_event" to_schema="weathercal" to_table="event" delete_action="cascade" update_action="cascade" >
+				<fk_column name="id_event" pk="id" />
 			</fk>
 			<storage><![CDATA[engine=InnoDB]]></storage>
 		</table>
 	</schema>
 	<layout id="Layout6009123" name="WeatherCal" show_relation_columns="y" >
-		<entity schema="weathercal" name="weather_constraint" color="b2cdf7" x="270" y="465" />
-		<entity schema="weathercal" name="weather_state_constraint" color="b2cdf7" x="45" y="465" />
 		<entity schema="weathercal" name="user" color="b2cdf7" x="360" y="45" />
-		<entity schema="weathercal" name="event" color="b2cdf7" x="360" y="240" />
 		<entity schema="weathercal" name="calendar" color="b2cdf7" x="45" y="60" />
 		<entity schema="weathercal" name="user_has_calendar" color="f4f96a" x="180" y="60" />
-		<entity schema="weathercal" name="participation" color="f4f96a" x="45" y="300" />
-		<entity schema="weathercal" name="owner" color="f4f96a" x="210" y="225" />
+		<entity schema="weathercal" name="participation" color="f4f96a" x="45" y="330" />
+		<entity schema="weathercal" name="weather_constraint" color="b2cdf7" x="270" y="495" />
+		<entity schema="weathercal" name="weather_state_constraint" color="b2cdf7" x="45" y="495" />
+		<entity schema="weathercal" name="owner" color="f4f96a" x="105" y="225" />
+		<entity schema="weathercal" name="event" color="b2cdf7" x="300" y="255" />
 		<group name="weather" color="bdeef0" >
 			<entity schema="weathercal" name="weather_constraint" />
 			<entity schema="weathercal" name="weather_state_constraint" />
