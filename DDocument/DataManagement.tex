@@ -1,14 +1,14 @@
 \chapter{Design} \label{cap:cap3}
 
 \section{Persistance design}
-Our system needs to store and retrieve persistent data, to achieve this task we decide to use PostgreSQL free RDBMS. In the following paragraph~\ref{sec:er} we'll analyze the design of our database.
+Our system needs to store and retrieve persistent data, to achieve this task we decide to use PostgreSQL free RDBMS. In the following paragraph~\ref{sec:er} we will analyze the design of our database.
 \subsection{ER Diagram}\label{sec:er}
-To understand in the best way possible the organization and the design of our database we'll describe and analyze it through the use of the Entity-Relationship Diagram in figure~\ref{fig:er}.
+In order to understand the organization and the design of our database we will describe and analyze it through the use of the Entity-Relationship Diagram in figure~\ref{fig:er}.
 The main entity of the database are four:
 \begin{itemize}
-\item{\bf User}: it represents the data of a registered user and contains all his information such as the email, the first name, the surname, the username and the password. It's in a relationship "one to many" with the Calendar entity because we assume that in a future our users may have one or more calendar and not only a single agenda.
-\item{\bf Calendar}: it stands for the agenda of the user, its only attribute is a boolean that indicates whether is public or not. It's related with the User and the Event entity. It's in a "one to one" relationship with the User because a calendar belongs only to an unique User. While the relationship with the Event entity could be of two different type: Participation, Owner. The first one is a relationship "zero to many" because it could have either no participant or many participant to it. While the second one is an "one to many" relationship because an event needs at least one owner that had previously created it and eventually it can have more owner that can manage it.
-\item{\bf Event}: it represents the information stored about an existing event such as his participants, the place, the date an so on. Because it could belong at least to his owner calendar or to his participant calendar and seeing that the participant can be zero but the owner must be at least one then the event must be related through an "one to many" relationship with the Calendar. More over is in relation "zero to one" with the WeatherConstrain because it could have a weather bond as no one.
+\item{\bf User}: it represents the data of a registered user and contains all his information such as the email, the first name, the surname, the username and the password. It's in a relationship "one to many" with the \textit{Calendar} entity because we assume that in a future our users may have one or more calendar and not only a single agenda.
+\item{\bf Calendar}: it stands for the agenda of the user, its only attribute is a boolean that indicates whether is public or not. It's related with the \textit{User} and the \textit{Event} entity. It's in a "one to one" relationship with the User because a calendar belongs only to an unique User. Conversely the relationship with the \textit{Event} entity could be of two different type, \textit{Participation} or \textit{Owner}. The first one is a relationship "zero to many" because it could have either no participant or many participant to it. The second, instead, is a "one to many" relationship because an event needs at least one owner that had previously created it and eventually it can have more owner that can manage it, even if this aspect will not be part of our first release but it's scheduled for a later release.
+\item{\bf Event}: it represents the information intrinsic stored such as its participants, the place, the date etc.. Since it is associated to his owner \textit{Calendar} and, possibly, to his participants' \textit{Calendars}, its participant can be zero but the owner must be at least one. Therefore the event must be related through an "one to many" relationship with the \textit{Calendar}. Additionally it is in relation "zero to many" with the \textit{WeatherStateConstraint} because it can have different constraints, like "it must be sunny or cloudy".
 \item{\bf WeatherContraint}: it stands for the constraint associated to an Event such as the temperature. It's in a relation "one to one" with an Event, because any WeatherConstraint belong exactly to one Event but is in a relation "1 to many" with the WeatherStateConstraint that represent the desired weather condition of an event such as sunny, cloudy , rainy and so on, in fact any user has the possibility to choose different desired condition when creating a new event.
 \end{itemize}
  \begin{center}
@@ -26,7 +26,7 @@ In this section is illustrated the modeling process through that we try to under
 \end{itemize}
 \subsection{Structure}
 \subsubsection{Server-side BCE}\label{sec:BCE}
-This paragraph illustrates the BCE pattern representing the architecture that we'll implement in order to develop the WeatherCal system. When identifying the elements for some scenario of system behavior, we can align each participating element with one of three key perspectives : Boundary, Control and Entity. \\This  pattern is a variation of the MVC pattern indeed we can consider mapping the Boundary with the MCV's View, the Control with the MCV's Controller and the Entity with the MVC's Model. Moreover the BCE pattern is not solely appropriate for dealing with user interfaces but it gives also to the controller a slightly different role to play.\\Let's take a deeper look in to the BCE pattern:\begin{itemize}
+This paragraph illustrates the BCE pattern representing the architecture that we'll implement in order to develop the WeatherCal system. When identifying the elements for some scenarios of system behavior, we can align each participating element with one of three key perspectives: Boundary, Control and Entity. \\This  pattern is a variation of the MVC pattern indeed we can consider mapping the Boundary with the MVC's View, the Control with the MVC's Controller and the Entity with the MVC's Model. Moreover the BCE pattern is not solely appropriate for dealing with user interfaces but it gives also to the controller a slightly different role to play.\\Let's take a deeper look in to the BCE pattern:\begin{itemize}
 \item Entity: are objects representing system data and also they perform behavior organized around some cohesive amount of data.
 \item Boundaries: are the objects that interface with system actors and most of the times they lay on periphery of a system. Some boundary elements will be "front-end" elements that accept input from outside the area under design and other elements will be "back-end" managing communication to supporting elements outside the system or subsystem.
 \item Control: are the elements that mediate between boundaries and entities and control the flow of the interaction of the scenario. They manage the execution of commands coming from the boundary.
@@ -44,18 +44,18 @@ The diagram in~\ref{fig:entityovervie} illustrates an overview of all entities i
 \myparagraph{Sign Up and Log In}
 The diagram in~\ref{fig:logBCE} shows the flow of the system's behavior related to the registered user's login or to the anonymous user's signup. After the SignUp Controller validates the values submitted by the user, the user reaches his UserPage and then the CalendarController loads its agenda and all associated event. \\In these diagram there are three entities who plays an active role:
 \begin{enumerate}
-\item  {\bf User}: it's a registered user that can log in to the platform and gets to his UserPage, or he can  represents someone who is not already signed in  to the system and can only reach the main page and register to the platform.
+\item  {\bf User}: it's a registered user that can log in to the platform and gets to his UserPage, or he can represents someone who is not already signed in  to the system and can only reach the main page and register to the platform.
 \item  {\bf Event}: represents an event in the calendar. An user can be related to it in two different way, it could be a guest or it could be its owner. Depending on this relation it can perform different action. He can modifies it or creates a new one if he's his owner or change his participation if he's a guest.
 \item  {\bf Calendar}: is an element that represents the agenda of an user and contains all his scheduled event. It can be set public or private by its owner.
 \end{enumerate}
 There are two boundaries involved in this scenario: \begin{enumerate}
-\item  {\bf MainPage}: it represents the index page of the system. The one in which a user can either log in or sign up to the platform.
-\item  {\bf UserPage}: it stands for the page reached by the user after he logged in. It shows his calendar and all other tasks that the user can performs within it, such as searches for a user, creates or modifies an event or checks for notification.
+\item {\bf MainPage}: it represents the index page of the system. The one in which a user can either log in or sign up to the platform.
+\item {\bf UserPage}: it stands for the page reached by the user after he logged in. It shows his calendar and all other tasks that the user can performs within it, such as searches for a user, creates or modifies an event or checks for notification.
  \end{enumerate}
 The controls who manage the flow of this scenario are two:\begin{enumerate}
-\item  {\bf SignUpController}: it's the control whose role is to handle the registration's request of a new user into the system. Whenever a non registered user submits his information the SignUpController verifies the correctness of these information and if they are valid it creates a new User and redirect him to the UserPage.
-\item  {\bf LoginController}: his task is to manage the log in of a registered user. It verifies that the credentials submitted by the user are the same provided in the system registration.   
-\item  {\bf CalendarController}: It's the responsible for the control of the calendar of an user, it loads it and all its associated events, through it an user can search other users' calendar and view them if they were set as public by their owner.
+\item {\bf SignUpController}: it's the control whose role is to handle the registration's request of a new user into the system. Whenever a non registered user submits his information the SignUpController verifies the correctness of these information and if they are valid it creates a new User and redirect him to the UserPage.
+\item {\bf LoginController}: his task is to manage the log in of a registered user. It verifies that the credentials submitted by the user are the same provided in the system registration.  
+\item {\bf CalendarController}: It's the responsible for the control of the calendar of an user, it loads it and all its associated events, through it an user can search other users' calendar and view them if they were set as public by their owner.
 \end{enumerate}
 \begin{center}
  \begin{figure}[H]
@@ -70,15 +70,15 @@ The controls who manage the flow of this scenario are two:\begin{enumerate}
 The diagram in~\ref{fig:editneweventBCE} illustrates the flow of the creation of the modification of an event. Naturally an user can perform these action only if it's logged in to the system. The top side of the diagram it's related to the log in mechanism already seen in fig~\ref{fig:logBCE} while the bottom side represents the management of an event. From that point on through the EventController a user can either create,delete or modify an event, see the event information or change the participation to it.
 \\In these diagram there are only two entities who plays an active role:
 \begin{enumerate}
-\item  {\bf User}: it's a registered user that can log in to the platform and gets to his UserPage, or he can  represents someone who is not already signed in  to the system and can only reach the main page and register to the platform.
-\item  {\bf Event}: represents an event in the calendar. An user can be related to it in two different way, it could be a guest or it could be its owner. Depending on this relation it can perform different action. Modify or create it if it's an owner or change his participation if it's a guest.
+\item {\bf User}: it's a registered user that can log in to the platform and gets to his UserPage, or he can represents someone who is not already signed in to the system and can only reach the main page and register to the platform.
+\item {\bf Event}: represents an event in the calendar. An user can be related to it in two different way, it could be a guest or it could be its owner. Depending on this relation it can perform different action. Modify or create it if it's an owner or change his participation if it's a guest.
 \end{enumerate}
 There are two boundaries involved in this scenario: \begin{enumerate}
-\item  {\bf UserPage}: it stands for the page reach by the user after he logged in. It shows his calendar and all other tasks that the user can performs within it such as searches for a user, creates or modifies an event or checks for notification.
+\item {\bf UserPage}: it stands for the page reach by the user after he logged in. It shows his calendar and all other tasks that the user can performs within it such as searches for a user, creates or modifies an event or checks for notification.
 \item {\bf NewModifyEventPage}: is the page that a user uses to create or manipulate an event. It displays all the informations about the selected event such as the place, the date and the desired weather. More over gives to the owner of the event the capability to modify these data or to insert new informations in case that the user is creating a new event.
  \end{enumerate}
 The controls who manage the flow of this scenario are two:\begin{enumerate}
-\item {\bf LoginController}: his task is to manage the log in of a registered user. It verifies that the credentials submitted by the user are the same provided in the system registration.   
+\item {\bf LoginController}: his task is to manage the log in of a registered user. It verifies that the credentials submitted by the user are the same provided in the system registration.  
 \item {\bf EventController}: this control has several duties many of which concerning the event creation or modification. It's able either to load the information regarding an existing event, to delete an event or to check the correctness of the submitted values for its attributes when the event is created. In addition an invited user to the event can eventually changes the participation to it.
 \end{enumerate}
 \begin{center}
@@ -92,16 +92,16 @@ The controls who manage the flow of this scenario are two:\begin{enumerate}
 The diagram in fig~\ref{fig:searchBCE} display the scenario involved when a user searches for an other user profile. The flow depends also by the visibility of both the searched calendar and the events within it. This action of course can only be performed by a logged user.\\
 In these diagram there are three entities:
 \begin{enumerate}
-\item  {\bf User}: it's a registered user that can log in to the platform and gets to his UserPage, or he can  represents someone who is not already signed in  to the system and can only reach the main page and register to the platform.
-\item  {\bf Event}: represents an event in the calendar. An user can be related to it in two different way, it could be a guest or it could be its owner. Depending on this relation it can perform different action. Modify or create it if it's an owner or change his participation if it's a guest.
+\item {\bf User}: it's a registered user that can log in to the platform and gets to his UserPage, or he can represents someone who is not already signed in to the system and can only reach the main page and register to the platform.
+\item {\bf Event}: represents an event in the calendar. A user can be related to it in two different way, it could be a guest or it could be its owner. Depending on this relation it can perform different action. Modify or create it if it's an owner or change his participation if it's a guest.
 \item {\bf Calendar}: is an element that represents the agenda of an user and contains all his scheduled event. It can be set public or private by its owner.
 \end{enumerate}
 There are two boundaries involved in this scenario: \begin{enumerate}
-\item {\bf UserPage}: it stands for the page reach by the user after he logged in. It shows his calendar and all other tasks that the user can performs within it such as searches for a user, creates or modifies an event or checks for notification.
+\item {\bf UserPage}: it stands for the page reached by the user after he logs in. It shows his calendar and all other tasks that the user can performs within it such as searches for a user, creates or modifies an event or checks for notification.
  \item {\bf OtherUserCalendarPage}: is the page that an user can reach after he searched for an other user, depending on the searched user's calendar's visibility it can shows either the calendar itself and its related event or a redirect to the home page
  \end{enumerate}
 The controls who manage the flow of this scenario it's unique:\begin{enumerate}
-\item  {\bf CalendarController}: It's the responsible for the control of the calendar of an user, it loads it and all its associated events, through it an user can search other users' calendar and view them if they were set as public by their owner.
+\item {\bf CalendarController}: It's the responsible for the control of the calendar of an user, it loads it and all its associated events, through it an user can search other users' calendar and view them if they were set as public by their owner.
 
 \end{enumerate}
 \begin{center}
