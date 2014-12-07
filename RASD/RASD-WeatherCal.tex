@@ -21,6 +21,7 @@
 \usepackage{url}
 \usepackage[height=21.6cm,width=15cm,centering]{geometry}
 \usepackage{tabularx}
+\usepackage[super]{nth}
 
 \usepackage[bookmarks=true,hyperindex,colorlinks=false,
             pdfborder={0 0 0},pdfstartview=FitH,pdfpagelayout=SinglePage,
@@ -103,12 +104,19 @@
 
 \doublespacing    
 \tableofcontents
-
+\vspace*{\fill}
+\section*{Revisions}
+\begin{tabularx}{\linewidth}{|r|X|}
+  \hline Date & Comments\\
+  \hline Nov, \nth{16}, 2014 & First version\\
+  \hline Dec., \nth{7}, 2014 & Revision of Class Diagram\\
+  \hline
+\end{tabularx}
 
 \input{./introduzione.tex}
 \input{./overalldescription.tex}
 \input{./systemmodeling.tex}
-{\huge Time Reporting}\\ \\
+\chapter*{Time Reporting}
 \begin{tabularx}{\linewidth}{|r|X|X|}
   \hline  & {\bf Paolo Polidori} & {\bf Marco Edemanti}\\
   \hline RASD writing & 19 hours & 19 hours\\
