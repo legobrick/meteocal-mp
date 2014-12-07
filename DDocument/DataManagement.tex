@@ -19,8 +19,11 @@ The main entity of the database are four:
      \end{figure}
    \end{center}  
 \section{Modeling}
-<Describe any standards or typographical conventions that were followed when writing this SRS, such as fonts or highlighting that have special significance. For example, state whether priorities  for higher-level requirements are assumed to be inherited by detailed requirements, or whether every requirement statement is to have its own priority.>
-
+In this section is illustrated the modeling process through that we try to understand how to implement in the best possible way a good and well designed architecture in order to develop a robust  and  safe system. We use various pattern to achieve this goals: \begin{itemize}
+\item BCE Pattern
+\item MVC Pattern
+\item Sequence Diagram
+\end{itemize}
 \subsection{Structure}
 \subsubsection{Server-side BCE}\label{sec:BCE}
 This paragraph illustrates the BCE pattern representing the architecture that we'll implement in order to develop the WeatherCal system. When identifying the elements for some scenario of system behavior, we can align each participating element with one of three key perspectives : Boundary, Control and Entity. \\This  pattern is a variation of the MVC pattern indeed we can consider mapping the Boundary with the MCV's View, the Control with the MCV's Controller and the Entity with the MVC's Model. Moreover the BCE pattern is not solely appropriate for dealing with user interfaces but it gives also to the controller a slightly different role to play.\\Let's take a deeper look in to the BCE pattern:\begin{itemize}
@@ -253,6 +256,20 @@ Figure ~\ref{fig:forecasteq} illustrates how the local forecast is loaded as the
    \end{center} 
    
 \myparagraph{Search user}
-   
+The diagram in figure~\ref{fig:searchuseq} shows how an user can reach and view other user agenda. The system will fetch the searched user data corresponding with the string submitted by the user and then will store that data into a nested model. The {\bf UserResearchView} will display all the user that match with the searched string. 
+    \begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/SearchUser.png}
+    \caption{Search user sequence diagram}
+     \label{fig:searchuseq}
+     \end{figure}
+   \end{center} 
 \myparagraph{User's calendar}
-
+The figure~\ref{fig:usercalese} illustrates how an user can change the date range shown by the calendar. After an user select a different date's period to be displayed, the system takes care of fetching this selected period and then it will populate a model and a collection  structure, whereupon the {\bf CalendarView} render the new calendar with the metadata of the selected date range while the {\bf DayView} will display the daily schedule.
+ \begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/ChangeCalendarPeriod.png}
+    \caption{Change calendar period sequence diagram}
+     \label{fig:usercalese}
+     \end{figure}
+   \end{center} 
