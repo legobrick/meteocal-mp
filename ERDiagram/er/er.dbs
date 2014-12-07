@@ -158,12 +158,12 @@
 	<layout id="Layout6009123" name="WeatherCal" show_relation_columns="y" >
 		<entity schema="weathercal" name="weather_constraint" color="b2cdf7" x="270" y="465" />
 		<entity schema="weathercal" name="weather_state_constraint" color="b2cdf7" x="45" y="465" />
-		<entity schema="weathercal" name="owner" color="b2cdf7" x="210" y="225" />
-		<entity schema="weathercal" name="calendar" color="b2cdf7" x="45" y="60" />
-		<entity schema="weathercal" name="user_has_calendar" color="b2cdf7" x="180" y="60" />
-		<entity schema="weathercal" name="participation" color="b2cdf7" x="45" y="300" />
 		<entity schema="weathercal" name="user" color="b2cdf7" x="360" y="45" />
 		<entity schema="weathercal" name="event" color="b2cdf7" x="360" y="240" />
+		<entity schema="weathercal" name="calendar" color="b2cdf7" x="45" y="60" />
+		<entity schema="weathercal" name="user_has_calendar" color="f4f96a" x="180" y="60" />
+		<entity schema="weathercal" name="participation" color="f4f96a" x="45" y="300" />
+		<entity schema="weathercal" name="owner" color="f4f96a" x="210" y="225" />
 		<group name="weather" color="bdeef0" >
 			<entity schema="weathercal" name="weather_constraint" />
 			<entity schema="weathercal" name="weather_state_constraint" />
