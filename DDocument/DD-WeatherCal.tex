@@ -34,6 +34,7 @@
   \phantomsection% Correct hyper reference link
   #1\label{#2}% Print and store label
 }
+\newcommand{\myparagraph}[1]{\paragraph{#1}\mbox{}\\}
 \renewenvironment{thebibliography}[1]
      {\section{References}% <-- this line was changed from \chapter* to \section*
       \@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
@@ -82,6 +83,7 @@
   morestring=[b]',
   morestring=[b]"
 }
+\setcounter{secnumdepth}{5}
 \lstset{ %
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
   basicstyle=\footnotesize,        % the size of the fonts that are used for the code
@@ -141,5 +143,4 @@
   \hline
 \end{tabularx}\\
 \listoffigures
-\lstlistoflistings
 \end{document}

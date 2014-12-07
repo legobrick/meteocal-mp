@@ -18,18 +18,16 @@ The main entity of the database are four:
      \label{fig:er}
      \end{figure}
    \end{center}  
-\section{MVC modeling}
+\section{Modeling}
 <Describe any standards or typographical conventions that were followed when writing this SRS, such as fonts or highlighting that have special significance. For example, state whether priorities  for higher-level requirements are assumed to be inherited by detailed requirements, or whether every requirement statement is to have its own priority.>
 
-\subsection{MVC structure}
-\subsection{MVC behaviour}
-
-\subsection{BCE Diagrams} \label{sec:BCE}
+\subsection{Structure}
+\subsubsection{Server-side BCE}\label{sec:BCE}
 This paragraph illustrates the BCE pattern representing the architecture that we'll implement in order to develop the WeatherCal system. When identifying the elements for some scenario of system behavior, we can align each participating element with one of three key perspectives : Boundary, Control and Entity. \\This  pattern is a variation of the MVC pattern indeed we can consider mapping the Boundary with the MCV's View, the Control with the MCV's Controller and the Entity with the MVC's Model. Moreover the BCE pattern is not solely appropriate for dealing with user interfaces but it gives also to the controller a slightly different role to play.\\Let's take a deeper look in to the BCE pattern:\begin{itemize}
 \item Entity: are objects representing system data and also they perform behavior organized around some cohesive amount of data.
 \item Boundaries: are the objects that interface with system actors and most of the times they lay on periphery of a system. Some boundary elements will be "front-end" elements that accept input from outside the area under design and other elements will be "back-end" managing communication to supporting elements outside the system or subsystem.
 \item Control: are the elements that mediate between boundaries and entities and control the flow of the interaction of the scenario. They manage the execution of commands coming from the boundary.
-\subsubsection{Entity overview}
+\myparagraph{Entity overview}
 The diagram in~\ref{fig:entityovervie} illustrates an overview of all entities involved in our system and how they are related with each other.
  \begin{center}
  \begin{figure}[H]
@@ -40,7 +38,7 @@ The diagram in~\ref{fig:entityovervie} illustrates an overview of all entities i
    \end{center}  
 
 
-\subsubsection{Sign Up and Log In }
+\myparagraph{Sign Up and Log In}
 The diagram in~\ref{fig:logBCE} shows the flow of the system's behavior related to the registered user's login or to the anonymous user's signup. After the SignUp Controller validates the values submitted by the user, the user reaches his UserPage and then the CalendarController loads its agenda and all associated event. \\In these diagram there are three entities who plays an active role:
 \begin{enumerate}
 \item  {\bf User}: it's a registered user that can log in to the platform and gets to his UserPage, or he can  represents someone who is not already signed in  to the system and can only reach the main page and register to the platform.
@@ -65,7 +63,7 @@ The controls who manage the flow of this scenario are two:\begin{enumerate}
    \end{center}  
 \end{itemize}
 
-\subsubsection{Event creation or modification}
+\myparagraph{Event creation or modification}
 The diagram in~\ref{fig:editneweventBCE} illustrates the flow of the creation of the modification of an event. Naturally an user can perform these action only if it's logged in to the system. The top side of the diagram it's related to the log in mechanism already seen in fig~\ref{fig:logBCE} while the bottom side represents the management of an event. From that point on through the EventController a user can either create,delete or modify an event, see the event information or change the participation to it.
 \\In these diagram there are only two entities who plays an active role:
 \begin{enumerate}
@@ -87,7 +85,7 @@ The controls who manage the flow of this scenario are two:\begin{enumerate}
      \label{fig:editneweventBCE}
      \end{figure}
    \end{center}  
-\subsubsection{Search Users}
+\myparagraph{Search Users}
 The diagram in fig~\ref{fig:searchBCE} display the scenario involved when a user searches for an other user profile. The flow depends also by the visibility of both the searched calendar and the events within it. This action of course can only be performed by a logged user.\\
 In these diagram there are three entities:
 \begin{enumerate}
@@ -109,10 +107,83 @@ The controls who manage the flow of this scenario it's unique:\begin{enumerate}
     \caption{Search users}
      \label{fig:searchBCE}
      \end{figure}
+   \end{center} 
+  
+  
+\subsubsection{Client-side MVC}
+An other part of the architecture, located on the client side will rely on an MVC framework as stated in \autoref{sec:sec2.3}.
+In this paragraph the diagrams implementing the structure of the client side application are described.\\
+We will have three categories of system element: \textit{Model} elements, \textit{View} elements and \textit{Controller} elements.
+\begin{itemize}
+\item \textbf{Model elemens} will be composed by two classes,\textit{Collections} and \textit{Models}, the former implementing a set of the latters.
+\item \textbf{View elements} have similar differencies, even if weaker. \textit{ItemViews} will mostly be used for displaying collections, even if they were thought for displaying single elements. Anyway, since any operation should be performed on the collection and the models contain few data, they can be used even for displaying collections. Even though, collections are usually rendered with \textit{CollectionViews}, a sort of "set of \textit{ItemViews}".
+\item \textbf{Controller elements} does not exactly exist both in the diagrams and in the framework. This is because there is no need of a real controller. Its job will be accomplished by the Application entry point, in such a way that can be associated to the Controller of the MVC pattern, but just in a coarse approximation.
+\end{itemize}
+\myparagraph{Entity overview}
+The diagram in~\ref{fig:modelovervie} illustrates an overview of all the models and the collections which are part of the system and how they interact among themselves.
+ \begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/AllModelsAndCollections.png}
+    \caption{Models and Collections}
+     \label{fig:modelovervie}
+     \end{figure}
    \end{center}  
-\section{Sequence Diagram}
+
+\myparagraph{Show notifications}
+In this diagram, as shown in figure~\ref{fig:notifMVC} there can be two types of notification\\
+\begin{enumerate}
+\item {\bf Invite notification}: it is the model representing a single notification of invite, giving the user the possibility to express his participation.
+\item {\bf Weather notification}: it is used to tell the user whether there is an adverse condition for a future event and, if owner, ask for a date modification.
+\end{enumerate}
+Both these notification are extension of the generic \textbf{Notification}, which consists of a single element on the list of all the notifications. This model will be fetched from the server after performing some business intelligence operations over the \textit{"Participation"} entity for retrieving both the not answered invitations and the shortcoming events having possible weather issues.\\
+The \textbf{Notifications} will be collected inside the omonimous collection.\\
+The collection will be displayed using an \textit{ItemView} called \textit{NotificationView}, which will show the list of all the notifications in the user's webpage.
+\begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/Notifications.png}
+    \caption{Notifications}
+     \label{fig:notifMVC}
+     \end{figure}
+   \end{center}
+   
+\myparagraph{Local forecast}
+The user will be able to see the local forecast for the next days in a dedicated area of the website. This will be accomplished using the OpenWeatherMAP RESTful API from the client. The retrived data will be modeled in figure~\ref{fig:forecastMVC}.
+The first model, called \textbf{WeatherInfo} will contain the metadata of the response, including the locality details.\\
+The \textbf{Forecasts} will be then stored inside the omonimous collection, and each one will be modeled by \textbf{Forecast}. This model will contain the forecast information about a single interval. This collection will be rendered inside the \textbf{ForecastView} \textit{ItemView} which will be nested inside a box containing some of the data stored in the \textbf{WeatherInfo} model, managed by the \textbf{WeatherDataView} \textit{ItemView}.
+\begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/Forecast.png}
+    \caption{Local forecast}
+     \label{fig:forecastMVC}
+     \end{figure}
+   \end{center}
+   
+\myparagraph{Search Users}
+The user will also be able to search other users, in order to find their profiles or invite them to an event. This will be realized, as illustrated in figure~\ref{fig:userSearchMVC}, from a \textbf{UserResearchView} which will list the users for a certain lookup keyword inputed by the user. As the user types the keyword, the \textbf{UserResearch} collection will be populated by \textbf{User} models, fetching them by the server.
+\begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/UserSearch.png}
+    \caption{Search users}
+     \label{fig:userSearchMVC}
+     \end{figure}
+   \end{center}
+   
+\myparagraph{User's calendar}
+As the user will have a calendar to browse, data will be fetched asynchronously by intercepting the selection of a new period and rendering the related calendar and the events for that period. This task will be assigned to the model displayed in figure~
+\ref{fig:calendarBCE}.
+The \textbf{Calendar} collection will contain the list of \textbf{Day} models. The former will be displayed using a \textit{CollectionView} called \textbf{CalendarView}, which will be used for rendering every day. The rendering of the \textbf{Event} models, collected inside a \textbf{DailySchedule} collection will be accomplished by the \textbf{DayView}, which is an \textit{ItemView} nested inside the \textbf{CalendarView}. It will display the day and iterate over the events and display them inside in an apposite area related to that day.
+\begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/UserCalendar.png}
+    \caption{Calendar period change}
+     \label{fig:calendarBCE}
+     \end{figure}
+   \end{center}  
+
+\subsection{Sequence Diagram}
+\subsubsection{Server-side BCE}
 In this section we'll show some sequence diagram associated with the BCE Diagram explained in ~\ref{sec:BCE} section in order to give  a more comprehensive overview either of the BCE patterns and of course of our system behavior.
-\subsection{Sign Up}
+\myparagraph{Sign Up}
 Figure ~\ref{fig:signupSeq} shows the process for the registration of a new user into the system. As a user accesses the system through the MainPage, he will reach either the login or the register form to the system. If the user wants to register this is what happens.
 The user will submit his information through the form and the SignUpController will check that the correctness of the value. If these information are valid then a new user will be created by the SignUpController and inserted in to the system else if the information are not correct a excepetion is thrown and the registration fails. 
 \begin{center}
@@ -123,12 +194,12 @@ The user will submit his information through the form and the SignUpController w
      \end{figure}
    \end{center}  
   
-  \subsection{Log In}
+  \myparagraph{Log In}
   The diagrams represented in figure ~\ref{fig:Login1Seq}  and ~\ref{fig:Login2Seq} describe the login phase for a registered user in the system. As the user enters the platform the login form is shown to him and the validation process begins. The whole sequence diagram is divided in two part in order to  give a better understanding of it.\\
   The first diagram fig.~\ref{fig:Login1Seq} refers to the validation of an user. After he submitted his login value, from the log in form in the MainPage, the LoginController verify the validity of these information, in case of an affermative response then the user is authenticated in to the system and he is redirect to the UserPage where thanks to CalendarController his calendar is loaded and shown.
   \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=0.9\textwidth]{../BCEDiagram/BCE/EntityOverview/LoginPt1.png}
+    \includegraphics[width=0.9\textwidth]{../BCEDiagram/BCE/EntityOverview/LogInPt1.png}
     \caption{Login part 1}
      \label{fig:Login1Seq}
      \end{figure}
@@ -136,12 +207,12 @@ The user will submit his information through the form and the SignUpController w
      \begin{center}
 So if the diagram~\ref{fig:Login1Seq} represents the authentication process of an user then the diagram~\ref{fig:Login2Seq} represents the process used by the system to load the event related to the user's calendar. Once the user is logged in, he can see all the events which owns, all the events in which was invited or all the events that is going to attend. 
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../BCEDiagram/BCE/EntityOverview/LoginPt2.png}
+    \includegraphics[width=1\textwidth]{../BCEDiagram/BCE/EntityOverview/LogInPt2.png}
     \caption{Login part 2}
      \label{fig:Login2Seq}
      \end{figure}
    \end{center} 
- \subsection{New Event}
+ \myparagraph{New Event}
  The diagram represented in figure ~\ref{fig:newEveSeq} shows how an user will create a new event and customize it as he wants. The NewModifyEventPage will show to him an empty form to fill with the desired value for the event such as the date, the place, the invited user or the weather constraint. The same form is shown to an user that wants to see the event's details and eventually ,if he's also its owner, to modify the current value.
 Therefore after an user creates or modifies an event, the EventController check that all the values are correct and then either creates a new event or modify an existing one or, if the submitted preferences are not valid, it throws an exception and the creation process fails.  
   \begin{center}
@@ -151,7 +222,7 @@ Therefore after an user creates or modifies an event, the EventController check 
      \label{fig:newEveSeq}
      \end{figure}
    \end{center} 
-\subsection{Search Users}
+\myparagraph{Search Users}
 The diagram in figure ~\ref{fig:searchusSeq} shows the behavior of the system when an user searches for an other user's agenda. The searching and the loading process of the target calendar is accomplished by the CalendarController which once it finds the calendar and makes sure that it was marked visible to everyone by its owner, it fetches all the event related to it, taking care to filter the public event and the private one and finally shows to the user only the public event of the desired user.
  \begin{center}
  \begin{figure}[H]
@@ -160,4 +231,28 @@ The diagram in figure ~\ref{fig:searchusSeq} shows the behavior of the system wh
      \label{fig:searchusSeq}
      \end{figure}
    \end{center} 
+\subsubsection{Client-side MVC}
+\myparagraph{Load notifications}
+The diagram in figure ~\ref{fig:loadnotifSeq} shows the behavior of the client application when a user logs onto the platform. As the web page loads, the application will fetch from the server the list of the notifications for that user. After that, each notification is displayed to the user.
+ \begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/LoadNotifications.png}
+    \caption{Load notifications sequence diagram}
+     \label{fig:loadnotifSeq}
+     \end{figure}
+   \end{center} 
+   
+\myparagraph{Local forecast}
+Figure ~\ref{fig:forecasteq} illustrates how the local forecast is loaded as the user opens his calendar. The user fetches the forecast for the current locality storing it inside a nested model and collection structure. After this process, this structure is rendered in a dedicated area. The \textbf{WeatherDataView} will be involved in displaying the metadata of the forecast, like the locality for which the forecast is shown. This view will also contain the \textbf{ForecastView}, a view for displaying the list of all the forecast periods.
+ \begin{center}
+ \begin{figure}[H]
+    \includegraphics[width=1\textwidth]{../MVCDiagram/MVCBackbone/ShowForecast.png}
+    \caption{Show Forecast sequence diagram}
+     \label{fig:forecasteq}
+     \end{figure}
+   \end{center} 
+   
+\myparagraph{Search user}
+   
+\myparagraph{User's calendar}
 
