@@ -109,6 +109,7 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+.netbeans_automatic_build
 
 
 #OSX ignores
