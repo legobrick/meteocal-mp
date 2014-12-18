@@ -7,10 +7,8 @@ package it.polimi.deib.se2.mp.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,14 +16,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -42,7 +38,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Event.findByIsPublic", query = "SELECT e FROM Event e WHERE e.isPublic = :isPublic"),
     @NamedQuery(name = "Event.findByPlaceDescription", query = "SELECT e FROM Event e WHERE e.placeDescription = :placeDescription"),
     @NamedQuery(name = "Event.findByIsOutdoor", query = "SELECT e FROM Event e WHERE e.isOutdoor = :isOutdoor"),
-    @NamedQuery(name = "Event.findByWhenT", query = "SELECT e FROM Event e WHERE e.whenT = :whenT")})
+    @NamedQuery(name = "Event.findByWhenT", query = "SELECT e FROM Event e WHERE e.whenT = :whenT"),
+    @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
+    @NamedQuery(name = "Event.findByDescription", query = "SELECT e FROM Event e WHERE e.description = :description")})
 public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -73,14 +71,14 @@ public class Event implements Serializable {
     @Column(name = "when_t", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date whenT;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    private Collection<Owner> ownerCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    private Collection<Participation> participationCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEvent")
-    private Collection<WeatherStateConstraint> weatherStateConstraintCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEvent")
-    private Collection<WeatherConstraint> weatherConstraintCollection;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 300)
+    @Column(name = "name", nullable = false, length = 300)
+    private String name;
+    @Size(max = 2147483647)
+    @Column(name = "description", length = 2147483647)
+    private String description;
 
     public Event() {
     }
@@ -89,12 +87,13 @@ public class Event implements Serializable {
         this.id = id;
     }
 
-    public Event(Long id, boolean isPublic, String placeDescription, boolean isOutdoor, Date whenT) {
+    public Event(Long id, boolean isPublic, String placeDescription, boolean isOutdoor, Date whenT, String name) {
         this.id = id;
         this.isPublic = isPublic;
         this.placeDescription = placeDescription;
         this.isOutdoor = isOutdoor;
         this.whenT = whenT;
+        this.name = name;
     }
 
     public Long getId() {
@@ -153,40 +152,20 @@ public class Event implements Serializable {
         this.whenT = whenT;
     }
 
-    @XmlTransient
-    public Collection<Owner> getOwnerCollection() {
-        return ownerCollection;
+    public String getName() {
+        return name;
     }
 
-    public void setOwnerCollection(Collection<Owner> ownerCollection) {
-        this.ownerCollection = ownerCollection;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @XmlTransient
-    public Collection<Participation> getParticipationCollection() {
-        return participationCollection;
+    public String getDescription() {
+        return description;
     }
 
-    public void setParticipationCollection(Collection<Participation> participationCollection) {
-        this.participationCollection = participationCollection;
-    }
-
-    @XmlTransient
-    public Collection<WeatherStateConstraint> getWeatherStateConstraintCollection() {
-        return weatherStateConstraintCollection;
-    }
-
-    public void setWeatherStateConstraintCollection(Collection<WeatherStateConstraint> weatherStateConstraintCollection) {
-        this.weatherStateConstraintCollection = weatherStateConstraintCollection;
-    }
-
-    @XmlTransient
-    public Collection<WeatherConstraint> getWeatherConstraintCollection() {
-        return weatherConstraintCollection;
-    }
-
-    public void setWeatherConstraintCollection(Collection<WeatherConstraint> weatherConstraintCollection) {
-        this.weatherConstraintCollection = weatherConstraintCollection;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
