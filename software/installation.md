@@ -32,3 +32,20 @@ CREATE SCHEMA development
   AUTHORIZATION postgres;
 
 ```
+
+# Glassfish setup
+In order to make the authorization and authentication system provided by Glassfish work, the configuration of a **Realm** is needed.
+
+* To perform this operation you must start the server and open the *Glassfish Admin Console*.
+* From there, edit the *service-config* Configuration and, in particular, add a new *Realm* in the *Security* section.* Set n arbitrary name for the realm and associate it to the JDBCRealm Class name.
+* Set the class-specific properties as follows:
+
+| Parameter                     | Value    |
+|------------------------------:|:--------:|
+| JAAS Context                  | DbLogin  |
+| User Table                    | user     |
+| User Name Column              | username |
+| Password Column               | password |
+| Group Table                   | group    |
+| Group Name Column             | name     |
+| Password Encryption Algorithm | SHA-512  |
