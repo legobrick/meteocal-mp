@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>User Page</title>
+    </h:head>
+   <h:body  style="background-color:rgb(245,240,230)">
+       <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
+
+          <p:outputLabel value="WeatherCal" style="font-size:60px; margin-left:25px;margin-top:20px"  />
+          
+           <div style="float:right; width:30%; ">
+       
+               <div style="margin:25px 25px 25px 0px">     
+    <h:commandButton value="Notifications" style="float:left; width:40%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
+    <h:commandButton value="Logout" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
+   </div>
+   </div>
+          
+  </p:outputPanel>
+       
+       
+       
+       <div style="float:left; width:70%;height:600px;background-color:red">
+           <h:form>
+            <p:growl id="messages" showDetail="true" />
+           
+    <h:panelGrid columnClasses="value">
+        <h3 style="margin-top: 0">Editable Schedule</h3>
+        <p:schedule id="schedule" value="" widgetVar="myschedule" timeZone="GMT+2">
+        </p:schedule>
+ 
+    </h:panelGrid>
+            </h:form>
+       </div>
+       
+       
+       
+       
+       
+       <div style="float:right; width:30%;height:600px;background-color:#f8cb87">
+           
+           <h:form style="width:100%;margin:10px">
+               
+                <div class="ui-grid ui-grid-responsive" style="float:left; width:100%  ">
+              <div class="ui-grid-row" style="margin-top:5px"  >
+               
+                  <div class="ui-grid-col-2" style="width:45%">
+                 <p:inputText placeholder="Nome Utente" style="float:left; widht:50%; border-radius:25px "/>
+                </div>
+                  <div class="ui-grid-col-2" style="width:50%; height:60px">
+                      <div style="margin:10px">    <h:commandButton value="Cerca" style="float:right;width:50%;height:30px"></h:commandButton></div>
+               </div>
+              </div>
+                </div>
+                  
+               
+               
+               <div class="ui-grid ui-grid-responsive" style="margin-right:10px">
+                   <div class="ui-grid-row" style="height:50px">
+                       <p:outputLabel value="Meteo" style="font-size:35px;color:rgb(29,129,201); margin-left:33%"/>
+                   </div>
+                   <div class="ui-grid-row" style="height:50px; border-radius:10px;border-style:solid;border-width:3px;border-color:rgb(29,129,201)">
+                       
+                       <div class="ui-grid-col-5"  style="background-color:#ff55ff;border-color:#ff3300;border-bottom-left-radius:10px;border-top-left-radius:10px"></div>
+                        <div class="ui-grid-col-5" style="background-color:#fff55f;" ></div>
+                        <div class="ui-grid-col-5" style="background-color:#fdfd5f;" ></div>
+                        <div class="ui-grid-col-5" style="background-color:#fffd5f;"></div>
+                        <div class="ui-grid-col-5" style="background-color:#fff55f;border-bottom-right-radius:10px;border-top-right-radius:10px"></div>
+                    </div>
+                </div>
+               <div style="margin-top:50px;margin-rigth:10px">
+                     <p:outputLabel value="Prossimi Eventi" style="font-size:35px;color:rgb(29,129,201); margin-left:13%"/>
+                  <p:dataScroller value="cia" var="car" chunkSize="10" style="margin-right:10px">
+       
+                 </p:dataScroller>
+               </div>
+                
+           </h:form>
+           
+      
+       
+       
+       
+       </div>
+       
+       
+       
+       
+    </h:body>
+</html>
+

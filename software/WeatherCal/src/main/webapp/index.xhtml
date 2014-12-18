@@ -15,12 +15,12 @@ and open the template in the editor.
     
     <h:head>
        
-        <title>TODO supply a title</title>
+        <title>WeatherCal</title>
 
 
     </h:head>
     
-    <h:body  style="background-color:rgb(255,255,230)">
+    <h:body  style="background-color:rgb(245,240,230)">
      <!--   <div class="row">
           <div class="col-sm-4 col-md-4">
             <div class="logo">
@@ -42,23 +42,22 @@ and open the template in the editor.
        --> 
         
        
-        <p:outputPanel style="width:100%;min-height:75px; background-color:rgb(29,129,201);color:#ffffff;box-shadow:0,0,5px  ">
+        <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
 
-          <p:outputLabel value="WeatherCal" style="font-size:70px; margin-left:25px"  />
+          <p:outputLabel value="WeatherCal" style="font-size:60px; margin-left:25px;margin-top:20px"  />
            
-       <h:form style="float:right; width:45%; height:75px;margin-right:0px ">
-         <div class="ui-grid ui-grid-responsive" style="float:right; margin-right:0px  ">
-              <div class="ui-grid-row">
-                  <div class="ui-grid-col-3" > </div>
-                  <div class="ui-grid-col-3"> <p:outputLabel value="E-mail" style="font-size:15px;"  /></div>
-                 <div class="ui-grid-col-3"  > <p:outputLabel value="Password" style="font-size:15px; "  /> </div>
-                  
+       <h:form style="float:right; width:40%; ">
+         <div class="ui-grid ui-grid-responsive" style="float:left; margin-left:10px  ">
+              <div class="ui-grid-row" style="margin-top:5px"  >
+                 <div class="ui-grid-col-3" style="width:50%"> <p:outputLabel value="E-mail" style="font-size:17px;"  /></div>
+                 <div class="ui-grid-col-3" style="width:50%; " ><p:outputLabel value="Password" style="font-size:17px; "  /> </div>
+                 <div class="ui-grid-col-3"  ></div>
    </div>
-             <div class="ui-grid-row" style="margin-top:15px; float:right; " >
-                 <div class="ui-grid-col-3" > </div>
-                 <div class="ui-grid-col-3" > <p:inputText style="width:80%; height:20px; font-size:15px " /></div>
-                 <div class="ui-grid-col-3"> <p:password style="width:80%; height:20px; font-size:15px"  /></div>
-                  <div class="ui-grid-col-3" style="margin-top:0px; "><h:commandButton value="Login" style="width:60%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,131);border-color:rgb(30,130,150);border-radius:5px  "></h:commandButton></div>
+             <div class="ui-grid-row" style="margin-top:5px; float:right; " >
+         
+                 <div class="ui-grid-col-3" style="width:50%"> <p:inputText style="width:80%; height:20px; font-size:15px " /></div>
+                 <div class="ui-grid-col-3" style="width:50%"> <p:password style="width:80%; height:20px; font-size:15px"  /></div>
+                  <div class="ui-grid-col-3" style="margin-top:0px; "><h:commandButton value="Login" style="width:60%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "></h:commandButton></div>
      
       </div>
            
@@ -67,11 +66,43 @@ and open the template in the editor.
        
    </p:outputPanel>
        
-       
-       <div style="float:right; width:50%; height:400px; background-color:#ffffff  ">
+       <div style="float: left;width: 60%; ">
+           <p:graphicImage value="rainsunny.png" style="width:80%;margin-bottom:100px" />
+       </div>
+       <div style="float:right; width:40%; height:400px; margin-top:20px">
+          
+             <p:outputLabel value="Sign Up" style="float:left; margin-top:10px; font-size:50px; margin-left:10px; width:100%; height:10px; color:rgb(29,129,201)"  />
+             <div style="float:left; width:100%; margin-top:50px">  
+                  <h:form style="width:100%">
+                  <div class="ui-grid ui-grid-responsive">
+             
+             <div class="ui-grid-row" >
+             
+               <div class="ui-grid-col-2" style="width:50%" > <p:inputText placeholder="First Name" style="width:90%; height:30px; font-size:20px; margin:10px" /></div>
+                 <div class="ui-grid-col-2" style="width:50%" > <p:inputText placeholder="Surname"  style="width:90%; height:30px; font-size:20px; margin:10px"  /></div>
+             </div>
+                      <div class="ui-grid-row" >
+                          <div class="ui-grid-col-1" style="width:100%" > <p:inputText placeholder="E-mail" style="width:95%; height:30px; font-size:20px; margin:10px  " /></div>
+                          </div>
+                      <div class="ui-grid-row" >
+                          <div class="ui-grid-col-1" style="width:100%" > <p:inputText placeholder="Username" style="width:95%; height:30px; font-size:20px; margin:10px  " /></div>
+                          </div>
+                      <div class="ui-grid-row" >
+             
+               <div class="ui-grid-col-2" style="width:50%" > <p:password placeholder="Password" style="width:90%; height:30px; font-size:20px; margin:10px" /></div>
+                 <div class="ui-grid-col-2" style="width:50%" > <p:password placeholder="Repeat Password"  style="width:90%; height:30px; font-size:20px; margin:10px"  /></div>
+             </div>
+                      <div class="ui-grid-row" >
+             
+               <div class="ui-grid-col-2" style="width:50%" > <h:commandButton value="Sign Up" style="width:80%; font-size:30px; color:#ffffff; background-color:rgb(29,129,201);border-color:rgb(29,129,201);border-radius:5px; margin:10px   "></h:commandButton></div>
+               <div class="ui-grid-col-2" style="width:50%" > </div>
+               
+             </div>
            
-           
-           
+    </div> 
+             </h:form>
+               </div>
+         
        </div> 
        
        
