@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.deib.se2.mp.entity;
+package it.polimi.deib.se2.mp.weathercal.entity;
 
 import java.io.Serializable;
 import java.util.Collection;

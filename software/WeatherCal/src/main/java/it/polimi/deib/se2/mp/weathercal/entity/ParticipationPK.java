@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.deib.se2.mp.entity;
+package it.polimi.deib.se2.mp.weathercal.entity;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * @author paolo
  */
 @Embeddable
-public class OwnerPK implements Serializable {
+public class ParticipationPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "id_calendar", nullable = false)
@@ -26,10 +26,10 @@ public class OwnerPK implements Serializable {
     @Column(name = "id_event", nullable = false)
     private long idEvent;
 
-    public OwnerPK() {
+    public ParticipationPK() {
     }
 
-    public OwnerPK(long idCalendar, long idEvent) {
+    public ParticipationPK(long idCalendar, long idEvent) {
         this.idCalendar = idCalendar;
         this.idEvent = idEvent;
     }
@@ -61,10 +61,10 @@ public class OwnerPK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof OwnerPK)) {
+        if (!(object instanceof ParticipationPK)) {
             return false;
         }
-        OwnerPK other = (OwnerPK) object;
+        ParticipationPK other = (ParticipationPK) object;
         if (this.idCalendar != other.idCalendar) {
             return false;
         }
@@ -76,7 +76,7 @@ public class OwnerPK implements Serializable {
 
     @Override
     public String toString() {
-        return "it.polimi.deib.se2.mp.entity.OwnerPK[ idCalendar=" + idCalendar + ", idEvent=" + idEvent + " ]";
+        return "it.polimi.deib.se2.mp.entity.ParticipationPK[ idCalendar=" + idCalendar + ", idEvent=" + idEvent + " ]";
     }
     
 }

@@ -3,20 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.deib.se2.mp.entity;
+package it.polimi.deib.se2.mp.weathercal.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -37,31 +40,35 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")})
 public class User implements Serializable {
+    @ManyToMany(mappedBy = "userCollection")
+    private Collection<Groups> groupsCollection;
     private static final long serialVersionUID = 1L;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Id
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 320)
     @Column(name = "email", nullable = false, length = 320)
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+            message = "invalid email")
     private String email;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 100)
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 100)
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 128)
     @Column(name = "password", nullable = false, length = 128)
     private String password;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 100)
     @Column(name = "username", nullable = false, length = 100)
     private String username;
@@ -155,6 +162,15 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "it.polimi.deib.se2.mp.entity.User[ email=" + email + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Groups> getGroupsCollection() {
+        return groupsCollection;
+    }
+
+    public void setGroupsCollection(Collection<Groups> groupsCollection) {
+        this.groupsCollection = groupsCollection;
     }
     
 }
