@@ -30,7 +30,6 @@ CREATE DATABASE weathercal
 ```
 CREATE SCHEMA development
   AUTHORIZATION postgres;
-
 ```
 
 # Glassfish setup
@@ -42,10 +41,16 @@ In order to make the authorization and authentication system provided by Glassfi
 
 | Parameter                     | Value    |
 |------------------------------:|:--------:|
-| JAAS Context                  | DbLogin  |
-| User Table                    | user     |
+| JAAS Context                  | mpRealm  |
+| User Table                    | user_    |
 | User Name Column              | username |
 | Password Column               | password |
-| Group Table                   | group    |
+| Group Table                   | group_   |
 | Group Name Column             | name     |
 | Password Encryption Algorithm | SHA-512  |
+
+Optionally, you can use the command-line tool, issuing the next command:
+
+```
+$ asadmin create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property 'datasource-jndi=java\:app/jdbc/pgResource:digestrealm-password-enc-algorithm=SHA-512:group-name-column=name:group-table=group_:jaas-context=mpRealm:password-column=password:user-name-column=username:user-table=user_' mpRealm
+```

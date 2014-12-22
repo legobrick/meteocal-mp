@@ -49,16 +49,16 @@ and open the template in the editor.
                 <div class="ui-grid ui-grid-responsive" style="float:left; margin-left:10px">
                     <div class="ui-grid-row" style="margin-top:5px; float:right;">
                         <div class="ui-grid-col-3" style="width:50%">
-                            <p:inputText id="email_login" placeholder="E-mail" style="width:80%; height:20px; font-size:15px " value="#{loginBean.email}" required="true"/>
+                            <p:inputText id="username_login" placeholder="Username" style="width:80%; height:20px; font-size:15px " value="#{loginBean.username}" required="true"/>
                         </div>
                         <div class="ui-grid-col-3" style="width:50%">
                             <p:password id="password_login" placeholder="Password" style="width:80%; height:20px; font-size:15px" value="#{loginBean.password}" required="true"/>
                         </div>
                         <div class="ui-grid-col-3" style="margin-top:0px; ">
                             <p:commandButton action="#{loginBean.login()}" value="Login" style="width:60%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px"></p:commandButton>
-                            </div>
                         </div>
                     </div>
+                </div>
             </h:form>
             <!--
            <h:form style="float:right; width:40%; ">
@@ -123,7 +123,7 @@ and open the template in the editor.
                                 </div>
                             </div>
                             <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:100%">
+                                <div class="ui-grid-col-2" style="width:50%">
                                     <p:inputText id="email" placeholder="E-mail" style="width:95%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.email}" required="true"/>
                                 </div>
                                 <div class="ui-grid-col-2" style="width:50%">
@@ -131,7 +131,7 @@ and open the template in the editor.
                                 </div>
                             </div>
                             <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:100%">
+                                <div class="ui-grid-col-2" style="width:50%">
                                     <p:inputText id="username" placeholder="Username" style="width:95%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.username}" required="true"/>
                                 </div>
                                 <div class="ui-grid-col-2" style="width:50%">
@@ -157,10 +157,10 @@ and open the template in the editor.
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-2" style="width:50%">
                                     <p:commandButton update="reg_form_content" action="#{registrationBean.register()}" value="Sign Up" style="width:80%; font-size:30px; color:#ffffff; background-color:rgb(29,129,201);border-color:rgb(29,129,201);border-radius:5px; margin:10px"></p:commandButton>
-                                    </div>
-                                    <div class="ui-grid-col-2" style="width:50%">
-                                    </div>
                                 </div>
+                                <div class="ui-grid-col-2" style="width:50%">
+                                </div>
+                            </div>
                         </h:panelGroup>
                     </div> 
                 </h:form>
