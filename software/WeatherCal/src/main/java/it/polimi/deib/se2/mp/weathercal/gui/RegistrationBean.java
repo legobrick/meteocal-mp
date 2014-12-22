@@ -7,17 +7,18 @@ package it.polimi.deib.se2.mp.weathercal.gui;
 
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
+import java.io.Serializable;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
 
 /**
  * @author paolo
  * @author miglie
  */
-@Named
+@ManagedBean
 @RequestScoped
-public class RegistrationBean {
+public class RegistrationBean implements Serializable{
 
     @EJB
     private UserManager um;

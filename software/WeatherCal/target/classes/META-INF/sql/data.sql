@@ -1,1 +1,1 @@
-INSERT INTO "group" (name) VALUES ('USERS'); --Groups Entity
+INSERT INTO "development"."group_" ("name") VALUES ('USERS')

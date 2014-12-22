@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,15 +29,13 @@ public class UserManager {
 
     public void save(User user) {
         em.persist(user);
-        if(!user.getGroupsCollection().contains(
-                em.createNamedQuery("findByName")
+        em.flush();
+        Query q = em.createNamedQuery("Groups.findByName");
+        Groups g = (Groups) q
                     .setParameter("name", Groups.USERS)
-                    .getSingleResult()
-        )){
-            user.getGroupsCollection().add(
-                (Groups) em.createNamedQuery("findByName")
-                    .setParameter("name", Groups.USERS)
-                    .getSingleResult());
+                    .getSingleResult();
+        if(!user.getGroupsCollection().contains(g)){
+            user.getGroupsCollection().add(g);
             em.merge(user);
         }
     }

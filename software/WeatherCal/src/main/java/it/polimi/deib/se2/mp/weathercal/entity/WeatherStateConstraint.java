@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author paolo
  */
 @Entity
-@Table(name = "weather_state_constraint", catalog = "weathercal", schema = "development")
+@Table(name = "weather_state_constraint", schema = "development")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "WeatherStateConstraint.findAll", query = "SELECT w FROM WeatherStateConstraint w"),

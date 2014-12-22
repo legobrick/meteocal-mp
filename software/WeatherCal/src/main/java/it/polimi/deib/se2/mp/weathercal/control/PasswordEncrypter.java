@@ -26,7 +26,8 @@ public class PasswordEncrypter {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < hash.length; i++) {
                 sb.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
-        }
+            }
+            encPass = sb.toString();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
         }

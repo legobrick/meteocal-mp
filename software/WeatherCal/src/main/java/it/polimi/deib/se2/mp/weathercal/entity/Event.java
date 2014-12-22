@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -28,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author paolo
  */
 @Entity
-@Table(name = "event", catalog = "weathercal", schema = "development")
+@Table(name = "event", schema = "development")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
@@ -76,8 +77,8 @@ public class Event implements Serializable {
     @Size(min = 1, max = 300)
     @Column(name = "name", nullable = false, length = 300)
     private String name;
-    @Size(max = 2147483647)
-    @Column(name = "description", length = 2147483647)
+    @Lob
+    @Column(name = "description", nullable=false)
     private String description;
 
     public Event() {
