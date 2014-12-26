@@ -43,7 +43,7 @@ public class Groups implements Serializable {
     private String name;
     @JoinTable(name = "user_has_group", joinColumns = {
         @JoinColumn(name = "id_group", referencedColumnName = "name", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "id_user", referencedColumnName = "email", nullable = false)})
+        @JoinColumn(name = "email", referencedColumnName = "email", nullable = false)})
     @ManyToMany
     private Collection<User> userCollection;
 

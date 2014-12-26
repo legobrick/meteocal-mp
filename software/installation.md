@@ -39,18 +39,37 @@ In order to make the authorization and authentication system provided by Glassfi
 * From there, edit the *service-config* Configuration and, in particular, add a new *Realm* in the *Security* section.* Set n arbitrary name for the realm and associate it to the JDBCRealm Class name.
 * Set the class-specific properties as follows:
 
-| Parameter                     | Value    |
-|------------------------------:|:--------:|
-| JAAS Context                  | mpRealm  |
-| User Table                    | user_    |
-| User Name Column              | username |
-| Password Column               | password |
-| Group Table                   | group_   |
-| Group Name Column             | name     |
-| Password Encryption Algorithm | SHA-512  |
+| Parameter                     | Value                      |
+|------------------------------:|:--------------------------:|
+| JAAS Context                  | jdbcRealm                  |
+| User Table                    | development.user_          |
+| User Name Column              | email                      |
+| Password Column               | password                   |
+| Group Table                   | development.user_has_group |
+| Group Name Column             | id_group                   |
+| Password Encryption Algorithm | SHA-256                    |
+| Encoding                      | Hex                        |
+| Charset                       | UTF-8                      |
 
 Optionally, you can use the command-line tool, issuing the next command:
 
 ```
-$ asadmin create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property 'datasource-jndi=java\:app/jdbc/pgResource:digestrealm-password-enc-algorithm=SHA-512:group-name-column=name:group-table=group_:jaas-context=mpRealm:password-column=password:user-name-column=username:user-table=user_' mpRealm
+$ asadmin create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property 'datasource-jndi=java\:app/jdbc/pgResource:digestrealm-password-enc-algorithm=SHA-256:group-name-column=id_group:group-table=development.user_has_group:jaas-context=jdbcRealm:password-column=password:user-name-column=email:user-table=development.user_:charset=UTF-8:encoding=Hex' mpRealm
+```
+
+Or, you can edit the <glassfish_home>/domains/<domain_name>/config/domain.xml file and add the next node as a child of the security-service node:
+
+```
+<auth-realm classname="com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm" name="mpRealm">
+  <property name="jaas-context" description="null" value="jdbcRealm"></property>
+  <property name="encoding" value="Hex"></property>
+  <property name="charset" value="UTF-8"></property>
+  <property name="password-column" description="null" value="password"></property>
+  <property name="datasource-jndi" value="java:app/jdbc/pgResource"></property>
+  <property name="group-table" value="development.user_has_group"></property>
+  <property name="user-table" value="development.user_"></property>
+  <property name="group-name-column" description="null" value="id_group"></property>
+  <property name="password-encryption-algorithm" value="SHA-256"></property>
+  <property name="user-name-column" description="null" value="email"></property>
+</auth-realm>
 ```

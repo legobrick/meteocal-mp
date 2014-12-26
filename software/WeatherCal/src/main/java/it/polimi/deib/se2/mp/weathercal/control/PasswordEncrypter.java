@@ -21,7 +21,7 @@ public class PasswordEncrypter {
     public static String encryptPassword(String password) {
         String encPass = null;
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes("UTF-8"));
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < hash.length; i++) {

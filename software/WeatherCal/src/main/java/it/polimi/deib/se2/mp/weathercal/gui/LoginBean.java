@@ -25,7 +25,7 @@ public class LoginBean {
     @Inject
     private Logger logger;
 
-    private String username;
+    private String email;
     private String password;
 
     public LoginBean() {
@@ -40,24 +40,24 @@ public class LoginBean {
     }
 
     /**
-     * @return the username
+     * @return the email
      */
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * @param username the username to set
+     * @param email the email to set
      */
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {
-            request.login(this.username, this.password);
+            request.login(this.email, this.password);
             return "/user_page";
         } catch (ServletException e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login Failed","Login Failed"));

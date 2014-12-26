@@ -63,8 +63,8 @@ public class User implements Serializable {
     private String lastName;
     @Basic(optional = false)
     @NotNull(message = "May not be empty")
-    @Size(min = 1, max = 128)
-    @Column(name = "password", nullable = false, length = 128)
+    @Size(min = 1, max = 64)
+    @Column(name = "password", nullable = false, length = 64)
     private String password;
     @Basic(optional = false)
     @NotNull(message = "May not be empty")
