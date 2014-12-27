@@ -11,6 +11,7 @@ import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 
 /**
  * @author paolo
@@ -22,6 +23,9 @@ public class RegistrationBean implements Serializable{
 
     @EJB
     private UserManager um;
+    
+    @ManagedProperty(value="#{loginBean}")
+    private LoginBean loginBean;
 
     private User user;
 
@@ -41,7 +45,7 @@ public class RegistrationBean implements Serializable{
 
     public String register() {
         um.save(user);
-        return "user_page?faces-redirect=true";
+        return "";
     }
 
 }

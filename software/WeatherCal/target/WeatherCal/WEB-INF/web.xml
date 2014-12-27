@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-	 version="3.1">
-    
-      <context-param>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
-     <context-param>
+    <context-param>
         <param-name>primefaces.THEME</param-name>
         <param-value>bootstrap</param-value>
     </context-param>
@@ -19,6 +14,21 @@
         </param-name>
         <param-value>true</param-value>
     </context-param>
+    <filter>
+        <filter-name>AnonymousFilter</filter-name>
+        <filter-class>it.polimi.deib.se2.mp.weathercal.filters.AnonymousFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AnonymousFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>/login.xhtml</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -28,8 +38,7 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    
-     <welcome-file-list>
+    <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
     <session-config>
@@ -45,14 +54,18 @@
             <form-error-page>/index.xhtml?error=true</form-error-page>
         </form-login-config>
     </login-config>
-    <security-constraint>
-        <web-resource-collection>
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>it.polimi.deib.se2.mp.weathercal.filters.LoginFilter</filter-class>
+    </filter>
+    <!--    <security-constraint>
+                <web-resource-collection>
             <web-resource-name>Logged User</web-resource-name>
             <description/>
             <url-pattern>/user/*</url-pattern>
         </web-resource-collection>
-        <auth-constraint>
+                <auth-constraint>
             <role-name>USERS</role-name>
         </auth-constraint>
-    </security-constraint>
+    </security-constraint>-->
 </web-app>
