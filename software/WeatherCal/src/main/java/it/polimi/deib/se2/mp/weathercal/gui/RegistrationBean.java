@@ -23,9 +23,6 @@ public class RegistrationBean implements Serializable{
 
     @EJB
     private UserManager um;
-    
-    @ManagedProperty(value="#{loginBean}")
-    private LoginBean loginBean;
 
     private User user;
 

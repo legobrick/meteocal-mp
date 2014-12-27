@@ -26,7 +26,8 @@
 
 
         <div style="float:left; width:70%;height:600px;">
-            <h:form>
+          <p:commandButton value="New Event +" action="#{registrationBean.register()}" style="float:left; width:130px;margin-top:5px;margin-left:20px; height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
+           <h:form>
 
 
                 <h:panelGrid style="width:100%;">
@@ -79,96 +80,9 @@
                 <div style="margin-top:50px;margin-rigth:10px">
                     <p:outputLabel value="Prossimi Eventi" style="font-size:35px;color:rgb(29,129,201); margin-left:13%"/>
                     <p:dataScroller value="cia" var="car" chunkSize="10" style="margin-right:10px">
-
                     </p:dataScroller>
                 </div>
-
             </h:form>
-
-        <div style="float: left;width: 60%; ">
-            <p:graphicImage value="resources/img/rainsunny.png" style="width:80%;margin-bottom:100px" />
-        </div>
-        <div style="float:right; width:40%; height:400px; margin-top:20px">
-            <p:outputLabel value="Sign Up" style="float:left; margin-top:10px; font-size:50px; margin-left:10px; width:100%; height:10px; color:rgb(29,129,201)"/>
-            <div style="float:left; width:100%; margin-top:50px"> 
-                <h:form style="width:100%">
-                    <div class="ui-grid ui-grid-responsive">
-                        <h:panelGroup id="reg_form_content" class="">
-                            <!--
-                            <div class="ui-grid-row" >
-                                <div class="ui-grid-col-2" style="width:50%" > <p:inputText placeholder="First Name" style="width:90%; height:30px; font-size:20px; margin:10px" /></div>
-                                <div class="ui-grid-col-2" style="width:50%" > <p:inputText placeholder="Surname"  style="width:90%; height:30px; font-size:20px; margin:10px"  /></div>
-                            </div>
-                            <div class="ui-grid-row" >
-                                <div class="ui-grid-col-1" style="width:100%" > <p:inputText placeholder="E-mail" style="width:95%; height:30px; font-size:20px; margin:10px  " /></div>
-                            </div>
-                            <div class="ui-grid-row" >
-                                <div class="ui-grid-col-1" style="width:100%" > <p:inputText placeholder="Username" style="width:95%; height:30px; font-size:20px; margin:10px  " /></div>
-                            </div>
-                            <div class="ui-grid-row" >
-                                <div class="ui-grid-col-2" style="width:50%" > <p:password placeholder="Password" style="width:90%; height:30px; font-size:20px; margin:10px" /></div>
-                                <div class="ui-grid-col-2" style="width:50%" > <p:password placeholder="Repeat Password"  style="width:90%; height:30px; font-size:20px; margin:10px"  /></div>
-                            </div>
-                            -->
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:inputText id="name" placeholder="First Name" style="width:90%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.firstName}" required="true"/>
-                                </div>
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:message id="name_msg" for="name"/>
-                                </div>
-                            </div>
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:inputText id="surname" placeholder="Surname" style="width:90%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.lastName}" required="true"/>
-                                </div>
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:message id="surname_msg" for="surname"/>
-                                </div>
-                            </div>
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:inputText id="email" placeholder="E-mail" style="width:95%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.email}" required="true"/>
-                                </div>
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:message id="email_msg" for="email"/>
-                                </div>
-                            </div>
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:inputText id="username" placeholder="Username" style="width:95%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.username}" required="true"/>
-                                </div>
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:message id="username_msg" for="username"/>
-                                </div>
-                            </div>
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:password id="pwd" placeholder="Password" style="width:90%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" match="pwd2" required="true"/>
-                                </div>
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:message id="psw_msg" for="pwd"/>
-                                </div>
-                            </div>
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:password id="pwd2" placeholder="Repeat Password" style="width:90%; height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" required="true"/>
-                                </div>
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:message id="psw2_msg" for="pwd2"/>
-                                </div>
-                            </div>
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-2" style="width:50%">
-                                    <p:commandButton update="reg_form_content" action="#{registrationBean.register()}" value="Sign Up" style="width:80%; font-size:30px; color:#ffffff; background-color:rgb(29,129,201);border-color:rgb(29,129,201);border-radius:5px; margin:10px"></p:commandButton>
-                                </div>
-                                <div class="ui-grid-col-2" style="width:50%">
-                                </div>
-                            </div>
-                        </h:panelGroup>
-                    </div> 
-                </h:form>
-            </div>
         </div>
     </h:body>
 </html>
