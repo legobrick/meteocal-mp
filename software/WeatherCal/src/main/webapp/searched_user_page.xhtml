@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>User Page</title>
+    </h:head>
+   <h:body  style="background-color:rgb(245,240,230)">
+       <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
+
+          <p:outputLabel value="WeatherCal" style="font-size:60px; margin-left:25px;margin-top:20px"  />
+          
+           <div style="float:right; width:30%; ">
+       
+               <div style="margin:25px 25px 25px 0px">     
+    <h:commandButton value="Notifications" style="float:left; width:40%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
+    <h:commandButton value="Logout" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
+   </div>
+   </div>
+          
+  </p:outputPanel>
+       
+       
+       
+       <div style="float:left; width:70%;height:600px;">
+          <h:form>
+
+ 
+    <h:panelGrid style="width:100%;">
+        <h3 style="margin-top: 0"></h3>
+        <p:schedule id="schedule" value="#{scheduleView.eventModel}" style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)" widgetVar="myschedule" timeZone="GMT+2">
+ 
+          </p:schedule>
+        </h:panelGrid>
+          </h:form>
+   
+           
+           
+       </div>
+       
+       
+       
+       
+       
+       <div style="float:right; width:30%;height:600px;background-color:#F5DEB3;box-shadow: -3px 4px 5px rgb(192,192,192);">
+           <div class="ui-grid-responsive" style="width:300px; color:rgb(29,129,201); font-size:20px;margin-top:20px;margin-left: 10px">
+             
+                 <div class="ui-grid-row" style="font-size:30px;">     Personal Info</div>
+                
+                 <div class="ui-grid-row" style="margin-top:40px;"><div class="ui-grid-col-2" style="width:90px">Name:</div><div class="ui-grid-col-2" style="width:180px">Search user;</div> </div>
+                     <div class="ui-grid-row" style="margin-top:7px;"><div class="ui-grid-col-2" style=" width:90px">Surname:</div><div class="ui-grid-col-2" style="width:180px">Search Surname;</div></div>
+                       <div class="ui-grid-row" style="margin-top:7px;"><div class="ui-grid-col-2" style="width:90px">Email:</div><div class="ui-grid-col-2" style="width:180px">Search email;</div></div>
+               
+           </div> 
+           
+      
+       
+       
+       
+       </div>
+       
+       
+       
+       
+    </h:body>
+</html>
+
