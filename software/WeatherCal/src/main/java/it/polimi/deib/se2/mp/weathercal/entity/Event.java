@@ -5,11 +5,14 @@
  */
 package it.polimi.deib.se2.mp.weathercal.entity;
 
+import it.polimi.deib.se2.mp.weathercal.util.LocalDateTimePersistenceConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -69,9 +72,18 @@ public class Event implements Serializable {
     private boolean isOutdoor;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "when_t", nullable = false)
+    @Column(name = "start", nullable = false,
+        columnDefinition= "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date whenT;
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime start;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "end", nullable = false,
+        columnDefinition= "TIMESTAMP WITH TIME ZONE")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime end;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 300)
@@ -88,12 +100,13 @@ public class Event implements Serializable {
         this.id = id;
     }
 
-    public Event(Long id, boolean isPublic, String placeDescription, boolean isOutdoor, Date whenT, String name) {
+    public Event(Long id, boolean isPublic, String placeDescription, boolean isOutdoor, LocalDateTime start, LocalDateTime end, String name) {
         this.id = id;
         this.isPublic = isPublic;
         this.placeDescription = placeDescription;
         this.isOutdoor = isOutdoor;
-        this.whenT = whenT;
+        this.start = start;
+        this.end = end;
         this.name = name;
     }
 
@@ -145,14 +158,6 @@ public class Event implements Serializable {
         this.isOutdoor = isOutdoor;
     }
 
-    public Date getWhenT() {
-        return whenT;
-    }
-
-    public void setWhenT(Date whenT) {
-        this.whenT = whenT;
-    }
-
     public String getName() {
         return name;
     }
@@ -192,6 +197,34 @@ public class Event implements Serializable {
     @Override
     public String toString() {
         return "it.polimi.deib.se2.mp.entity.Event[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the start
+     */
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    /**
+     * @param start the start to set
+     */
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
+
+    /**
+     * @return the end
+     */
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    /**
+     * @param end the end to set
+     */
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
     }
     
 }
