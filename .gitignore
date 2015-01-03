@@ -278,3 +278,12 @@ sympy-plots-for-*.tex/
 
 *.asta.lock
 *.DS_Store
+
+#Maven ignores
+
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
