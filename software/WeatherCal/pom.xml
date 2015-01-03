@@ -19,6 +19,11 @@
             <version>5.1</version>
         </dependency>
         <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>bootstrap</artifactId>
             <version>1.0.10</version>
@@ -57,7 +62,7 @@
     </dependencies>
     <build>
         <finalName>WeatherCal</finalName>
-<!--        <plugins>
+        <!--<plugins>
             <plugin>
                 <groupId>org.glassfish.maven.plugin</groupId>
                 <artifactId>maven-glassfish-plugin</artifactId>
