@@ -7,6 +7,13 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>User Page</title>
+        <h:outputStylesheet name="webjars/font-awesome/4.2.0/css/font-awesome.css"/>
+        <style type="text/css">
+            .ui-icon.fa {
+                text-indent:0px;
+                background-image:none;
+            }
+        </style>
     </h:head>
     <h:body  style="background-color:rgb(245,240,230)">
         <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
@@ -17,7 +24,7 @@
 
                 <div style="margin:25px 25px 25px 0px">     
                     <h:commandButton value="Notifications" style="float:left; width:40%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
-                    <h:commandButton value="Logout" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
+                    <h:commandButton value="Logout" action="#{loginBean.logout()}" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
                 </div>
             </div>
 
@@ -26,14 +33,22 @@
 
 
         <div style="float:left; width:70%;height:600px;">
-          <p:commandButton value="New Event +" action="#{registrationBean.register()}" style="float:left; width:130px;margin-top:5px;margin-left:20px; height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
+           <p:commandButton action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="width:8.5em; height:2em; margin-top:5px; margin-left:20px; font-size:1em;">
+           </p:commandButton>
            <h:form>
 
 
                 <h:panelGrid style="width:100%;">
                     <h3 style="margin-top: 0"></h3>
-                    <p:schedule id="schedule" value="#{scheduleView.eventModel}" style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)" widgetVar="myschedule" timeZone="GMT+2">
-
+                    <p:schedule
+                        id="schedule"
+                        value="#{scheduleView.eventModel}"
+                        style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
+                        widgetVar="myschedule"
+                        timeZone="GMT+1"
+                        draggable="false"
+                        resizable="false"
+                        firstHour="0" >
                     </p:schedule>
                 </h:panelGrid>
             </h:form>
