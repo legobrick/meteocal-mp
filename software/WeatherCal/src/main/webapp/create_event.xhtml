@@ -7,6 +7,8 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>New Event</title>
+        
+        <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
     </h:head>
     <h:body  style="background-color:rgb(245,240,230)">
         <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
@@ -17,7 +19,7 @@
 
                 <div style="margin:25px 25px 25px 0px">     
                     <h:commandButton value="Notifications" style="float:left; width:40%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
-                    <h:commandButton value="Logout" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
+                    <h:commandButton value="Logout" action="#{loginBean.logout()}" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
                 </div>
             </div>
 
@@ -33,7 +35,7 @@
                         <div class="ui-grid-row" style="margin-top:5px;width:300px"  >
 
                             <div style="float:left;width:87px">Name:</div>
-                            <p:inputText placeholder="Name" style="height:20px;float:right; width:210px; font-size:15px " />
+                            <p:inputText value="#{eventBean.event.name}" placeholder="Name" style="height:20px;float:right; width:210px; font-size:15px " />
 
 
                         </div>
@@ -42,37 +44,109 @@
                             <div style="float:left;width:87px">Address:</div>
 
 
-                            <p:inputText placeholder="Address" style=" height:20px;float:right;width:210px; font-size:15px " />
+                            <p:inputText value="#{eventBean.event.placeDescription}" id="address" placeholder="Address" style=" height:20px;float:right;width:210px; font-size:15px " />
+                            <p:commandButton id="go" value="Go"></p:commandButton>
+                            <script type="text/javascript">
+                            //<![CDATA[
+                                var myGeocoder = new google.maps.Geocoder();
+                                var marker = new google.maps.Marker();
+                                var delay = (function() {
+                                    var timer = 0;
+                                    return function(callback, ms) {
+                                        clearTimeout (timer);
+                                        timer = setTimeout(callback, ms);
+                                    };
+                                })();
+                                var store = {
+                                    _map: null,
+                                    get map(){
+                                        this._map === null && (this._map = PF('geoMap').map);
+                                        return this._map;
+                                    },
+                                    set map(arg){
+                                    }
+                                }
+                                var geocode = function() {
+                                    myGeocoder.geocode({
+                                        address: $('[id$=address]').val()
+                                    }, function(results, status){
+                                        if (status === google.maps.GeocoderStatus.OK)
+                                        {
+                                            $('[id$=latitude]').val(results[0].geometry.location.lat());
+                                            $('[id$=longitude]').val(results[0].geometry.location.lng());
+                                            var bounds;
+                                            bounds = new google.maps.LatLngBounds(
+                                                results[0].geometry.viewport.getSouthWest(), 
+                                                results[0].geometry.viewport.getNorthEast()
+                                            );
+                                            store.map.__proto__.fitBounds.call(store.map, bounds);
+                                            marker.setValues({
+                                                position: results[0].geometry.location,
+                                                map: store.map,
+                                                title: results[0].formatted_address,
+                                                draggable: false,
+                                                animation: google.maps.Animation.BOUNCE
+                                            });
+                                            delay(function(){
+                                                marker.setAnimation(null);
+                                            }, 500);
+                                        }
+                                    });
+                                }
+                                $('[id$=address]').keyup(function() {
+                                    delay(geocode, 8000);
+                                });
+                                $('[id$=go]').on('click', geocode);
+                            //]]>
+                            </script>
+                            <p:inputText value="#{eventBean.event.placeLatitude}" style="display:none;" id="latitude" widgetVar="latitude"></p:inputText>
+                            <p:inputText value="#{eventBean.event.placeLongitude}" style="display:none;" id="longitude" widgetVar="longitude"></p:inputText>
 
                         </div>
+                    </div>
+                    <div class="ui-grid-col-4" style="width:600px">
+                        <div class="ui-grid-row" style="height:400px">
+                            <p:gmap id="geoGmap" widgetVar="geoMap" center="#{eventBean.centerGeoMap}" zoom="16" type="ROADMAP" style="width:100%;height:100%">
+                            </p:gmap>
+                        </div>
+                    </div>
+                    <div class="ui-grid-col-2" style="width:300px;">
 
                         <div class="ui-grid-row" style="margin-top:5px;height:120px;"  >
 
                             <div style="float:left;width:87px">Description:</div>
-                            <p:inputTextarea placeholder="Description" style="width:200px; height:100px;  font-size:15px " />
+                            <p:inputTextarea value="#{eventBean.event.description}" placeholder="Description" style="width:200px; height:100px;  font-size:15px " />
 
 
                         </div>
 
                         <div class="ui-grid-row" style="width:300px" >
                             <div style="width:87px;float:left;">Start Date:</div>
-                            <p:inputText value="#{dateController.date}" id="start_date" class="start"   placeholder="Start date" style="width:205px"/>
+                            <p:inputText value="#{eventBean.event.name}" id="start_date" class="start"   placeholder="Start date" style="width:205px">
+                                <f:convertDateTime pattern="d/M/yyyy" />
+                            </p:inputText>
 
                         </div>
                         <div class="ui-grid-row" style="margin-top:5px" >
                             <div style="width:87px;float:left;">Ende Date:</div>
-                            <p:inputText value="#{dateController.date}" id="end_date" class="end"   placeholder="End date" style="float:right;width:205px"/>
+                            <p:inputText value="#{dateController.date}" id="end_date" class="end"   placeholder="End date" style="float:right;width:205px">
+                                <f:convertDateTime pattern="d/M/yyyy" />
+                            </p:inputText>
                         </div>
                         <div class="ui-grid-row" style="margin-top:5px;width:300px"  >
                             <div class="ui-grid-col-2" style="width:150px" >
                                 <div style="float:left; width:87px">Start:</div>
 
-                                <p:inputText placeholder="7:00" id="start_time" class="start" style=" width:50px;  font-size:15px " />
+                                <p:inputText placeholder="7:00" id="start_time" class="start" style=" width:50px;  font-size:15px ">
+                                    <f:convertDateTime pattern="H:m" />
+                                </p:inputText>
                             </div>
                             <div class="ui-grid-col-2" style="width:150px" >
                                 End:
 
-                                <p:inputText placeholder="7:00" id="end_time" class="end" style=" width:50px; float:right;font-size:15px " />
+                                <p:inputText placeholder="7:00" id="end_time" class="end" style=" width:50px; float:right;font-size:15px ">
+                                    <f:convertDateTime pattern="H:m" />
+                                </p:inputText>
 
                                 <h:outputScript name="js/datepair.js" />
                                 <h:outputScript name="js/jquery.datepair.js" />
