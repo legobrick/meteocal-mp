@@ -58,17 +58,27 @@ public class LoginBean {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {
             request.login(this.email, this.password);
-            return "/index?faces-redirect=true";
+            return "/user_page?faces-redirect=true";
         } catch (ServletException e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login Failed","Login Failed"));
             logger.log(Level.SEVERE,"Login Failed");
             return null;
         }
     }
-    public String logout() {
+    public String logout() throws ServletException {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        request.getSession().invalidate();
-        return "/login?faces-redirect=true";
+ 
+        
+    
+               request.getSession().invalidate();
+               request.logout();
+             logger.log(Level.INFO, "User Logged out");
+               return "/index?faces-redirect=true";
+       
+        
+        
+        
+        
     }
 }
