@@ -9,6 +9,7 @@ import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import java.io.IOException;
 
 /**
  *
@@ -27,5 +28,8 @@ public class UserBean{
     public String getUsername() {
         return um.getLoggedUser().getUsername();
     }
-
+ public String searchUser() throws IOException{
+        return "searched_user_page?faces-redirect=true";
+//        FacesContext.getCurrentInstance().getExternalContext().redirect("create_event");
+    }
 }
