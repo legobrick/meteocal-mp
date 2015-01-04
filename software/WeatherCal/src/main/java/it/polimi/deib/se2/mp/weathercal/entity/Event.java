@@ -42,7 +42,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Event.findByIsPublic", query = "SELECT e FROM Event e WHERE e.isPublic = :isPublic"),
     @NamedQuery(name = "Event.findByPlaceDescription", query = "SELECT e FROM Event e WHERE e.placeDescription = :placeDescription"),
     @NamedQuery(name = "Event.findByIsOutdoor", query = "SELECT e FROM Event e WHERE e.isOutdoor = :isOutdoor"),
-    @NamedQuery(name = "Event.findByWhenT", query = "SELECT e FROM Event e WHERE e.whenT = :whenT"),
+    @NamedQuery(name = "Event.findByStart", query = "SELECT e FROM Event e WHERE e.start = :start"),
+    @NamedQuery(name = "Event.findByEnd", query = "SELECT e FROM Event e WHERE e.end = :end"),
     @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
     @NamedQuery(name = "Event.findByDescription", query = "SELECT e FROM Event e WHERE e.description = :description")})
 public class Event implements Serializable {
@@ -72,14 +73,14 @@ public class Event implements Serializable {
     private boolean isOutdoor;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "start", nullable = false,
+    @Column(name = "start_t", nullable = false,
         columnDefinition= "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime start;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "end", nullable = false,
+    @Column(name = "end_t", nullable = false,
         columnDefinition= "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
     @Convert(converter = LocalDateTimePersistenceConverter.class)
