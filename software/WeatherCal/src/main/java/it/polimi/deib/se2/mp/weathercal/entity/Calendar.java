@@ -47,7 +47,7 @@ public class Calendar implements Serializable {
     @NotNull
     @Column(name = "is_public", nullable = false)
     private boolean isPublic;
-    @JoinTable(name = "user_has_calendar", joinColumns = {
+    @JoinTable(schema = "development", name = "user_has_calendar", joinColumns = {
         @JoinColumn(name = "id_calendar", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
         @JoinColumn(name = "id_user", referencedColumnName = "email", nullable = false)})
     @ManyToMany
