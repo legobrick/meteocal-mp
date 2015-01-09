@@ -9,7 +9,8 @@ import it.polimi.deib.se2.mp.weathercal.util.LocalDateTimePersistenceConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -20,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -54,9 +56,11 @@ public class Event implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "place_latitude", precision = 9, scale = 6)
+    @Column(name = "place_latitude", precision = 9, scale = 6, nullable = false)
+    @NotNull
     private BigDecimal placeLatitude;
-    @Column(name = "place_longitude", precision = 9, scale = 6)
+    @Column(name = "place_longitude", precision = 9, scale = 6, nullable = false)
+    @NotNull
     private BigDecimal placeLongitude;
     @Basic(optional = false)
     @NotNull
@@ -93,7 +97,11 @@ public class Event implements Serializable {
     @Lob
     @Column(name = "description", nullable=false)
     private String description;
-
+    @OneToMany(mappedBy = "event")
+    private Collection<WeatherConstraint> valueConstraints;
+    @OneToMany(mappedBy = "event")
+    private Collection<WeatherStateConstraint> stateConstraints;
+    
     public Event() {
     }
 
@@ -226,6 +234,34 @@ public class Event implements Serializable {
      */
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    /**
+     * @return the valueConstraints
+     */
+    public Collection<WeatherConstraint> getValueConstraints() {
+        return valueConstraints;
+    }
+
+    /**
+     * @param valueConstraints the valueConstraints to set
+     */
+    public void setValueConstraints(Collection<WeatherConstraint> valueConstraints) {
+        this.valueConstraints = valueConstraints;
+    }
+
+    /**
+     * @return the stateConstraints
+     */
+    public Collection<WeatherStateConstraint> getStateConstraints() {
+        return stateConstraints;
+    }
+
+    /**
+     * @param stateConstraints the stateConstraints to set
+     */
+    public void setStateConstraints(Collection<WeatherStateConstraint> stateConstraints) {
+        this.stateConstraints = stateConstraints;
     }
     
 }

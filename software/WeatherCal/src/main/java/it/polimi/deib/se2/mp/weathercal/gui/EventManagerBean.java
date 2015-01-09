@@ -5,7 +5,11 @@
  */
 package it.polimi.deib.se2.mp.weathercal.gui;
 
+import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
+import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import java.io.IOException;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 
@@ -17,6 +21,8 @@ import javax.enterprise.context.RequestScoped;
 @RequestScoped
 public class EventManagerBean {
 
+    @EJB
+    EventManager em;
     /**
      * Creates a new instance of EventManagerBean
      */
