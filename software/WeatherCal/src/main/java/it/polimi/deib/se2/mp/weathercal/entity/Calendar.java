@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "calendar", schema = "development")
 @XmlRootElement
 @NamedQueries({
+   // @NamedQuery(name = "Calendar.findByEmail", query = "SELECT c FROM user_has_calendar c where c.id_calendar =:id"),
     @NamedQuery(name = "Calendar.findAll", query = "SELECT c FROM Calendar c"),
     @NamedQuery(name = "Calendar.findById", query = "SELECT c FROM Calendar c WHERE c.id = :id"),
     @NamedQuery(name = "Calendar.findByIsPublic", query = "SELECT c FROM Calendar c WHERE c.isPublic = :isPublic")})

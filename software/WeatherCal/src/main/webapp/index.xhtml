@@ -66,7 +66,7 @@
                 border-collapse: collapse;
                 border-spacing: 0;
             }
-		
+
             html, body {
                 height: 100%;
                 width: 100%;
@@ -76,7 +76,7 @@
                 margin:0;
                 padding:0;
                 display: table;
-/*                line-height: 1.5em;*/
+                /*                line-height: 1.5em;*/
                 min-width: 390px;
                 font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
                 font-size: 14px;
@@ -85,14 +85,14 @@
                 background-color: #FFF;
                 transition: all 0.3s ease-in-out 0s;
             }
-            
+
             * {
                 box-sizing: border-box;
             }
 
             b{font-size: 110%;}
             em{color: red;}
-            
+
             #head {
                 width:100%;
                 height:6em;
@@ -101,7 +101,7 @@
                 box-shadow: 0px 4px 5px rgb(192,192,192);
                 position: relative;
             }
-            
+
             #title {
                 float: left;
                 font-size:3.5em;
@@ -109,16 +109,16 @@
                 margin-left:25px;
                 padding-top: .2em;
             }
-            
+
             #title h1 {
                 text-shadow: 2px 2px 3px rgba(35, 47, 82, 0.49);
             }
-            
+
             #main_buttons {
                 float: right;
                 margin: 1.3em;
             }
-            
+
             #main_buttons ul {
                 float: left;
                 width: 100%;
@@ -126,22 +126,22 @@
                 margin: 0;
                 list-style-type: none;
             }
-            
+
             #main_buttons li {
                 display: inline;
                 padding: 0.2em 1em;
                 float: left;
             }
-            
+
             #main_buttons li>* {
                 width: 12em;
                 height: 2.7em;
                 border-radius: 5px;
                 border-width: 0px;
             }
-            
+
             /* dio porco primefaces di merda: regole per pulsanti */
-            
+
             [id$=notification_button] {
                 background-color: rgb(30,130,201);
                 color:rgba(255, 255, 255, 0.75);
@@ -155,7 +155,7 @@
                 background-image:-moz-linear-gradient(top, #90C4FF, rgb(30,130,201));
                 text-shadow: 0.03em 0 .03em rgba(255, 255, 255, 0.87);
             }
-            
+
             [id$=logout_button] {
                 color:rgba(255, 255, 255, 0.75);
                 background-color:#e2173d;
@@ -169,7 +169,7 @@
                 background-image:-moz-linear-gradient(top, #FF8888, #e2173d);
                 text-shadow: 0.03em 0 .03em rgba(255, 255, 255, 0.87);
             }
-            
+
             .nontext-center {
                 margin-left: auto;
                 margin-right: auto;
@@ -221,7 +221,7 @@
                 overflow: hidden;
                 position: relative;
             }
-            
+
             .footer{
                 margin: 0px auto;
                 color: #F4F4F4;
@@ -231,7 +231,7 @@
                 position: relative;
                 background-color: #C7C7C7;
             }
-            
+
             .footer>div {
                 color: #777777;
                 font-style: italic;
@@ -239,36 +239,36 @@
                 font-size: .9em;
                 padding-top: .4em;
             }
-            
+
             .footer a {
                 color: #555555;
             }
-            
+
             #wrap:after, #contentsection:after, #rightcolumn:after, .footer:after {
                 clear: both;
             }
-            
+
 
             .innertube {
                 margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
                 margin-top: 0;
                 margin-top: .5em;
             }
-            
+
             div.ui-grid-responsive{
                 width:100%;
             }
-            
+
             .innertitle {
                 margin-bottom: .5em;
                 font-weight: 600;
             }
-            
+
             h2 {
                 color:rgb(29,129,201);
                 font-size: 2em;
             }
-            
+
             h3 {
                 font-size: 1.7em;
                 color:rgb(21,104,165);
@@ -299,20 +299,20 @@
                         <h:form>
 
 
-                             <h:panelGrid style="width:100%;">
-                                 <h3 style="margin-top: 0"></h3>
-                                 <p:schedule
-                                     id="schedule"
-                                     value="#{scheduleView.eventModel}"
-                                     style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
-                                     widgetVar="myschedule"
-                                     timeZone="GMT+1"
-                                     draggable="false"
-                                     resizable="false"
-                                     firstHour="0" >
-                                 </p:schedule>
-                             </h:panelGrid>
-                         </h:form>
+                            <h:panelGrid style="width:100%;">
+                                <h3 style="margin-top: 0"></h3>
+                                <p:schedule
+                                    id="schedule"
+                                    value="#{scheduleView.eventModel}"
+                                    style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
+                                    widgetVar="myschedule"
+                                    timeZone="GMT+1"
+                                    draggable="false"
+                                    resizable="false"
+                                    firstHour="0" >
+                                </p:schedule>
+                            </h:panelGrid>
+                        </h:form>
                     </ui:insert>
                 </div>
             </div>
@@ -322,10 +322,19 @@
                         <div class="ui-grid-row">
                             <h:form style="width:100%">
                                 <div class="ui-grid-col-1" style="width: 100%; padding-right: 92px; margin-right: -85px; margin-top: 2px;">
-                                    <p:inputText placeholder="Look for other users" style="border-radius:.6em; width: 100%;"/>
+                                    <p:autoComplete id="user" multiple="false" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
+                                                    var="user" itemLabel="#{user.email}" itemValue="#{user.email}"  forceSelection="true">
+                                        <p:column style="width:10%">
+                                            <h:outputText value="d" />
+                                        </p:column>
+
+                                        <p:column>
+                                            <h:outputText value="#{user.email}" />
+                                        </p:column>
+                                    </p:autoComplete>
                                 </div>
                                 <div class="ui-grid-col-1" style="width:78px;">
-                                    <p:commandButton value="Search" style=""></p:commandButton>
+                                    <p:commandButton value="Search" action="#{searchUser.searchUser()}" style=""></p:commandButton>
                                 </div>
                             </h:form>
                         </div>
@@ -343,8 +352,16 @@
                         </div>
                     </div>
                     <div style="margin-top:50px;margin-rigth:10px">
-                        <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" class="text-center">Next events</h3>
-                        <p:dataScroller value="cia" var="car" chunkSize="10" style="margin-right:10px">
+                        <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" value="" class="text-center">Next events</h3>
+                        <p:dataScroller value="#{eventManagerBean.allEventByAvailability('si')}" var="event" chunkSize="4" style="margin-right:10px">
+                            <p:outputPanel>
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputText value="#{event.description}" />
+                                    <h:outputText  style="font-weight: bold"/>
+
+
+                                </h:panelGrid>
+                            </p:outputPanel>
                         </p:dataScroller>
                     </div>
                 </div>
