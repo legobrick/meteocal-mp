@@ -9,287 +9,582 @@
         <title>New Event</title>
         
         <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+        <script type="text/javascript">
+        //<![CDATA[
+            var myGeocoder = new google.maps.Geocoder();
+            var marker = new google.maps.Marker();
+            var delay = (function() {
+                var timer = 0;
+                return function(callback, ms) {
+                    clearTimeout (timer);
+                    timer = setTimeout(callback, ms);
+                };
+            })();
+            var store = {
+                _map: null,
+                get map(){
+                    this._map === null && (this._map = PF('geoMap').map);
+                    return this._map;
+                },
+                set map(arg){
+                }
+            }
+            var geocode = function() {
+                myGeocoder.geocode({
+                    address: $('[id$=address]').val()
+                }, function(results, status){
+                    if (status === google.maps.GeocoderStatus.OK)
+                    {
+                        $('[id$=latitude]').val(results[0].geometry.location.lat());
+                        $('[id$=longitude]').val(results[0].geometry.location.lng());
+                        var bounds;
+                        bounds = new google.maps.LatLngBounds(
+                            results[0].geometry.viewport.getSouthWest(), 
+                            results[0].geometry.viewport.getNorthEast()
+                        );
+                        store.map.__proto__.fitBounds.call(store.map, bounds);
+                        marker.setValues({
+                            position: results[0].geometry.location,
+                            map: store.map,
+                            title: results[0].formatted_address,
+                            draggable: false,
+                            animation: google.maps.Animation.BOUNCE
+                        });
+                        delay(function(){
+                            marker.setAnimation(null);
+                        }, 500);
+                    }
+                });
+            }
+            $('[id$=address]').keyup(function() {
+                delay(geocode, 8000);
+            });
+            $('[id$=go]').on('click', geocode);
+        //]]>
+        </script>
+        <h:outputScript name="js/datepair.js" />
+        <h:outputScript name="js/jquery.datepair.js" />
+        <script type="text/javascript">
+            $(function(){
+                // initialize input widgets first
+                $('[id$=start_time],[id$=end_time]').timepicker({
+                    'showDuration': true,
+                    'timeFormat': 'HH:mm'
+                });
+
+                $('[id$=start_date],[id$=end_date]').datepicker({
+                    'format': 'd/m/yy',
+                    'autoclose': true
+                });
+
+                // initialize datepair
+                $('[id$=start_time],[id$=end_time],[id$=start_date],[id$=end_date]').datepair();
+            });
+        </script>
+        <style type="text/css">
+            /* http://meyerweb.com/eric/tools/css/reset/ 
+                v2.0 | 20110126
+                License: none (public domain)
+            */
+
+            html, body, div, span, applet, object, iframe,
+            h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+            a, abbr, acronym, address, big, cite, code,
+            del, dfn, em, img, ins, kbd, q, s, samp,
+            small, strike, strong, sub, sup, tt, var,
+            b, u, i, center,
+            dl, dt, dd, ol, ul, li,
+            fieldset, form, label, legend,
+            table, caption, tbody, tfoot, thead, tr, th, td,
+            article, aside, canvas, details, embed, 
+            figure, figcaption, footer, header, hgroup, 
+            menu, nav, output, ruby, section, summary,
+            time, mark, audio, video {
+                margin: 0;
+                padding: 0;
+                border: 0;
+                font-size: 100%;
+                font: inherit;
+                vertical-align: baseline;
+            }
+            /* HTML5 display-role reset for older browsers */
+            article, aside, details, figcaption, figure, 
+            footer, header, hgroup, menu, nav, section {
+                display: block;
+            }
+            body {
+                line-height: 1;
+            }
+            ol, ul {
+                list-style: none;
+            }
+            blockquote, q {
+                quotes: none;
+            }
+            blockquote:before, blockquote:after,
+            q:before, q:after {
+                content: '';
+                content: none;
+            }
+            table {
+                border-collapse: collapse;
+                border-spacing: 0;
+            }
+		
+            html, body {
+                height: 100%;
+                width: 100%;
+            }
+
+            body{
+                margin:0;
+                padding:0;
+                display: table;
+/*                line-height: 1.5em;*/
+                min-width: 390px;
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+                font-size: 14px;
+                line-height: 1.42857;
+                color: #333;
+                background-color: #FFF;
+                transition: all 0.3s ease-in-out 0s;
+            }
+            
+            * {
+                box-sizing: border-box;
+            }
+
+            b{font-size: 110%;}
+            em{color: red;}
+            
+            #head {
+                width:100%;
+                height:6em;
+                background-color:rgb(255,255,245);
+                color:rgb(29,129,201);
+                box-shadow: 0px 4px 5px rgb(192,192,192);
+                position: relative;
+            }
+            
+            #title {
+                float: left;
+                font-size:3.5em;
+                font-weight: 600;
+                margin-left:25px;
+                padding-top: .2em;
+            }
+            
+            #title h1 {
+                text-shadow: 2px 2px 3px rgba(35, 47, 82, 0.49);
+            }
+            
+            #main_buttons {
+                float: right;
+                margin: 1.3em;
+            }
+            
+            #main_buttons ul {
+                float: left;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                list-style-type: none;
+            }
+            
+            #main_buttons li {
+                display: inline;
+                padding: 0.2em 1em;
+                float: left;
+            }
+            
+            #main_buttons li>* {
+                width: 12em;
+                height: 2.7em;
+                border-radius: 5px;
+                border-width: 0px;
+            }
+            
+            /* dio porco primefaces di merda: regole per pulsanti */
+            
+            [id$=notification_button] {
+                background-color: rgb(30,130,201);
+                color:rgba(255, 255, 255, 0.75);
+                border-width:2px;
+                border-color:#e2173d;
+                background-image:-ms-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#90C4FF), to(rgb(30,130,201)));
+                background-image:-webkit-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:-o-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:-moz-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                text-shadow: 0.03em 0 .03em rgba(255, 255, 255, 0.87);
+            }
+            
+            [id$=logout_button] {
+                color:rgba(255, 255, 255, 0.75);
+                background-color:#e2173d;
+                border-width:2px;
+                border-color:#e2173d;
+                background-image:-ms-linear-gradient(top, #FF8888, #e2173d);
+                background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#FF8888), to(#e2173d));
+                background-image:-webkit-linear-gradient(top, #FF8888, #e2173d);
+                background-image:-o-linear-gradient(top, #FF8888, #e2173d);
+                background-image:linear-gradient(top, #FF8888, #e2173d);
+                background-image:-moz-linear-gradient(top, #FF8888, #e2173d);
+                text-shadow: 0.03em 0 .03em rgba(255, 255, 255, 0.87);
+            }
+            
+            .nontext-center {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .text-center {
+                text-align: center;
+            }
+
+            #container{
+                display:table;
+                width: 100%;
+                height: 100%;
+                margin: 0 0 -48px;
+                padding: 0 0 48px;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                background: #eee;
+                transition: width 0.4s ease 0s;
+            }
+
+            #container .column {
+                display: table-cell;
+            }
+
+            #topsection{
+                background: #EAEAEA;
+                height: 90px; /*Height of top section*/
+            }
+
+            #topsection h1{
+                margin: 0;
+                padding-top: 15px;
+            }
+
+            #content{
+                padding: 10px 20px;       /* CC padding */
+                overflow-x: auto;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            #nav{
+                width: 350px;             /* RC width */
+                min-width: 300px;
+                padding-left: 10px;          /* RC padding */
+                transition: all 0.3s ease-in-out 0s;
+                background: #F5DEB3;
+                box-shadow: -3px 4px 5px rgb(192,192,192);
+                overflow: hidden;
+                position: relative;
+            }
+            
+            .footer{
+                margin: 0px auto;
+                color: #F4F4F4;
+                border-top: 1px solid #ccc;
+                width: 100%;
+                height: 48px;
+                position: relative;
+                background-color: #C7C7C7;
+            }
+            
+            .footer>div {
+                color: #777777;
+                font-style: italic;
+                font-family: helvetica;
+                font-size: .9em;
+                padding-top: .4em;
+            }
+            
+            .footer a {
+                color: #555555;
+            }
+            
+            #wrap:after, #contentsection:after, #rightcolumn:after, .footer:after {
+                clear: both;
+            }
+            
+
+            .innertube {
+                margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
+                margin-top: 0;
+            }
+            
+            div.ui-grid-responsive{
+                width:100%;
+            }
+            
+            .innertitle {
+                margin:.5em 0;
+                font-weight: 600;
+            }
+            
+            h2 {
+                color:rgb(29,129,201);
+                font-size: 2em;
+            }
+            
+            h3 {
+                font-size: 1.7em;
+                color:rgb(21,104,165);
+            }
+        </style>
     </h:head>
     <h:body  style="background-color:rgb(245,240,230)">
-        <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
+        <header id="head">
+            <div id="title"><h1>WeatherCal</h1></div>
+            <div id="main_buttons">
+                <ul>
+                    <li>
+                        <p:commandButton id="notification_button" styleClass="dio" value="Notifications"/>
+                    </li>
+                    <li>
+                        <p:commandButton id="logout_button" styleClass="gay" value="Logout" action="#{loginBean.logout()}"/>
+                    </li>
+                </ul>
+            </div>
+        </header>
 
-            <p:outputLabel value="WeatherCal" style="font-size:60px; margin-left:25px;margin-top:20px"  />
-
-            <div style="float:right; width:30%; ">
-
-                <div style="margin:25px 25px 25px 0px">     
-                    <p:commandButton value="Notifications" style="float:left; width:40%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
-                    <p:commandButton value="Logout" action="#{loginBean.logout()}" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
+        <div id="container">
+            <div id="content" class="column">
+                <div class="innertube">
+                    <div class="innertitle"><h2>Create new event</h2></div>
+                    <h:form style="color:rgb(29,129,201)">
+                        <div class="ui-grid ui-grid-responsive" style="float:left;">
+                            <div class="ui-grid-row" style="margin-top:5px;"  >
+                                <div class="ui-grid-col-2">
+                                    <div style="float:left;width:87px">Name:</div>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:inputText id="name" value="#{eventBean.event.name}" placeholder="Name" style="height:20px;float:right; width:210px; font-size:15px " />
+                                </div>
+                                <div class="ui-grid-col-2" style="width:50%">
+                                    <p:message id="name_msg" for="name"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row" style="margin-top:5px;">
+                                <div class="ui-grid-col-2">
+                                    <div style="float:left;">Address:</div>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:inputText value="#{eventBean.event.placeDescription}" id="address" placeholder="Address" style=" height:20px;float:right;width:210px; font-size:15px " />
+                                </div>
+                                <div class="ui-grid-col-1">
+                                    <p:commandButton id="go" value="Go"></p:commandButton>
+                                </div>
+                                <div class="ui-grid-col-1">
+                                    <p:message id="address_msg" for="address"/>
+                                </div>
+                                <p:inputText value="#{eventBean.event.placeLatitude}" style="display:none;" id="latitude" widgetVar="latitude"></p:inputText>
+                                <p:inputText value="#{eventBean.event.placeLongitude}" style="display:none;" id="longitude" widgetVar="longitude"></p:inputText>
+                            </div>
+                            <div class="ui-grid-row" style="height:400px">
+                                <p:gmap id="geoGmap" widgetVar="geoMap" center="#{eventBean.centerGeoMap}" zoom="16"
+                                        type="ROADMAP" style="min-width:600px;width:100%;height:100%">
+                                </p:gmap>
+                            </div>
+                        </div>
+                        <div class="ui-grid ui-grid-responsive" style="float:left;">
+                            <div class="ui-grid-row" style="margin-top:5px;"  >
+                                <div class="ui-grid-col-8">
+                                    <div class="ui-grid ui-grid-responsive" style="float:left;">
+                                        <div class="ui-grid-row" style="margin-top:5px;height:120px;"  >
+                                            <div class="ui-grid-col-2">
+                                                <div style="float:left;width:87px">Description:</div>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <p:inputTextarea id="description" value="#{eventBean.event.description}" placeholder="Description" style="width:200px; height:100px;  font-size:15px " />
+                                            </div>
+                                            <div class="ui-grid-col-2" style="width:50%">
+                                                <p:message id="desc_msg" for="description"/>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row" style="" >
+                                            <div class="ui-grid-col-2">
+                                                <div style="width:87px;">Start Date:</div>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <p:inputText value="#{eventBean.startDate}" id="start_date" class="start"   placeholder="Start date" style="width:205px">
+                                                    <f:convertDateTime pattern="d/M/yyyy" />
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-2" style="width:50%">
+                                                <p:message id="startd_msg" for="start_date"/>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row" style="margin-top:5px" >
+                                            <div class="ui-grid-col-2">
+                                                <div style="width:87px;">End Date:</div>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <p:inputText value="#{eventBean.endDate}" id="end_date" class="end"   placeholder="End date" style="width:205px">
+                                                    <f:convertDateTime pattern="d/M/yyyy" />
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-2" style="width:50%">
+                                                <p:message id="endd_msg" for="end_date"/>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row" style="margin-top:5px;"  >
+                                            <div class="ui-grid-col-1" >
+                                                <div style="width:87px">Start:</div>
+                                            </div>
+                                            <div class="ui-grid-col-2">
+                                                <p:inputText value="#{eventBean.startTime}" placeholder="7:00" id="start_time" class="start" style=" width:50px;  font-size:15px ">
+                                                    <f:convertDateTime pattern="H:m" />
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-1" >
+                                                End:
+                                            </div>
+                                            <div class="ui-grid-col-2" >
+                                                <p:inputText value="#{eventBean.endTime}" placeholder="8:00" id="end_time" class="end" style=" width:50px; font-size:15px ">
+                                                    <f:convertDateTime pattern="H:m" />
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-1">
+                                                <p:message id="startt_msg" for="start_time"/>
+                                            </div>
+                                            <div class="ui-grid-col-1">
+                                                <p:message id="endt_msg" for="end_time"/>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row" style="margin-top:20px">
+                                            <div class="ui-grid-col-2" style="width:87px">
+                                                Invite Friends:
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <div style="width:50px"><!-- value="#{autoCompleteView.selectedThemes}" completeMethod="#{autoCompleteView.completeTheme}"
+                                                                    var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme}"  -->
+                                                    <p:autoComplete placeholder="Invite user" id="invite" multiple="true" forceSelection="true">
+                                                        <p:column style="">
+                                                            <h:outputText styleClass="ui-theme ui-theme" />
+                                                        </p:column>
+                                                        <p:column>
+                                                            <h:outputText value="" />
+                                                        </p:column>
+                                                    </p:autoComplete>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-col-8">
+                                    <div class="ui-grid ui-grid-responsive" style="float:left;">
+                                        <div class="ui-grid-row" style="margin-top:5px;"  >
+                                            <div class="ui-grid-col-2" style="margin-top:5px;margin-left:5px">
+                                                  Weather Conditions:
+                                            </div>
+                                            <div class="ui-grid-col-2" style="width:150px">
+                                                <p:selectManyButton style="width:200px;font-size:13px" value="#{eventBean.states}">
+                                                    <f:selectItem itemLabel="Sun" itemValue="#{WeatherStateConstraint.SUN}" />
+                                                    <f:selectItem itemLabel="Rain" itemValue="#{WeatherStateConstraint.RAIN}" />
+                                                    <f:selectItem itemLabel="Fog" itemValue="#{WeatherStateConstraint.FOG}" />
+                                                    <f:selectItem itemLabel="Cloud" itemValue="#{WeatherStateConstraint.CLOUD}" />
+                                                    <f:selectItem itemLabel="Snow"  itemValue="#{WeatherStateConstraint.SNOW}" />
+                                                    <f:selectItem itemLabel="Wind"  itemValue="#{WeatherStateConstraint.WIND}" />
+                                                </p:selectManyButton>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row" style="width:350px;margin-top:5px">
+                                            <div class="ui-grid-col-2" style="width:150px">
+                                                <h:outputText id="output" value="Temperature: 0°" />
+                                            </div>
+                                            <h:inputHidden id="txt1" />
+                                            <div class="ui-grid-col-2" style="width:200px">
+                                                <div style="float:left;"> <p:slider for="txt1" display="output" style="width:150px;float:left " displayTemplate="Temperature: {value}°"/> </div>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row" style="width:350px;margin-top:5px">
+                                            <div class="ui-grid-col-4" style="width:75px;float:right">
+                                                <div style="float:right">Above</div>
+                                            </div>
+                                            <div class="ui-grid-col-4" style="width:75px">
+                                                <p:selectBooleanCheckbox style="float:right" />
+                                            </div>
+                                            <div class="ui-grid-col-4" style="width:75px">
+                                                <div style="float:right">Below</div>
+                                            </div>
+                                            <div class="ui-grid-col-4" style="width:75px;float:right">
+                                                <p:selectBooleanCheckbox style="float:right"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row" style="width:350px;margin-top:100px">
+                                <div class="ui-grid-col-2" style="width:175px"> 
+                                    <p:commandButton action="#{eventBean.save()}" value="Create" style="width:150px;height:40px; font-size:20px; background-color:rgb(29,129,201);border-radius:5px; margin:10px"></p:commandButton>
+                                </div>
+                                <div class="ui-grid-col-2" style="width:175px">
+                                    <p:commandButton  value="Cancel" style="width:150px;height:40px; font-size:20px; background-color:rgb(29,129,201);border-radius:5px; margin:10px"> </p:commandButton>
+                                </div> 
+                            </div>
+                        </div>
+                    </h:form>
+                    <div style="float:right; width:30%;height:600px;background-color:#F5DEB3;box-shadow: -3px 4px 5px rgb(192,192,192);">
+                        <h:form style="width:100%;margin:10px">
+                            <div class="ui-grid ui-grid-responsive" style="float:left; width:100%  ">
+                                <div class="ui-grid-row" style="margin-top:5px"  >
+                                    <div class="ui-grid-col-2" style="width:45%">
+                                        <p:inputText placeholder="Name" style="float:left; widht:50%; border-radius:25px "/>
+                                    </div>
+                                    <div class="ui-grid-col-2" style="width:50%; height:60px">
+                                        <div style="margin:10px">    <p:commandButton  action="#{userBean.searchUser()}" value="Search" style="float:right;width:50%;height:30px"></p:commandButton></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </h:form>
+                    </div>
                 </div>
             </div>
-
-        </p:outputPanel>
-
-
-
-        <div style="float:left; width:65%;height:600px; margin-left:25px; margin-right: 10px">
-            <div style="font-size:30px; margin-top:20px; color:rgb(29,129,201)"> Create new event</div>
-            <h:form style="color:rgb(29,129,201)">
-                <div class="ui-grid ui-grid-responsive" style="float:left; width:610px  ">
-                    <div class="ui-grid-col-2" style="width:300px">
-                        <div class="ui-grid-row" style="margin-top:5px;width:300px"  >
-
-                            <div style="float:left;width:87px">Name:</div>
-                            <p:inputText value="#{eventBean.event.name}" placeholder="Name" style="height:20px;float:right; width:210px; font-size:15px " />
-
-
-                        </div>
-                        <div class="ui-grid-row" style="margin-top:5px;width:300px"  >
-
-                            <div style="float:left;width:87px">Address:</div>
-
-
-                            <p:inputText value="#{eventBean.event.placeDescription}" id="address" placeholder="Address" style=" height:20px;float:right;width:210px; font-size:15px " />
-                            <p:commandButton id="go" value="Go"></p:commandButton>
-                            <script type="text/javascript">
-                            //<![CDATA[
-                                var myGeocoder = new google.maps.Geocoder();
-                                var marker = new google.maps.Marker();
-                                var delay = (function() {
-                                    var timer = 0;
-                                    return function(callback, ms) {
-                                        clearTimeout (timer);
-                                        timer = setTimeout(callback, ms);
-                                    };
-                                })();
-                                var store = {
-                                    _map: null,
-                                    get map(){
-                                        this._map === null && (this._map = PF('geoMap').map);
-                                        return this._map;
-                                    },
-                                    set map(arg){
-                                    }
-                                }
-                                var geocode = function() {
-                                    myGeocoder.geocode({
-                                        address: $('[id$=address]').val()
-                                    }, function(results, status){
-                                        if (status === google.maps.GeocoderStatus.OK)
-                                        {
-                                            $('[id$=latitude]').val(results[0].geometry.location.lat());
-                                            $('[id$=longitude]').val(results[0].geometry.location.lng());
-                                            var bounds;
-                                            bounds = new google.maps.LatLngBounds(
-                                                results[0].geometry.viewport.getSouthWest(), 
-                                                results[0].geometry.viewport.getNorthEast()
-                                            );
-                                            store.map.__proto__.fitBounds.call(store.map, bounds);
-                                            marker.setValues({
-                                                position: results[0].geometry.location,
-                                                map: store.map,
-                                                title: results[0].formatted_address,
-                                                draggable: false,
-                                                animation: google.maps.Animation.BOUNCE
-                                            });
-                                            delay(function(){
-                                                marker.setAnimation(null);
-                                            }, 500);
-                                        }
-                                    });
-                                }
-                                $('[id$=address]').keyup(function() {
-                                    delay(geocode, 8000);
-                                });
-                                $('[id$=go]').on('click', geocode);
-                            //]]>
-                            </script>
-                            <p:inputText value="#{eventBean.event.placeLatitude}" style="display:none;" id="latitude" widgetVar="latitude"></p:inputText>
-                            <p:inputText value="#{eventBean.event.placeLongitude}" style="display:none;" id="longitude" widgetVar="longitude"></p:inputText>
-
-                        </div>
-                    </div>
-                    <div class="ui-grid-col-4" style="width:600px">
-                        <div class="ui-grid-row" style="height:400px">
-                            <p:gmap id="geoGmap" widgetVar="geoMap" center="#{eventBean.centerGeoMap}" zoom="16" type="ROADMAP" style="width:100%;height:100%">
-                            </p:gmap>
-                        </div>
-                    </div>
-                    <div class="ui-grid-col-2" style="width:300px;">
-
-                        <div class="ui-grid-row" style="margin-top:5px;height:120px;"  >
-
-                            <div style="float:left;width:87px">Description:</div>
-                            <p:inputTextarea value="#{eventBean.event.description}" placeholder="Description" style="width:200px; height:100px;  font-size:15px " />
-
-
-                        </div>
-
-                        <div class="ui-grid-row" style="width:300px" >
-                            <div style="width:87px;float:left;">Start Date:</div>
-                            <p:inputText value="#{eventBean.event.name}" id="start_date" class="start"   placeholder="Start date" style="width:205px">
-                                <f:convertDateTime pattern="d/M/yyyy" />
-                            </p:inputText>
-
-                        </div>
-                        <div class="ui-grid-row" style="margin-top:5px" >
-                            <div style="width:87px;float:left;">Ende Date:</div>
-                            <p:inputText value="#{dateController.date}" id="end_date" class="end"   placeholder="End date" style="float:right;width:205px">
-                                <f:convertDateTime pattern="d/M/yyyy" />
-                            </p:inputText>
-                        </div>
-                        <div class="ui-grid-row" style="margin-top:5px;width:300px"  >
-                            <div class="ui-grid-col-2" style="width:150px" >
-                                <div style="float:left; width:87px">Start:</div>
-
-                                <p:inputText placeholder="7:00" id="start_time" class="start" style=" width:50px;  font-size:15px ">
-                                    <f:convertDateTime pattern="H:m" />
-                                </p:inputText>
-                            </div>
-                            <div class="ui-grid-col-2" style="width:150px" >
-                                End:
-
-                                <p:inputText placeholder="7:00" id="end_time" class="end" style=" width:50px; float:right;font-size:15px ">
-                                    <f:convertDateTime pattern="H:m" />
-                                </p:inputText>
-
-                                <h:outputScript name="js/datepair.js" />
-                                <h:outputScript name="js/jquery.datepair.js" />
-                                <script>
-                                    // initialize input widgets first
-                                    $('[id$=start_time],[id$=end_time]').timepicker({
-                                        'showDuration': true,
-                                        'timeFormat': 'HH:mm'
-                                    });
-
-                                    $('[id$=start_date],[id$=end_date]').datepicker({
-                                        'format': 'd/m/yy',
-                                        'autoclose': true
-                                    });
-
-                                    // initialize datepair
-                                    $('[id$=start_time],[id$=end_time],[id$=start_date],[id$=end_date]').datepair();
-                                </script>
-                            </div>
-                        </div>
-
-
-                        <div class="ui-grid-row" style="margin-top:20px">
-                            <div class="ui-grid-col-2" style="width:87px">
-                                Invite Friends:
-                            </div>
-                            <div class="ui-grid-col-2">
-                                <div style="width:50px">
-                                    <p:autoComplete placeholder="Invite user" id="themes" multiple="true" value="#{autoCompleteView.selectedThemes}" completeMethod="#{autoCompleteView.completeTheme}"
-                                                    var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme}"  forceSelection="true">
-                                        <p:column style="">
-                                            <h:outputText styleClass="ui-theme ui-theme-#{theme.name}" />
-                                        </p:column>
-
-                                        <p:column>
-                                            <h:outputText value="#{theme.displayName}" />
-                                        </p:column>
-                                    </p:autoComplete>
-
+            <div id="nav" class="column">
+                <div class="innertube">
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <h:form style="width:100%">
+                                <div class="ui-grid-col-1" style="width: 100%; padding-right: 92px; margin-right: -85px; margin-top: 2px;">
+                                    <p:inputText placeholder="Look for other users" style="border-radius:.6em; width: 100%;"/>
                                 </div>
-                            </div>
-                        </div>
-
-
-
-                    </div>
-                    <div class="ui-grid-col-2" style="margin-top:5px;margin-left:5px">
-                        <div class="ui-grid-row" style="width:350px;" >
-                            <div class="ui-grid-col-2" style="width:150px">
-                          Weather Conditions:
+                                <div class="ui-grid-col-1" style="width:78px;">
+                                    <p:commandButton value="Search" style=""></p:commandButton>
                                 </div>
-                            <div class="ui-grid-col-2" style="width:150px">
-                                  <p:selectManyButton style="width:200px;font-size:13px" value="#{selectManyView.selectedOptions}">
-                                <f:selectItem  itemLabel="Sun" itemValue="b" />
-                                <f:selectItem itemLabel="Rain" itemValue="u" />
-                                <f:selectItem itemLabel="Fog" itemValue="i" />
-                                <f:selectItem itemLabel="Cloud" itemValue="c" />
-                                <f:selectItem itemLabel="Snow"  itemValue="w" />
-                                <f:selectItem itemLabel="Wind"  itemValue="w" />
-                            </p:selectManyButton>
-                            </div>
-                        </div>
-                        <div class="ui-grid-row" style="width:350px;margin-top:5px">
-                            <div class="ui-grid-col-2" style="width:150px">
-                                <h:outputText id="output" value="Temperature: 0°" />
-                            </div>
-                            <h:inputHidden id="txt1" />
-                            <div class="ui-grid-col-2" style="width:200px">
-                                <div style="float:left;"> <p:slider for="txt1" display="output" style="width:150px;float:left " displayTemplate="Temperature: {value}°"/> </div>
-                            </div>
-                        </div>
-                        <div class="ui-grid-row" style="width:350px;margin-top:5px">
-                            <div class="ui-grid-col-4" style="width:75px;float:right"><div style="float:right">Above</div></div>
-                            <div class="ui-grid-col-4" style="width:75px">  <p:selectBooleanCheckbox value="#{selectBooleanView.value1}" style="float:right" /></div>
-                            <div class="ui-grid-col-4" style="width:75px"><div style="float:right">Below</div></div>
-                            <div class="ui-grid-col-4" style="width:75px;float:right">  <p:selectBooleanCheckbox value="#{selectBooleanView.value1}" style="float:right"/></div>
+                            </h:form>
                         </div>
                     </div>
-                    <div class="ui-grid-row" style="width:350px;margin-top:100px">
-                            <div class="ui-grid-col-2" style="width:175px">  <p:commandButton  value="Create" style="width:150px;height:40px; font-size:20px; background-color:rgb(29,129,201);border-radius:5px; margin:10px"></p:commandButton></div>
-                            <div class="ui-grid-col-2" style="width:175px"> <p:commandButton  value="Cancel" style="width:150px;height:40px; font-size:20px; background-color:rgb(29,129,201);border-radius:5px; margin:10px"> </p:commandButton></div> 
+                    <div class="ui-grid ui-grid-responsive" style="margin-right:10px; margin-top: 1em;">
+                        <div class="ui-grid-row" style="height:50px">
+                            <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" class="nontext-center">Weather Forecast</h3>
                         </div>
+                        <div class="ui-grid-row" style="height:50px; border-radius:10px;border-style:solid;border-width:3px;border-color:rgb(29,129,201)">
+                            <div class="ui-grid-col-5" style="background-color:#ff55ff;border-color:#ff3300;border-bottom-left-radius:10px;border-top-left-radius:10px"></div>
+                            <div class="ui-grid-col-5" style="background-color:#fff55f;"></div>
+                            <div class="ui-grid-col-5" style="background-color:#fdfd5f;"></div>
+                            <div class="ui-grid-col-5" style="background-color:#fffd5f;"></div>
+                            <div class="ui-grid-col-5" style="background-color:#fff55f;border-bottom-right-radius:10px;border-top-right-radius:10px"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:50px;margin-rigth:10px">
+                        <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" class="text-center">Next events</h3>
+                        <p:dataScroller value="cia" var="car" chunkSize="10" style="margin-right:10px">
+                        </p:dataScroller>
+                    </div>
                 </div>
-            </h:form>
-
-
-
-
+            </div>
         </div>
-
-
-
-
-
-        <div style="float:right; width:30%;height:600px;background-color:#F5DEB3;box-shadow: -3px 4px 5px rgb(192,192,192);">
-
-            <h:form style="width:100%;margin:10px">
-
-                <div class="ui-grid ui-grid-responsive" style="float:left; width:100%  ">
-                    <div class="ui-grid-row" style="margin-top:5px"  >
-
-                        <div class="ui-grid-col-2" style="width:45%">
-                            <p:inputText placeholder="Name" style="float:left; widht:50%; border-radius:25px "/>
-                        </div>
-                        <div class="ui-grid-col-2" style="width:50%; height:60px">
-                            <div style="margin:10px">    <p:commandButton  action="#{userBean.searchUser()}" value="Search" style="float:right;width:50%;height:30px"></p:commandButton></div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="ui-grid ui-grid-responsive" style="margin-right:10px">
-                    <div class="ui-grid-row" style="height:50px">
-                        <p:outputLabel value="Meteo" style="font-size:35px;color:rgb(29,129,201); margin-left:33%"/>
-                    </div>
-                    <div class="ui-grid-row" style="height:50px; border-radius:10px;border-style:solid;border-width:3px;border-color:rgb(29,129,201)">
-
-                        <div class="ui-grid-col-5"  style="background-color:#ff55ff;border-color:#ff3300;border-bottom-left-radius:10px;border-top-left-radius:10px"></div>
-                        <div class="ui-grid-col-5" style="background-color:#fff55f;" ></div>
-                        <div class="ui-grid-col-5" style="background-color:#fdfd5f;" ></div>
-                        <div class="ui-grid-col-5" style="background-color:#fffd5f;"></div>
-                        <div class="ui-grid-col-5" style="background-color:#fff55f;border-bottom-right-radius:10px;border-top-right-radius:10px"></div>
-                    </div>
-                </div>
-                <div style="margin-top:50px;margin-rigth:10px">
-                    <p:outputLabel value="Prossimi Eventi" style="font-size:35px;color:rgb(29,129,201); margin-left:13%"/>
-                    <p:dataScroller value="cia" var="car" chunkSize="10" style="margin-right:10px">
-
-                    </p:dataScroller>
-                </div>
-
-            </h:form>
-
-
-
-
-
-        </div>
-
-
-
-
+        <footer class="footer">
+            <div class="text-center">
+                <h6>Copyright © 2015 WeatherCal. All Rights Reserved.</h6>
+                <h7>Authors: <a href="mailto:polyp91@gmail.com">Paolo Polidori</a>, <a href="mailto:edemantimarco@gmail.com">Marco Edemanti</a></h7>
+            </div>
+        </footer>
     </h:body>
 </html>
-

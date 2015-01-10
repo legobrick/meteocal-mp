@@ -9,7 +9,7 @@
         <pluginRepository>
             <id>maven.java.net</id>
             <name>Java.net Maven2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
+            <url>https://maven.java.net/content/groups/public/</url>
         </pluginRepository>
     </pluginRepositories>
     <dependencies>
@@ -249,7 +249,6 @@
             </plugin>
         </plugins>-->
     </build>
-    
     <repositories>
         <repository>
             <url>http://repository.primefaces.org/</url>
