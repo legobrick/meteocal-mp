@@ -46,7 +46,14 @@ public class WeatherStateConstraint implements Serializable {
     private String weatherState;
     @JoinColumn(name = "id_event", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
-    private Event idEvent;
+    private Event event;
+    
+    public static final String SUN = "sun";
+    public static final String RAIN = "rain";
+    public static final String FOG = "fog";
+    public static final String CLOUD = "cloud";
+    public static final String SNOW = "snow";
+    public static final String WIND = "wind";
 
     public WeatherStateConstraint() {
     }
@@ -76,12 +83,12 @@ public class WeatherStateConstraint implements Serializable {
         this.weatherState = weatherState;
     }
 
-    public Event getIdEvent() {
-        return idEvent;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setIdEvent(Event idEvent) {
-        this.idEvent = idEvent;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override

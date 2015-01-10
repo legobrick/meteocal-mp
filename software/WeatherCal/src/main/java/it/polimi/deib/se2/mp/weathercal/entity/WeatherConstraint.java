@@ -51,7 +51,7 @@ public class WeatherConstraint implements Serializable {
     private boolean isTemperatureLowerThan;
     @JoinColumn(name = "id_event", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
-    private Event idEvent;
+    private Event event;
 
     public WeatherConstraint() {
     }
@@ -90,12 +90,12 @@ public class WeatherConstraint implements Serializable {
         this.isTemperatureLowerThan = isTemperatureLowerThan;
     }
 
-    public Event getIdEvent() {
-        return idEvent;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setIdEvent(Event idEvent) {
-        this.idEvent = idEvent;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override
