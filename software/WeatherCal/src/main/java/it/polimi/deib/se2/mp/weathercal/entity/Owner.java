@@ -40,7 +40,7 @@ public class Owner implements Serializable {
     private Date notification;
     @JoinColumn(name = "id_calendar", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private Calendar calendar;
+    private CalendarEntity calendar;
     @JoinColumn(name = "id_event", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Event event;
@@ -72,11 +72,11 @@ public class Owner implements Serializable {
         this.notification = notification;
     }
 
-    public Calendar getCalendar() {
+    public CalendarEntity getCalendar() {
         return calendar;
     }
 
-    public void setCalendar(Calendar calendar) {
+    public void setCalendar(CalendarEntity calendar) {
         this.calendar = calendar;
     }
 

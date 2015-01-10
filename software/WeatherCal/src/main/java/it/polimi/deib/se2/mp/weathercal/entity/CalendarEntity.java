@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "calendar", schema = "development")
 @XmlRootElement
 @NamedQueries({
-   // @NamedQuery(name = "Calendar.findByEmail", query = "SELECT c FROM user_has_calendar c where c.id_calendar =:id"),
-    @NamedQuery(name = "Calendar.findAll", query = "SELECT c FROM Calendar c"),
-    @NamedQuery(name = "Calendar.findById", query = "SELECT c FROM Calendar c WHERE c.id = :id"),
-    @NamedQuery(name = "Calendar.findByIsPublic", query = "SELECT c FROM Calendar c WHERE c.isPublic = :isPublic")})
-public class Calendar implements Serializable {
+   // @NamedQuery(name = "CalendarEntity.findByEmail", query = "SELECT c FROM user_has_calendar c where c.id_calendar =:id"),
+    @NamedQuery(name = "CalendarEntity.findAll", query = "SELECT c FROM CalendarEntity c"),
+    @NamedQuery(name = "CalendarEntity.findById", query = "SELECT c FROM CalendarEntity c WHERE c.id = :id"),
+    @NamedQuery(name = "CalendarEntity.findByIsPublic", query = "SELECT c FROM CalendarEntity c WHERE c.isPublic = :isPublic")})
+public class CalendarEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,14 +58,14 @@ public class Calendar implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "calendar")
     private Collection<Participation> participationCollection;
 
-    public Calendar() {
+    public CalendarEntity() {
     }
 
-    public Calendar(Long id) {
+    public CalendarEntity(Long id) {
         this.id = id;
     }
 
-    public Calendar(Long id, boolean isPublic) {
+    public CalendarEntity(Long id, boolean isPublic) {
         this.id = id;
         this.isPublic = isPublic;
     }
@@ -123,10 +123,10 @@ public class Calendar implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Calendar)) {
+        if (!(object instanceof CalendarEntity)) {
             return false;
         }
-        Calendar other = (Calendar) object;
+        CalendarEntity other = (CalendarEntity) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

@@ -189,14 +189,15 @@
                                         Invite Friends:
                                     </div>
                                     <div class="ui-grid-col-6">
-                                        <div style="width:50px"><!-- value="#{autoCompleteView.selectedThemes}" completeMethod="#{autoCompleteView.completeTheme}"
-                                                            var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme}"  -->
-                                            <p:autoComplete placeholder="Invite user" id="invite" multiple="true" forceSelection="true">
+                                        <div style="width:50px">
+                                            <p:autoComplete id="user" multiple="true" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
+                                                    var="user" itemLabel="#{user.email}" itemValue="#{user.email}"  forceSelection="true">
                                                 <p:column style="">
-                                                    <h:outputText styleClass="ui-theme ui-theme" />
+                                                    <h:outputText value="#{user.firstName}" />
                                                 </p:column>
+                                              
                                                 <p:column>
-                                                    <h:outputText value="" />
+                                                    <h:outputText value="#{user.email}" />
                                                 </p:column>
                                             </p:autoComplete>
                                         </div>
@@ -257,20 +258,7 @@
                     </div>
                 </div>
             </h:form>
-            <div style="float:right; width:30%;height:600px;background-color:#F5DEB3;box-shadow: -3px 4px 5px rgb(192,192,192);">
-                <h:form style="width:100%;margin:10px">
-                    <div class="ui-grid ui-grid-responsive" style="float:left; width:100%  ">
-                        <div class="ui-grid-row" style="margin-top:5px"  >
-                            <div class="ui-grid-col-2" style="width:45%">
-                                <p:inputText placeholder="Name" style="float:left; widht:50%; border-radius:25px "/>
-                            </div>
-                            <div class="ui-grid-col-2" style="width:50%; height:60px">
-                                <div style="margin:10px">    <p:commandButton  action="#{userBean.searchUser()}" value="Search" style="float:right;width:50%;height:30px"></p:commandButton></div>
-                            </div>
-                        </div>
-                    </div>
-                </h:form>
-            </div>
+            
         </ui:define>
     </ui:composition>
 </html>

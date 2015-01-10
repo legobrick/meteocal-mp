@@ -72,7 +72,7 @@ public class User implements Serializable {
     @Column(name = "username", nullable = false, length = 100)
     private String username;
     @ManyToMany(mappedBy = "userCollection")
-    private Collection<Calendar> calendarCollection;
+    private Collection<CalendarEntity> calendarCollection;
 
     public User() {
     }
@@ -130,11 +130,11 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Calendar> getCalendarCollection() {
+    public Collection<CalendarEntity> getCalendarCollection() {
         return calendarCollection;
     }
 
-    public void setCalendarCollection(Collection<Calendar> calendarCollection) {
+    public void setCalendarCollection(Collection<CalendarEntity> calendarCollection) {
         this.calendarCollection = calendarCollection;
     }
 
