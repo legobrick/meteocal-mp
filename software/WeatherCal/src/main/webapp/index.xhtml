@@ -309,7 +309,9 @@
                                     timeZone="GMT+1"
                                     draggable="false"
                                     resizable="false"
+                                    
                                     firstHour="0" >
+                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}"  oncomplete="PF('eventDialog').show();" />
                                 </p:schedule>
                             </h:panelGrid>
                             
