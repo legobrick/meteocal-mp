@@ -6,17 +6,27 @@
 package it.polimi.deib.se2.mp.weathercal.gui;
 
 import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
+import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
+import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -24,129 +34,44 @@ import javax.faces.bean.ManagedBean;
  */
 @ManagedBean
 @Named
-public class EventBean {
-    
-    @EJB
-    EventManager manager;
-     
-    private Event event;
-    private String centerGeoMap = "45.47803760760912, 9.229593882060279";
-    
-    private List<String> states;
+@RequestScoped
+public class searchUser {
 
+    @PersistenceContext
+    EntityManager em;
+
+    @EJB
+    UserManager um;
+
+    
+    private String searched;
+    
+    public void setSearched(String email){
+        this.searched=email;
+    }
+    public String getSearched(){
+return this.searched;
+}
     /**
      * Creates a new instance of EventBean
      */
-    public EventBean() {
-    }
-     
-    @PostConstruct
-    public void init() {
-        event = new Event();
-    }
- 
-    public String getCenterGeoMap() {
-        return centerGeoMap;
-    }
+    public void searchUser() {
 
-    /**
-     * @return the event
-     */
-    public Event getEvent() {
-        return event;
-    }
-
-    /**
-     * @param event the event to set
-     */
-    public void setEvent(Event event) {
-        this.event = event;
-    }
+        Query q = em.createNamedQuery("User.findByEmail");
+         q.setParameter("email",this.searched);
+         User searchus= (User)q.getResultList().get(0);
+         
     
-    private LocalDate startDate;
-    private LocalTime startTime;
-    private ZoneId startZone;
-    private LocalDate endDate;
-    private LocalTime endTime;
-    private ZoneId endZone;
-    
-    
-    public void save() {
-        startZone = manager.getTimezone(event, LocalDateTime.of(startDate, startTime));
-        event.setStart(ZonedDateTime.of(startDate, startTime, startZone).toLocalDateTime());
-        endZone = manager.getTimezone(event, LocalDateTime.of(endDate, endTime));
-        event.setEnd(ZonedDateTime.of(endDate, endTime, endZone).toLocalDateTime());
-        manager.save(event);
+        
+if (searchus.getCalendarCollection().iterator().next().getIsPublic()){
+ FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Yes", "");
+RequestContext.getCurrentInstance().showMessageInDialog(message);
+}
+else{
+FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", "The user has a private calendar");
+RequestContext.getCurrentInstance().showMessageInDialog(message);
+}
+        
     }
 
-    /**
-     * @return the startDate
-     */
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    /**
-     * @param startDate the startDate to set
-     */
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    /**
-     * @return the startTime
-     */
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * @param startTime the startTime to set
-     */
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    /**
-     * @return the endDate
-     */
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    /**
-     * @param endDate the endDate to set
-     */
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    /**
-     * @return the endTime
-     */
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    /**
-     * @param endTime the endTime to set
-     */
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
-
-    /**
-     * @return the states
-     */
-    public List<String> getStates() {
-        return states;
-    }
-
-    /**
-     * @param states the states to set
-     */
-    public void setStates(List<String> states) {
-        this.states = states;
-    }
-    
 }
