@@ -9,7 +9,20 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/functions">
     <h:head>
         <title><ui:insert name="title">User Page</ui:insert></title>
-        <ui:insert name="other-scripts"></ui:insert>
+        <ui:insert name="other-scripts">
+            <script type="text/javascript">
+                $(function(){
+                    $(function(){
+                        $('#new-event').appendTo($('[id$=schedule]').find('td').eq(0).append('<span class="fc-header-space"></span>')).show().find('.fa').css('padding-top', '.15em');
+                    })
+                })
+            </script>
+            <script type='text/css'>
+                #new-event .fa {
+                    
+                }
+            </script>
+        </ui:insert>
         <h:outputStylesheet name="webjars/font-awesome/4.2.0/css/font-awesome.css"/>
         <style type="text/css">
             .ui-icon.fa {
@@ -393,13 +406,10 @@
             <div id="content" class="column">
                 <div class="innertube">
                     <ui:insert name="main-content">
-                        <p:commandButton action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="width:8.5em; height:2em; margin-top:5px; margin-left:20px; font-size:1em;">
+                        <p:commandButton id="new-event" action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="display:none; width:8em; height:1.9em; font-size:1em;">
                         </p:commandButton>
                         <h:form>
-
-
                             <h:panelGrid style="width:100%;">
-                                <h3 style="margin-top: 0"></h3>
                                 <p:schedule
                                     id="mySchedule"
                                     value="#{eventManagerBean.loggedEventiMese()}"
@@ -408,7 +418,6 @@
                                     timeZone="GMT+1"
                                     draggable="false"
                                     resizable="false"
-
                                     firstHour="0" >
                                     <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" />
                                     <p:growl autoUpdate="true"/>
@@ -418,13 +427,9 @@
                             <p:dialog widgetVar="eventSchedDialog" header="Event Details" showEffect="clip" hideEffect="clip">
                                 <h:panelGrid id="eventDetails" rendered="#{not empty eventManagerBean.selectEvent}" columns="2">
                                     <h:outputLabel for="title" value="Title:" />
-
                                     <h:outputText id="title" value="#{eventManagerBean.selectEvent.description}"  />
-
-
                                 </h:panelGrid>
-                            </p:dialog>  
-
+                            </p:dialog>
                         </h:form>
                     </ui:insert>
                 </div>
