@@ -321,9 +321,17 @@
                                     resizable="false"
 
                                     firstHour="0" >
-                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}"  oncomplete="PF('eventDialog').show();" />
+                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventCalDialog').show();" />
                                 </p:schedule>
                             </h:panelGrid>
+                            <p:dialog widgetVar="eventCalDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+        <h:panelGrid id="eventDetails" rendered="#{not empty eventManagerBean.selectEvent}" columns="2">
+            <h:outputLabel for="title" value="Title:" />
+            <h:outputText id="title" value="#{eventManagerBean.selectEvent.description}"  />
+ 
+            
+        </h:panelGrid>
+    </p:dialog>  
 
                         </h:form>
                     </ui:insert>
@@ -367,12 +375,12 @@
                     <div style="margin-top:50px;margin-rigth:10px">
                         <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" value="" class="text-center">Next events</h3>
                         <h:form id="form">
-                            <p:dataScroller id="next_event" value="#{eventManagerBean.loggedEventUsr('si')}" var="event" chunkSize="4" style="margin-right:10px">
+                            <p:dataScroller id="next_event" value="#{eventManagerBean.loggedEventUsr('si')}" var="event" chunkSize="5" style="margin-right:10px">
                                 <p:outputPanel>
                                     <h:panelGrid columns="2" cellpadding="5">
                             
-                                        <p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
-                                            <h:outputText value="#{event.description}" style="margin:0 auto;" />
+                                        <p:commandLink  update=":form:carDetail" oncomplete="PF('eventDialog').show()" title="View Detail">
+                                            <h:outputText value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" style="margin:0 auto;" />
                                             <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
                                         </p:commandLink>
                                        
@@ -380,20 +388,18 @@
                                     </h:panelGrid>
                                 </p:outputPanel>
                             </p:dataScroller>
-                             <p:dialog header="Event's infos" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                             <p:dialog header="Event's Info" widgetVar="eventDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                                             <p:outputPanel id="carDetail" style="text-align:center;">
                                                 <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
-
 
                                                     <h:outputText value="Name:" />
                                                     <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
                                                     <h:outputText value="Where:" />
                                                     <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
                                                     <h:outputText value="Start:" />
-                                                    <h:outputText value="#{eventManagerBean.selectEvent.start}" /> 
+                                                    <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
                                                     <h:outputText value="End:" />
-                                                    <h:outputText value="#{eventManagerBean.selectEvent.end}" /> 
-
+                                                    <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
 
                                                 </p:panelGrid>
                                             </p:outputPanel>
