@@ -9,6 +9,7 @@ import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -55,7 +56,7 @@ return this.searched;
     /**
      * Creates a new instance of EventBean
      */
-    public void searchUser() {
+    public void searchUser() throws IOException {
 
         Query q = em.createNamedQuery("User.findByEmail");
          q.setParameter("email",this.searched);
@@ -64,8 +65,8 @@ return this.searched;
     
         
 if (searchus.getCalendarCollection().iterator().next().getIsPublic()){
- FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Yes", "");
-RequestContext.getCurrentInstance().showMessageInDialog(message);
+ 
+  FacesContext.getCurrentInstance().getExternalContext().redirect("searched_user_page.xhtml?id="+searchus.getCalendarCollection().iterator().next().getId()+"&name="+searchus.getFirstName()+"&surname="+searchus.getUsername()+"&mail="+searchus.getEmail());
 }
 else{
 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", "The user has a private calendar");

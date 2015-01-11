@@ -282,6 +282,16 @@
                 <ul>
                     <li>
                         <p:commandButton id="notification_button" value="Notifications"/>
+                        <p:overlayPanel id="imagePanel" style="height:200px" dynamic="true" for="notification_button" hideEffect="fade">
+                            <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('si')}" var="event" chunkSize="4" style="float:left; border:0px">
+                                <p:outputPanel>
+
+                                    <h:outputText  value="#{event.description}" />
+
+                                </p:outputPanel>
+                            </p:dataScroller>
+                        </p:overlayPanel>
+
                     </li>
                     <li>
                         <p:commandButton id="logout_button" value="Logout" action="#{loginBean.logout()}"/>
@@ -303,18 +313,18 @@
                                 <h3 style="margin-top: 0"></h3>
                                 <p:schedule
                                     id="schedule"
-                                    value="#{eventManagerBean.eventiDelMese()}"
+                                    value="#{eventManagerBean.loggedEventiMese()}"
                                     style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
                                     widgetVar="myschedule"
                                     timeZone="GMT+1"
                                     draggable="false"
                                     resizable="false"
-                                    
+
                                     firstHour="0" >
                                     <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}"  oncomplete="PF('eventDialog').show();" />
                                 </p:schedule>
                             </h:panelGrid>
-                            
+
                         </h:form>
                     </ui:insert>
                 </div>
@@ -328,7 +338,7 @@
                                     <p:autoComplete id="user" multiple="false" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
                                                     var="user" itemLabel="#{user.email}" itemValue="#{user.email}"  forceSelection="true">
                                         <p:column style="width:10%">
-                                            <h:outputText value="d" />
+                                            <h:outputText value="#{user.firstName}" />
                                         </p:column>
 
                                         <p:column>
@@ -356,16 +366,39 @@
                     </div>
                     <div style="margin-top:50px;margin-rigth:10px">
                         <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" value="" class="text-center">Next events</h3>
-                        <p:dataScroller value="#{eventManagerBean.allEventByAvailability('si')}" var="event" chunkSize="4" style="margin-right:10px">
-                            <p:outputPanel>
-                                <h:panelGrid columns="2" cellpadding="5">
-                                    <h:outputText value="#{event.description}" />
-                                    <h:outputText  style="font-weight: bold"/>
+                        <h:form id="form">
+                            <p:dataScroller id="next_event" value="#{eventManagerBean.loggedEventUsr('si')}" var="event" chunkSize="4" style="margin-right:10px">
+                                <p:outputPanel>
+                                    <h:panelGrid columns="2" cellpadding="5">
+                            
+                                        <p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
+                                            <h:outputText value="#{event.description}" style="margin:0 auto;" />
+                                            <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
+                                        </p:commandLink>
+                                       
+
+                                    </h:panelGrid>
+                                </p:outputPanel>
+                            </p:dataScroller>
+                             <p:dialog header="Event's infos" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                            <p:outputPanel id="carDetail" style="text-align:center;">
+                                                <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
 
 
-                                </h:panelGrid>
-                            </p:outputPanel>
-                        </p:dataScroller>
+                                                    <h:outputText value="Name:" />
+                                                    <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                                    <h:outputText value="Where:" />
+                                                    <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
+                                                    <h:outputText value="Start:" />
+                                                    <h:outputText value="#{eventManagerBean.selectEvent.start}" /> 
+                                                    <h:outputText value="End:" />
+                                                    <h:outputText value="#{eventManagerBean.selectEvent.end}" /> 
+
+
+                                                </p:panelGrid>
+                                            </p:outputPanel>
+                                        </p:dialog>
+                                        </h:form>
                     </div>
                 </div>
             </div>
