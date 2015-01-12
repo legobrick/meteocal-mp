@@ -17,17 +17,20 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Named;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.ScheduleModel;
 
 /**
  *
@@ -36,6 +39,7 @@ import org.primefaces.context.RequestContext;
 @ManagedBean
 @Named
 @RequestScoped
+@SessionScoped
 public class searchUser {
 
     @PersistenceContext
@@ -43,6 +47,8 @@ public class searchUser {
 
     @EJB
     UserManager um;
+    
+    EventManagerBean emb;
 
     
     private String searched;
@@ -74,5 +80,18 @@ RequestContext.getCurrentInstance().showMessageInDialog(message);
 }
         
     }
-
+public void editAction() {
+	  Map<String,String> params = 
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+	  String action = params.get("action");
+          FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden",action);
+RequestContext.getCurrentInstance().showMessageInDialog(message);
+ 
+	}
+   public ScheduleModel searchEventSchedule(){
+       Map<String,String> params = 
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+	  String action = params.get("action");
+   return emb.eventiDelMese(Long.parseLong(action));
+   }
 }

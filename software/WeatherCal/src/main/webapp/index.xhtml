@@ -388,8 +388,9 @@
                                     </h:panelGrid>
                                 </p:outputPanel>
                             </p:dataScroller>
-                             <p:dialog header="Event's Info" widgetVar="eventDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                                            <p:outputPanel id="carDetail" style="text-align:center;">
+                             <p:dialog header="Event's Info" widgetVar="eventDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
+                                          
+                                 <p:outputPanel id="carDetail" style="text-align:center;">
                                                 <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
 
                                                     <h:outputText value="Name:" />
@@ -400,9 +401,11 @@
                                                     <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
                                                     <h:outputText value="End:" />
                                                     <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
-
+                                                    
                                                 </p:panelGrid>
+                                     <p:commandButton value="ciao" action="#{eventManagerBean.owner}"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
                                             </p:outputPanel>
+                                 
                                         </p:dialog>
                                         </h:form>
                     </div>

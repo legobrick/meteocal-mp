@@ -10,9 +10,11 @@
         <title>User Page</title>
     </h:head>
    <h:body  style="background-color:rgb(245,240,230)">
+      <p:commandButton action="#{searchUser.editAction}">
+          <f:param name="action" value="#{param.id}" />
+</p:commandButton>
        <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
 
-           <p:outputLabel id="ti" value="#{eventManagerBean.param()}" style="font-size:60px; margin-left:25px;margin-top:20px"> <f:param name="cal" value="#{param.id}"/></p:outputLabel>
       
            <div style="float:right; width:30%; ">
        
@@ -34,7 +36,7 @@
         <h3 style="margin-top: 0"></h3>
         
     
-        <p:schedule id="schedule" value="#{eventManagerBean.eventiDelMese(12)}" style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)" widgetVar="myschedule" timeZone="GMT+2">
+        <p:schedule id="schedule" value="" style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)" widgetVar="myschedule" timeZone="GMT+2">
  
           </p:schedule>
         </h:panelGrid>
