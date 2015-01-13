@@ -282,15 +282,51 @@
                 <ul>
                     <li>
                         <p:commandButton id="notification_button" value="Notifications"/>
-                        <p:overlayPanel id="imagePanel" style="height:200px" dynamic="true" for="notification_button" hideEffect="fade">
-                            <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('si')}" var="event" chunkSize="4" style="float:left; border:0px">
-                                <p:outputPanel>
+                        <p:overlayPanel id="imagePanel" style="height:200px;width:300px" dynamic="true" for="notification_button" hideEffect="fade">
+                            
+                            <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('nonletto')}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
+                               
 
-                                    <h:outputText  value="#{event.description}" />
-
-                                </p:outputPanel>
+                                    
+                                    
+                                            <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
+                                                
+                                                <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
+                                            </p:commandButton>
+                                       
+                                        
+                                    
+                                
                             </p:dataScroller>
-                        </p:overlayPanel>
+                          </p:overlayPanel>
+                              <p:dialog header="Event's Info" widgetVar="notificationDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
+
+                                <p:outputPanel id="evDetail" style="text-align:center;">
+                                    <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+
+                                        <h:outputText value="Name" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                        <h:outputText value="Where" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
+                                        <h:outputText value="Start" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
+                                        <h:outputText value="End" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
+                                    </p:panelGrid>
+                                   
+                                      <div class="ui-grid ui-grid-responsive" style="width:200px">
+                                        
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-3">       <p:commandButton value="Join" action="#{userManager.changeAvailability('si')}" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                            <div class="ui-grid-col-3" style="margin-left:10px">      <p:commandButton value="No"  action="#{eventManagerBean.changeAvailability('no')}" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                            <div class="ui-grid-col-3" style="margin-left:10px">  <p:commandButton value="Maybe" action="#{eventManagerBean.changeAvailability('forse')}" style="width:70px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+
+                            </p:dialog>
+                            
+                        
 
                     </li>
                     <li>
@@ -321,17 +357,18 @@
                                     resizable="false"
 
                                     firstHour="0" >
-                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventCalDialog').show();" />
+                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventSchedDialog').show();" />
                                 </p:schedule>
                             </h:panelGrid>
-                            <p:dialog widgetVar="eventCalDialog" header="Event Details" showEffect="clip" hideEffect="clip">
-        <h:panelGrid id="eventDetails" rendered="#{not empty eventManagerBean.selectEvent}" columns="2">
-            <h:outputLabel for="title" value="Title:" />
-            <h:outputText id="title" value="#{eventManagerBean.selectEvent.description}"  />
- 
-            
-        </h:panelGrid>
-    </p:dialog>  
+                            <p:dialog widgetVar="eventSchedDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                                <h:panelGrid id="eventDetails" rendered="#{not empty eventManagerBean.selectEvent}" columns="2">
+                                    <h:outputLabel for="title" value="Title:" />
+                                     
+                                    <h:outputText id="title" value="#{eventManagerBean.selectEvent.description}"  />
+
+
+                                </h:panelGrid>
+                            </p:dialog>  
 
                         </h:form>
                     </ui:insert>
@@ -378,36 +415,36 @@
                             <p:dataScroller id="next_event" value="#{eventManagerBean.loggedEventUsr('si')}" var="event" chunkSize="5" style="margin-right:10px">
                                 <p:outputPanel>
                                     <h:panelGrid columns="2" cellpadding="5">
-                            
-                                        <p:commandLink  update=":form:carDetail" oncomplete="PF('eventDialog').show()" title="View Detail">
-                                            <h:outputText value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" style="margin:0 auto;" />
+
+                                        <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" style="width:300px;height:30px; margin-top:5px;" update=":form:carDetail" oncomplete="PF('eventDialog').show()" title="View Detail">
+                                     
                                             <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
-                                        </p:commandLink>
-                                       
+                                        </p:commandButton>
+
 
                                     </h:panelGrid>
                                 </p:outputPanel>
                             </p:dataScroller>
-                             <p:dialog header="Event's Info" widgetVar="eventDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
-                                          
-                                 <p:outputPanel id="carDetail" style="text-align:center;">
-                                                <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+                            <p:dialog header="Event's Info" widgetVar="eventDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
 
-                                                    <h:outputText value="Name:" />
-                                                    <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
-                                                    <h:outputText value="Where:" />
-                                                    <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
-                                                    <h:outputText value="Start:" />
-                                                    <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
-                                                    <h:outputText value="End:" />
-                                                    <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
-                                                    
-                                                </p:panelGrid>
-                                     <p:commandButton value="ciao" action="#{eventManagerBean.owner}"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
-                                            </p:outputPanel>
-                                 
-                                        </p:dialog>
-                                        </h:form>
+                                <p:outputPanel id="carDetail" style="text-align:center;">
+                                    <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+
+                                        <h:outputText value="Name" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                        <h:outputText value="Where" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
+                                        <h:outputText value="Start" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
+                                        <h:outputText value="End" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
+                                    </p:panelGrid>
+                                    <p:commandButton value="Edit" action="#{eventManagerBean.owner}"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
+                                    <p:commandButton value="Abbandona" action="#{eventManagerBean.changeAvailability('no')}"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
+                                </p:outputPanel>
+
+                            </p:dialog>
+                        </h:form>
                     </div>
                 </div>
             </div>

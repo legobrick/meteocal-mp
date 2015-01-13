@@ -30,6 +30,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleModel;
 
 /**
@@ -92,6 +93,10 @@ RequestContext.getCurrentInstance().showMessageInDialog(message);
        Map<String,String> params = 
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 	  String action = params.get("action");
-   return emb.eventiDelMese(Long.parseLong(action));
+          FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden",action);
+           RequestContext.getCurrentInstance().showMessageInDialog(message);
+           Long id=Long.decode("12");
+           ScheduleModel prova=new DefaultScheduleModel();
+   return prova;
    }
 }

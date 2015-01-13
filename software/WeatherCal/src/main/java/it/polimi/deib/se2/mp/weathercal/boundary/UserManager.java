@@ -29,6 +29,7 @@ public class UserManager {
 
     public void save(User user) {
         em.persist(user);
+       
         em.flush();
         Query q = em.createNamedQuery("Groups.findByName");
         Groups g = (Groups) q

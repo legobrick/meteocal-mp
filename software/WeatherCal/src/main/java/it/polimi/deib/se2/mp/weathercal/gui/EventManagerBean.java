@@ -54,6 +54,8 @@ public class EventManagerBean {
 
     @EJB
     UserManager um;
+    @EJB
+    EventManager evm;
 
     @ManagedProperty("#{param.cal}")
     Long calId;
@@ -191,8 +193,8 @@ public class EventManagerBean {
 
     }
 
-    public void onEventSelect(SelectEvent selectEvent) {
-        this.selectEvent = (Event) selectEvent.getObject();
+    public void onEventSelect(SelectEvent selectEventt) {
+        selectEvent = (Event) selectEventt.getObject();
     }
 
     public void owner() {
@@ -212,5 +214,20 @@ public class EventManagerBean {
         }
 
         System.out.println("sssss" + action);
+    }
+     public void changeAvailability(String availability) {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String action = params.get("action");
+        Long idEv = Long.parseLong(action);
+        Query p = em.createNamedQuery("Participation.findByIdCalendarandIdEvent");
+        p.setParameter("idEvent", idEv);
+        p.setParameter("idCalendar",this.userCalendarId());
+        
+        
+        Participation changepart = (Participation) p.getResultList().get(0);
+           evm.changeAvailability(availability, changepart);
+      //  em.merge(changepart);
+
+        //System.out.println("sssss" + changepart.getAvailability());
     }
 }

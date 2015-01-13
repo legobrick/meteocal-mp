@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
      @NamedQuery(name = "Participation.findByIdCalendarandAvailability", query = "SELECT p FROM Participation p WHERE p.participationPK.idCalendar = :idCalendar and p.availability=:av"),
+    @NamedQuery(name = "Participation.findByIdCalendarandIdEvent", query = "SELECT p FROM Participation p WHERE p.participationPK.idCalendar = :idCalendar and p.participationPK.idEvent = :idEvent"),
     @NamedQuery(name = "Participation.findAll", query = "SELECT p FROM Participation p"),
     @NamedQuery(name = "Participation.findByIdCalendar", query = "SELECT p FROM Participation p WHERE p.participationPK.idCalendar = :idCalendar"),
     @NamedQuery(name = "Participation.findByIdEvent", query = "SELECT p FROM Participation p WHERE p.participationPK.idEvent = :idEvent"),

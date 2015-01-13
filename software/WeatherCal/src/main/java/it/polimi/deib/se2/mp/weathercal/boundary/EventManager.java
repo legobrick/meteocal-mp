@@ -6,6 +6,7 @@
 package it.polimi.deib.se2.mp.weathercal.boundary;
 
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
+import it.polimi.deib.se2.mp.weathercal.entity.Participation;
 import it.polimi.deib.se2.mp.weathercal.entity.TimeZoneResponse;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -16,7 +17,9 @@ import java.time.zone.ZoneRules;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -37,6 +40,9 @@ public class EventManager {
 
     @PersistenceContext
     EntityManager em;
+    @EJB
+    UserManager um;
+
     
     private Client client;
     
@@ -80,7 +86,16 @@ public class EventManager {
 //            em.merge(user);
 //        }
     }
-    
+    public void changeAvailability(String av,Participation changepart){
+  
+        em.persist(changepart);
+        em.flush();
+       changepart.setAvailability(av);
+       em.merge(changepart);
+      //  em.merge(changepart);
+
+        System.out.println("sssss" + changepart.getAvailability());
+    }
     public List<Event> tGetAll(){
         Query q = em.createNamedQuery("Event.findAll");
         return q.getResultList();
