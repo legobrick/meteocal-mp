@@ -88,10 +88,11 @@ public class EventManager {
     }
     public void changeAvailability(String av,Participation changepart){
   
-        em.persist(changepart);
+        
+        changepart.setAvailability(av);
+        em.merge(changepart);
         em.flush();
-       changepart.setAvailability(av);
-       em.merge(changepart);
+        
       //  em.merge(changepart);
 
         System.out.println("sssss" + changepart.getAvailability());

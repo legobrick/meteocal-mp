@@ -102,6 +102,8 @@ public class Event implements Serializable {
     @OneToMany(mappedBy = "event")
     private Collection<WeatherStateConstraint> stateConstraints;
     
+
+    
     public Event() {
     }
 
@@ -126,6 +128,7 @@ public class Event implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public BigDecimal getPlaceLatitude() {
         return placeLatitude;
