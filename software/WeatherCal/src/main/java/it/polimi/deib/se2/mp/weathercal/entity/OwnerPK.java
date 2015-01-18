@@ -18,11 +18,11 @@ import javax.validation.constraints.NotNull;
 @Embeddable
 public class OwnerPK implements Serializable {
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "id_calendar", nullable = false)
     private long idCalendar;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "id_event", nullable = false)
     private long idEvent;
 

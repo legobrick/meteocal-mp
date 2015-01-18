@@ -42,7 +42,7 @@ public class Participation implements Serializable {
     @EmbeddedId
     protected ParticipationPK participationPK;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 50)
     @Column(name = "availability", nullable = false, length = 50)
     private String availability;

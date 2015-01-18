@@ -8,10 +8,14 @@ package it.polimi.deib.se2.mp.weathercal.entity;
 import it.polimi.deib.se2.mp.weathercal.util.LocalDateTimePersistenceConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -57,49 +61,49 @@ public class Event implements Serializable {
     private Long id;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "place_latitude", precision = 9, scale = 6, nullable = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     private BigDecimal placeLatitude;
     @Column(name = "place_longitude", precision = 9, scale = 6, nullable = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     private BigDecimal placeLongitude;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "is_public", nullable = false)
-    private boolean isPublic;
+    private boolean isPublic = false;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 500)
     @Column(name = "place_description", nullable = false, length = 500)
     private String placeDescription;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "is_outdoor", nullable = false)
-    private boolean isOutdoor;
+    private boolean isOutdoor = true;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "start_t", nullable = false,
         columnDefinition= "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime start;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "end_t", nullable = false,
         columnDefinition= "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime end;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 300)
     @Column(name = "name", nullable = false, length = 300)
     private String name;
     @Lob
     @Column(name = "description", nullable=false)
     private String description;
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private Collection<WeatherConstraint> valueConstraints;
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private Collection<WeatherStateConstraint> stateConstraints;
     
 
@@ -247,13 +251,6 @@ public class Event implements Serializable {
     }
 
     /**
-     * @param valueConstraints the valueConstraints to set
-     */
-    public void setValueConstraints(Collection<WeatherConstraint> valueConstraints) {
-        this.valueConstraints = valueConstraints;
-    }
-
-    /**
      * @return the stateConstraints
      */
     public Collection<WeatherStateConstraint> getStateConstraints() {
@@ -265,6 +262,14 @@ public class Event implements Serializable {
      */
     public void setStateConstraints(Collection<WeatherStateConstraint> stateConstraints) {
         this.stateConstraints = stateConstraints;
+    }
+
+    /**
+     * @param valueConstraints the valueConstraints to set
+     */
+    public void setValueConstraints(Collection<WeatherConstraint> valueConstraints) {
+        if(valueConstraints != null && valueConstraints.size() > 1) throw new InvalidParameterException("Invalid length, must be equals to 1. To be implemented.");
+        this.valueConstraints = valueConstraints;
     }
     
 }

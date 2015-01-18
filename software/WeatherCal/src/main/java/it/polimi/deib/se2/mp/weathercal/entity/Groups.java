@@ -37,7 +37,7 @@ public class Groups implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 100)
     @Column(name = "name", nullable = false, length = 100)
     private String name;

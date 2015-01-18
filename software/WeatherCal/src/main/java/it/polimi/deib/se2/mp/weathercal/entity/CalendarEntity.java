@@ -45,9 +45,9 @@ public class CalendarEntity implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "is_public", nullable = false)
-    private boolean isPublic;
+    private boolean isPublic = false;
     @JoinTable(schema = "development", name = "user_has_calendar", joinColumns = {
         @JoinColumn(name = "id_calendar", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
         @JoinColumn(name = "id_user", referencedColumnName = "email", nullable = false)})

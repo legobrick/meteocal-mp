@@ -6,7 +6,9 @@
 package it.polimi.deib.se2.mp.weathercal.entity;
 
 import java.io.Serializable;
+import javax.management.InvalidAttributeValueException;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,20 +42,34 @@ public class WeatherStateConstraint implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Size(min = 1, max = 50)
     @Column(name = "weather_state", nullable = false, length = 50)
     private String weatherState;
     @JoinColumn(name = "id_event", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false)
+    @NotNull(message = "May not be empty")
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Event event;
     
-    public static final String SUN = "sun";
-    public static final String RAIN = "rain";
-    public static final String FOG = "fog";
-    public static final String CLOUD = "cloud";
-    public static final String SNOW = "snow";
-    public static final String WIND = "wind";
+    public static enum State {
+        SUN("sun"), RAIN("rain"), FOG("fog"), CLOUD("cloud"), SNOW("snow"), WIND("wind");
+        private final String value;
+        private State(String value) {
+                this.value = value;
+        }
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+    private static boolean contains(String test) {
+        for (State c : State.values()) {
+            if (c.toString().equals(test)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public WeatherStateConstraint() {
     }
@@ -62,8 +78,15 @@ public class WeatherStateConstraint implements Serializable {
         this.id = id;
     }
 
-    public WeatherStateConstraint(Long id, String weatherState) {
-        this.id = id;
+    public WeatherStateConstraint(Event event, State weatherState) {
+        this.event = event;
+        this.weatherState = weatherState.toString();
+    }
+
+    public WeatherStateConstraint(Event event, String weatherState) throws InvalidAttributeValueException {
+        this.event = event;
+        if(!contains(weatherState))
+            throw new InvalidAttributeValueException("weatherState must be a String in the State enum");
         this.weatherState = weatherState;
     }
 
@@ -79,8 +102,14 @@ public class WeatherStateConstraint implements Serializable {
         return weatherState;
     }
 
-    public void setWeatherState(String weatherState) {
+    public void setWeatherState(String weatherState) throws InvalidAttributeValueException {
+        if(!contains(weatherState))
+            throw new InvalidAttributeValueException("weatherState must be a String in the State enum");
         this.weatherState = weatherState;
+    }
+
+    public void setWeatherState(State weatherState) {
+        this.weatherState = weatherState.toString();
     }
 
     public Event getEvent() {
@@ -105,15 +134,16 @@ public class WeatherStateConstraint implements Serializable {
             return false;
         }
         WeatherStateConstraint other = (WeatherStateConstraint) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return (other.id != null && this.id != null && !this.id.equals(other.id)) ||
+                (this.event.equals(other.event) && this.weatherState.equals(other.weatherState));
     }
 
     @Override
     public String toString() {
-        return "it.polimi.deib.se2.mp.entity.WeatherStateConstraint[ id=" + id + " ]";
+        return getWeatherState();
+    }
+    public State toState() {
+        return State.valueOf(weatherState);
     }
     
 }

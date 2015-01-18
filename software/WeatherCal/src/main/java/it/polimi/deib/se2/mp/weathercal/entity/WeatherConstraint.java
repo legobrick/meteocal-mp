@@ -8,6 +8,7 @@ package it.polimi.deib.se2.mp.weathercal.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -40,17 +43,18 @@ public class WeatherConstraint implements Serializable {
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private Long id;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Max(value=100)  @Min(value=-80)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "temperature", nullable = false, precision = 5, scale = 2)
-    private BigDecimal temperature;
+    private BigDecimal temperature = new BigDecimal(20);
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "May not be empty")
     @Column(name = "is_temperature_lower_than", nullable = false)
     private boolean isTemperatureLowerThan;
     @JoinColumn(name = "id_event", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false)
+    @NotNull(message = "May not be empty")
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Event event;
 
     public WeatherConstraint() {
@@ -112,10 +116,9 @@ public class WeatherConstraint implements Serializable {
             return false;
         }
         WeatherConstraint other = (WeatherConstraint) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return (other.id != null && this.id != null && this.id.equals(other.id)) ||
+                (other.isTemperatureLowerThan == this.isTemperatureLowerThan && this.event.equals(other.event)
+                && this.temperature.equals(other.temperature));
     }
 
     @Override
