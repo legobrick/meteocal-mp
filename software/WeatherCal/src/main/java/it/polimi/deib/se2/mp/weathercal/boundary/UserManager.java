@@ -5,9 +5,11 @@
  */
 package it.polimi.deib.se2.mp.weathercal.boundary;
 
+import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Groups;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.security.Principal;
+import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -31,12 +33,23 @@ public class UserManager {
         em.persist(user);
        
         em.flush();
+        //set user's group
         Query q = em.createNamedQuery("Groups.findByName");
         Groups g = (Groups) q
                     .setParameter("name", Groups.USERS)
                     .getSingleResult();
-        if(!user.getGroupsCollection().contains(g)){
-            user.getGroupsCollection().add(g);
+        Collection userGroups = user.getGroupsCollection();
+        if(!userGroups.contains(g)){
+            userGroups.add(g);
+            em.merge(user);
+        }
+        //create user's default calendar
+        CalendarEntity c = new CalendarEntity();
+        em.persist(c);
+        em.flush();
+        Collection userCalendars = user.getCalendarCollection();
+        if(userCalendars.size() < 1){
+            userCalendars.add(c);
             em.merge(user);
         }
     }
