@@ -5,10 +5,8 @@
  */
 package it.polimi.deib.se2.mp.weathercal.gui;
 
-import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
-import java.util.Calendar;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.Owner;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
@@ -21,13 +19,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
