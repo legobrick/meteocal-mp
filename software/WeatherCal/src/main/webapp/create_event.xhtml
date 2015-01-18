@@ -4,177 +4,164 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
     <ui:composition template="index.xhtml">
         <ui:define name="title">New Event</ui:define>
         <ui:define name="other-scripts">
             <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
-            <script type="text/javascript">
-            //<![CDATA[
-                var myGeocoder = new google.maps.Geocoder();
-                var marker = new google.maps.Marker();
-                var delay = (function() {
-                    var timer = 0;
-                    return function(callback, ms) {
-                        clearTimeout (timer);
-                        timer = setTimeout(callback, ms);
-                    };
-                })();
-                var store = {
-                    _map: null,
-                    get map(){
-                        this._map === null && (this._map = PF('geoMap').map);
-                        return this._map;
-                    },
-                    set map(arg){
-                    }
-                }
-                var geocode = function() {
-                    myGeocoder.geocode({
-                        address: $('[id$=address]').val()
-                    }, function(results, status){
-                        if (status === google.maps.GeocoderStatus.OK)
-                        {
-                            $('[id$=latitude]').val(results[0].geometry.location.lat());
-                            $('[id$=longitude]').val(results[0].geometry.location.lng());
-                            var bounds;
-                            bounds = new google.maps.LatLngBounds(
-                                results[0].geometry.viewport.getSouthWest(), 
-                                results[0].geometry.viewport.getNorthEast()
-                            );
-                            store.map.__proto__.fitBounds.call(store.map, bounds);
-                            marker.setValues({
-                                position: results[0].geometry.location,
-                                map: store.map,
-                                title: results[0].formatted_address,
-                                draggable: false,
-                                animation: google.maps.Animation.BOUNCE
-                            });
-                            delay(function(){
-                                marker.setAnimation(null);
-                            }, 500);
-                        }
-                    });
-                }
-                $('[id$=address]').keyup(function() {
-                    delay(geocode, 8000);
-                });
-                $('[id$=go]').on('click', geocode);
-            //]]>
-            </script>
-            <h:outputScript name="js/datepair.js" />
-            <h:outputScript name="js/jquery.datepair.js" />
-            <script type="text/javascript">
-                $(function(){
-                    // initialize input widgets first
-                    $('[id$=start_time],[id$=end_time]').timepicker({
-                        'showDuration': true,
-                        'timeFormat': 'HH:mm'
-                    });
-
-                    $('[id$=start_date],[id$=end_date]').datepicker({
-                        'format': 'd/m/yy',
-                        'autoclose': true
-                    });
-
-                    // initialize datepair
-                    $('[id$=start_time],[id$=end_time],[id$=start_date],[id$=end_date]').datepair();
-                });
-            </script>
+            <h:outputScript name="js/jquery.timepicker.js"/>
+            <h:outputStylesheet name="css/jquery.timepicker.css"/>
+            <h:outputScript name="js/datepair.js"/>
+            <h:outputScript name="js/jquery.datepair.js"/>
+            <script data-main="#{request.contextPath}/resources/js/main/app/create_event.js" src="#{request.contextPath}/resources/js/require.js"></script>
         </ui:define>
         <ui:define name="main-content">
+            <o:importConstants type="it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint.State"/>
             <div class="innertitle"><h2>Create new event</h2></div>
-            <h:form style="color:rgb(29,129,201)">
-                <div class="ui-grid ui-grid-responsive" style="float:left;">
-                    <div class="ui-grid-row" style="margin-top:5px;"  >
-                        <div class="ui-grid-col-2">
-                            <div style="float:left;width:87px">Name:</div>
+            <h:form id="event_form_content">
+                <p:growl id="msgs" sticky="true"></p:growl>
+                <p:focus context="event_form_content"/>
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row margin-big">
+                        <div class="ui-grid-col-6">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row margin-small">
+                                    <div class="ui-grid-col-2">
+                                        <p:outputLabel for="name" value="Name:"/>
+                                    </div>
+                                    <div class="ui-grid-col-7">
+                                        <p:inputText id="name" value="#{eventBean.event.name}" placeholder="Name" styleClass="input-wide">
+                                            <p:ajax update="name_msg" event="blur"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-3" >
+                                        <p:message id="name_msg" for="name"/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row margin-small taller">
+                                    <div class="ui-grid-col-2">
+                                        <p:outputLabel for="address" value="Address:"/>
+                                    </div>
+                                    <div class="ui-grid-col-7">
+                                        <p:inputText value="#{eventBean.event.placeDescription}" id="address" widgetVar="address" placeholder="Address" styleClass="input-wide">
+                                            <p:ajax update="address_msg" event="blur"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-1 space-small">
+                                        <p:commandButton id="go" widgetVar="go" value="Go" ajax="false"></p:commandButton>
+                                    </div>
+                                    <div class="ui-grid-col-2">
+                                        <p:message id="address_msg" for="address"/>
+                                    </div>
+                                    <p:inputText value="#{eventBean.event.placeLatitude}" class="input-hidden" id="latitude" widgetVar="latitude"></p:inputText>
+                                    <p:inputText value="#{eventBean.event.placeLongitude}" class="input-hidden" id="longitude" widgetVar="longitude"></p:inputText>
+                                    <p:inputText value="#{eventBean.userTimezone}" class="input-hidden" id="user_timezone" widgetVar="userTimezone"></p:inputText>
+                                </div>
+                            </div>
                         </div>
-                        <div class="ui-grid-col-4">
-                            <p:inputText id="name" value="#{eventBean.event.name}" placeholder="Name" style="height:20px;float:right; width:210px; font-size:15px " />
+                        <div class="ui-grid-col-6">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row margin-small">
+                                    <div class="ui-grid-col-2">
+                                        <p:outputLabel for="outdoor" value="Outdoor:"/>
+                                    </div>
+                                    <div class="ui-grid-col-1">
+                                        <p:selectBooleanCheckbox id="outdoor" value="#{eventBean.event.isOutdoor}">
+                                            <p:ajax update="outdoor_msg" event="blur"/>
+                                        </p:selectBooleanCheckbox>
+                                    </div>
+                                    <div class="ui-grid-col-9" >
+                                        <p:message id="outdoor_msg" for="outdoor"/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row margin-small">
+                                    <div class="ui-grid-col-2">
+                                        <p:outputLabel for="public" value="Public:">
+                                            <p:ajax update="public_msg" event="blur"/>
+                                        </p:outputLabel>
+                                    </div>
+                                    <div class="ui-grid-col-1">
+                                        <p:selectBooleanCheckbox id="public" value="#{eventBean.event.isPublic}"/>
+                                    </div>
+                                    <div class="ui-grid-col-9" >
+                                        <p:message id="public_msg" for="public"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="ui-grid-col-2" style="width:50%">
-                            <p:message id="name_msg" for="name"/>
-                        </div>
-                    </div>
-                    <div class="ui-grid-row" style="margin-top:5px;">
-                        <div class="ui-grid-col-2">
-                            <div style="float:left;">Address:</div>
-                        </div>
-                        <div class="ui-grid-col-4">
-                            <p:inputText value="#{eventBean.event.placeDescription}" id="address" placeholder="Address" style=" height:20px;float:right;width:210px; font-size:15px " />
-                        </div>
-                        <div class="ui-grid-col-1">
-                            <p:commandButton id="go" value="Go"></p:commandButton>
-                        </div>
-                        <div class="ui-grid-col-1">
-                            <p:message id="address_msg" for="address"/>
-                        </div>
-                        <p:inputText value="#{eventBean.event.placeLatitude}" style="display:none;" id="latitude" widgetVar="latitude"></p:inputText>
-                        <p:inputText value="#{eventBean.event.placeLongitude}" style="display:none;" id="longitude" widgetVar="longitude"></p:inputText>
-                    </div>
-                    <div class="ui-grid-row" style="height:400px">
-                        <p:gmap id="geoGmap" widgetVar="geoMap" center="#{eventBean.centerGeoMap}" zoom="16"
-                                type="ROADMAP" style="min-width:600px;width:100%;height:100%">
-                        </p:gmap>
                     </div>
                 </div>
-                <div class="ui-grid ui-grid-responsive" style="float:left;">
-                    <div class="ui-grid-row" style="margin-top:5px;"  >
-                        <div class="ui-grid-col-8">
-                            <div class="ui-grid ui-grid-responsive" style="float:left;">
-                                <div class="ui-grid-row" style="margin-top:5px;height:120px;"  >
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row margin-big" id="geomap-wrapper" >
+                        <p:gmap id="geoGmap" widgetVar="geoMap" center="#{eventBean.centerGeoMap}"
+                                zoom="#{eventBean.zoomGeoMap}" type="ROADMAP"
+                        />
+                    </div>
+                </div>
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row margin-big">
+                        <div class="ui-grid-col-6">
+                            <div class="ui-grid ui-grid-responsive" id="form-part-2" >
+                                <div class="ui-grid-row margin-small">
                                     <div class="ui-grid-col-2">
-                                        <div style="float:left;width:87px">Description:</div>
+                                        <p:outputLabel for="description" value="Description:"/>
                                     </div>
-                                    <div class="ui-grid-col-4">
-                                        <p:inputTextarea id="description" value="#{eventBean.event.description}" placeholder="Description" style="width:200px; height:100px;  font-size:15px " />
+                                    <div class="ui-grid-col-7">
+                                        <p:inputTextarea id="description" value="#{eventBean.event.description}" placeholder="Description" styleClass="input-wide">
+                                            <p:ajax update="desc_msg" event="blur"/>
+                                        </p:inputTextarea>
                                     </div>
-                                    <div class="ui-grid-col-2" style="width:50%">
+                                    <div class="ui-grid-col-3" >
                                         <p:message id="desc_msg" for="description"/>
                                     </div>
                                 </div>
-                                <div class="ui-grid-row" style="" >
+                                <div class="ui-grid-row" >
                                     <div class="ui-grid-col-2">
-                                        <div style="width:87px;">Start Date:</div>
+                                        <p:outputLabel for="start_date" value="Start Date:"/>
                                     </div>
-                                    <div class="ui-grid-col-4">
-                                        <p:inputText value="#{eventBean.startDate}" id="start_date" class="start"   placeholder="Start date" style="width:205px">
-                                            <f:convertDateTime pattern="d/M/yyyy" />
+                                    <div class="ui-grid-col-7">
+                                        <p:inputText value="#{eventBean.startDate}" id="start_date" widgetVar="startDate" class="start date" placeholder="Start date" styleClass="input-wide">
+                                            <p:ajax update="startd_msg" event="blur"/>
+                                            <f:convertDateTime pattern="d/M/yyyy"/>
                                         </p:inputText>
                                     </div>
-                                    <div class="ui-grid-col-2" style="width:50%">
+                                    <div class="ui-grid-col-3" >
                                         <p:message id="startd_msg" for="start_date"/>
                                     </div>
                                 </div>
-                                <div class="ui-grid-row" style="margin-top:5px" >
+                                <div class="ui-grid-row margin-small">
                                     <div class="ui-grid-col-2">
-                                        <div style="width:87px;">End Date:</div>
+                                        <p:outputLabel for="end_date" value="End Date:"/>
                                     </div>
-                                    <div class="ui-grid-col-4">
-                                        <p:inputText value="#{eventBean.endDate}" id="end_date" class="end"   placeholder="End date" style="width:205px">
-                                            <f:convertDateTime pattern="d/M/yyyy" />
+                                    <div class="ui-grid-col-7">
+                                        <p:inputText value="#{eventBean.endDate}" id="end_date" widgetVar="endDate" class="end date" placeholder="End date" styleClass="input-wide">
+                                            <p:ajax update="endd_msg" event="blur"/>
+                                            <f:convertDateTime pattern="d/M/yyyy"/>
                                         </p:inputText>
                                     </div>
-                                    <div class="ui-grid-col-2" style="width:50%">
+                                    <div class="ui-grid-col-3" >
                                         <p:message id="endd_msg" for="end_date"/>
                                     </div>
                                 </div>
-                                <div class="ui-grid-row" style="margin-top:5px;"  >
-                                    <div class="ui-grid-col-1" >
-                                        <div style="width:87px">Start:</div>
-                                    </div>
+                                <div class="ui-grid-row margin-small taller">
                                     <div class="ui-grid-col-2">
-                                        <p:inputText value="#{eventBean.startTime}" placeholder="7:00" id="start_time" class="start" style=" width:50px;  font-size:15px ">
-                                            <f:convertDateTime pattern="H:m" />
+                                        <p:outputLabel for="start_time" value="Start:"/>
+                                    </div>
+                                    <div class="ui-grid-col-3">
+                                        <p:inputText value="#{eventBean.startTime}" placeholder="7:00" id="start_time" widgetVar="startTime" class="start time">
+                                            <p:ajax update="startt_msg" event="blur"/>
+                                            <f:convertDateTime pattern="H:m"/>
                                         </p:inputText>
                                     </div>
-                                    <div class="ui-grid-col-1" >
-                                        End:
+                                    <div class="ui-grid-col-1 text-center">
+                                        <p:outputLabel for="end_time" value="End:"/>
                                     </div>
-                                    <div class="ui-grid-col-2" >
-                                        <p:inputText value="#{eventBean.endTime}" placeholder="8:00" id="end_time" class="end" style=" width:50px; font-size:15px ">
-                                            <f:convertDateTime pattern="H:m" />
+                                    <div class="ui-grid-col-3">
+                                        <p:inputText value="#{eventBean.endTime}" placeholder="8:00" id="end_time" widgetVar="endTime" class="end time">
+                                            <p:ajax update="endt_msg" event="blur"/>
+                                            <f:convertDateTime pattern="H:m"/>
                                         </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-1">
@@ -184,20 +171,19 @@
                                         <p:message id="endt_msg" for="end_time"/>
                                     </div>
                                 </div>
-                                <div class="ui-grid-row" style="margin-top:20px">
-                                    <div class="ui-grid-col-2" style="width:87px">
-                                        Invite Friends:
+                                <div class="ui-grid-row margin-big">
+                                    <div class="ui-grid-col-2" >
+                                        <p:outputLabel for="user-search" value="Invite Friends:"/>
                                     </div>
-                                    <div class="ui-grid-col-6">
-                                        <div style="width:50px">
-                                            <p:autoComplete id="user" multiple="true" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
-                                                    var="user" itemLabel="#{user.email}" itemValue="#{user.email}"  forceSelection="true">
-                                                <p:column style="">
-                                                    <h:outputText value="#{user.firstName}" />
+                                    <div class="ui-grid-col-7">
+                                        <div >
+                                            <p:autoComplete id="user-search" multiple="true" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
+                                                    var="user" styleClass="input-wide" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="true">
+                                                <p:column >
+                                                    <h:outputText value="#{user.firstName}"/>
                                                 </p:column>
-                                              
                                                 <p:column>
-                                                    <h:outputText value="#{user.email}" />
+                                                    <h:outputText value="#{user.email}"/>
                                                 </p:column>
                                             </p:autoComplete>
                                         </div>
@@ -205,60 +191,53 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="ui-grid-col-8">
-                            <div class="ui-grid ui-grid-responsive" style="float:left;">
-                                <div class="ui-grid-row" style="margin-top:5px;"  >
-                                    <div class="ui-grid-col-2" style="margin-top:5px;margin-left:5px">
-                                          Weather Conditions:
+                        <div class="ui-grid-col-6">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row margin-small tallest">
+                                    <div class="ui-grid-col-3">
+                                          <p:outputLabel for="weather-conditions" value="Weather Conditions:"/>
                                     </div>
-                                    <div class="ui-grid-col-2" style="width:150px">
-                                        <p:selectManyButton style="width:200px;font-size:13px" value="#{eventBean.states}">
-                                            <f:selectItem itemLabel="Sun" itemValue="#{WeatherStateConstraint.SUN}" />
-                                            <f:selectItem itemLabel="Rain" itemValue="#{WeatherStateConstraint.RAIN}" />
-                                            <f:selectItem itemLabel="Fog" itemValue="#{WeatherStateConstraint.FOG}" />
-                                            <f:selectItem itemLabel="Cloud" itemValue="#{WeatherStateConstraint.CLOUD}" />
-                                            <f:selectItem itemLabel="Snow"  itemValue="#{WeatherStateConstraint.SNOW}" />
-                                            <f:selectItem itemLabel="Wind"  itemValue="#{WeatherStateConstraint.WIND}" />
+                                    <div class="ui-grid-col-9">
+                                        <p:selectManyButton id="weather-conditions" value="#{eventBean.states}" converter="omnifaces.GenericEnumConverter">
+                                            <f:selectItem itemLabel="Sun" itemValue="#{State.SUN}"/>
+                                            <f:selectItem itemLabel="Rain" itemValue="#{State.RAIN}"/>
+                                            <f:selectItem itemLabel="Fog" itemValue="#{State.FOG}"/>
+                                            <f:selectItem itemLabel="Cloud" itemValue="#{State.CLOUD}"/>
+                                            <f:selectItem itemLabel="Snow" itemValue="#{State.SNOW}"/>
+                                            <f:selectItem itemLabel="Wind" itemValue="#{State.WIND}"/>
                                         </p:selectManyButton>
                                     </div>
                                 </div>
-                                <div class="ui-grid-row" style="width:350px;margin-top:5px">
-                                    <div class="ui-grid-col-2" style="width:150px">
-                                        <h:outputText id="output" value="Temperature: 0°" />
+                                <div class="ui-grid-row margin-small taller">
+                                    <div class="ui-grid-col-3">
+                                        <p:selectBooleanButton widgetVar="tempSelector" id="value2" value="#{eventBean.hasConstraint}" onLabel="Temperature:" offLabel="Temperature:" onIcon="fa fa-check" offIcon="fa fa-times"/>
                                     </div>
-                                    <h:inputHidden id="txt1" />
-                                    <div class="ui-grid-col-2" style="width:200px">
-                                        <div style="float:left;"> <p:slider for="txt1" display="output" style="width:150px;float:left " displayTemplate="Temperature: {value}°"/> </div>
+                                    <div class="ui-grid-col-2">
+                                        <p:inputSwitch id="temp-dir" widgetVar="tempDir" onLabel="Below" offLabel="Above" value="#{eventBean.weatherC.isTemperatureLowerThan}"/>
                                     </div>
-                                </div>
-                                <div class="ui-grid-row" style="width:350px;margin-top:5px">
-                                    <div class="ui-grid-col-4" style="width:75px;float:right">
-                                        <div style="float:right">Above</div>
+                                    <div class="ui-grid-col-2 contained-cant-exceed">
+                                        <p:spinner id="temp" widgetVar="tempVal" stepFactor="1" value="#{eventBean.weatherC.temperature}" min="-80" max="100" suffix=" °C">
+                                            <p:ajax update="temp_msg" event="blur"/>
+                                        </p:spinner>
                                     </div>
-                                    <div class="ui-grid-col-4" style="width:75px">
-                                        <p:selectBooleanCheckbox style="float:right" />
-                                    </div>
-                                    <div class="ui-grid-col-4" style="width:75px">
-                                        <div style="float:right">Below</div>
-                                    </div>
-                                    <div class="ui-grid-col-4" style="width:75px;float:right">
-                                        <p:selectBooleanCheckbox style="float:right"/>
+                                    <div class="ui-grid-col-5">
+                                        <p:message id="temp_msg" for="temp"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="ui-grid-row" style="width:350px;margin-top:100px">
-                        <div class="ui-grid-col-2" style="width:175px"> 
-                            <p:commandButton action="#{eventBean.save()}" value="Create" style="width:150px;height:40px; font-size:20px; background-color:rgb(29,129,201);border-radius:5px; margin:10px"></p:commandButton>
+                    <div class="ui-grid-row margin-big">
+                        <div class="ui-grid-col-1">
+                            <p:commandButton update="msgs" action="#{eventBean.save()}" value="Create"></p:commandButton>
                         </div>
-                        <div class="ui-grid-col-2" style="width:175px">
-                            <p:commandButton  value="Cancel" style="width:150px;height:40px; font-size:20px; background-color:rgb(29,129,201);border-radius:5px; margin:10px"> </p:commandButton>
-                        </div> 
+                        <div class="ui-grid-col-1">
+                            <p:commandButton  value="Cancel" action="#{eventBean.goToIndex()}"> </p:commandButton>
+                        </div>
                     </div>
                 </div>
             </h:form>
-            
+
         </ui:define>
     </ui:composition>
 </html>
