@@ -47,7 +47,7 @@
     </welcome-file-list>
     <session-config>
         <session-timeout>
-            30
+            1440
         </session-timeout>
     </session-config>
     <login-config>
