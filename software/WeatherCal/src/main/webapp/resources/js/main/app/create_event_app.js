@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-require(['moment', 'underscore'], function (moment, _) {
+define(['moment', 'underscore'], function (moment, _) {
     "use strict";
     var App = function(){};
     App.prototype = {
@@ -216,6 +216,5 @@ require(['moment', 'underscore'], function (moment, _) {
             return this;
         }
     };
-    var app = new App();
-    app.start();
+    return App;
 });

@@ -265,6 +265,11 @@ h3 {
     color:rgb(21,104,165);
 }
 
+h4 {
+    font-size:  1.3em;
+    color:#002a71;
+}
+
 .ui-icon.fa {
     text-indent:0px;
     background-image:none;
@@ -284,4 +289,61 @@ div.ui-message-error {
 
 .ui-message-error-detail {
     white-space: pre-wrap;
+}
+
+#backboneForecast h4 {
+    margin-left: .7em; 
+}
+
+#backboneForecast h3 {
+    margin-top: .4em;
+    margin-bottom: .4em;
+    font-weight: 600;
+}
+
+#backboneForecast .ui-grid-responsive {
+    margin-right: 10px;
+    margin-top: 1em;
+}
+
+#backboneForecast #place {
+    margin-bottom: .5em;
+}
+
+#backboneForecast #forecast_days {
+    border-radius:10px;
+    border-style:solid;
+    border-width:3px;
+    border-color:rgb(29,129,201);
+    border-radius: 10px;
+}
+
+#backboneForecast #forecast_days>div:first-child {
+    background-color: #FFEC67;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+#backboneForecast #forecast_days>div:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-right: none;
+}
+
+#backboneForecast #forecast_days>div {
+    background-color:#fdfd5f;
+    text-align: center;
+    border-right: .2em solid #c2c3b1;
+}
+
+#backboneForecast #forecast_days .has_detail {
+    cursor: pointer;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: color, background-color;
+    transition-property: color, background-color, box-shadow, transform;
+}
+
+#backboneForecast #forecast_days .has_detail:hover, #backboneForecast #forecast_days .has_detail:active {
+    background-color:#B3E2FF;
 }

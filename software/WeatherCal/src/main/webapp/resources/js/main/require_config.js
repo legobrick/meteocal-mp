@@ -16,6 +16,8 @@ var require = {
         /* ----- LIBS ----- */
 //        moment:         '../lib/moment-with-locales.min',
 //        underscore:     '../lib/underscore.min',
+//        backbone:       '../lib/backbone.min'
+//        marionette:     '../lib/backbone.marionette.min'
 
 
 //        underscore:             'external_libs/underscore',
@@ -28,20 +30,32 @@ var require = {
         /* ----- VIEWMODELS ----- */
 //        mvs:                    'objs'
 
+        text:           '../lib/text',
+        jquery:         '../lib/jquery',
 
         /* ===== DEBUG ==== */
         /* ----- LIBS ----- */
         moment:         '../lib/moment-with-locales',
         underscore:     '../lib/underscore',
+        backbone:       '../lib/backbone',
+        marionette:     '../lib/backbone.marionette'
     },
 //    deps: ['knockout', 'mapping'],
 //    callback: function (knockout, mapping) {
 //        knockout.mapping = mapping;
 //    },
     shim: {
-        underscore: {
+        backbone:{
+            deps: ['underscore'],
+            exports: 'Backbone'
+        },
+        underscore:{
             exports: '_'
         },
+        marionette:{
+            deps : ['backbone'],
+            exports : 'Marionette'
+       },
 //        EventGateway: {
 //            deps:       ['underscore'],
 //            exports:    'EventGateway'
