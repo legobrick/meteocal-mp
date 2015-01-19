@@ -5,6 +5,7 @@
  */
 package it.polimi.deib.se2.mp.weathercal.gui;
 
+import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;

@@ -5,21 +5,22 @@
  */
 package it.polimi.deib.se2.mp.weathercal.boundary;
 
+import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
+import it.polimi.deib.se2.mp.weathercal.entity.Owner;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
 import it.polimi.deib.se2.mp.weathercal.entity.TimeZoneResponse;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.ws.rs.client.Client;
@@ -98,20 +99,25 @@ public class EventManager extends AbstractFacade<Event>{
                         Math.abs(resultOffset / 60), resultOffset % 60)
         );
     }
-
-    public void save(Event event) {
-        
-        em.persist(event);
-//        em.flush();
-//        Query q = em.createNamedQuery("Groups.findByName");
-//        Groups g = (Groups) q
-//                    .setParameter("name", Groups.USERS)
-//                    .getSingleResult();
-//        if(!user.getGroupsCollection().contains(g)){
-//            user.getGroupsCollection().add(g);
-//            em.merge(user);
-//        }
+    
+    @Override
+    public void create(Event event) {
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        try{
+            super.create(event);
+            CalendarEntity c = um.getLoggedUser().getCalendarCollection().iterator().next();
+            em.persist(new Owner(){{
+                setCalendar(c);
+                setEvent(event);
+            }});
+        } catch (Exception e){
+            t.rollback();
+            throw e;
+        }
+        t.commit();
     }
+    
     public void changeAvailability(String av,Participation changepart){
   
         
