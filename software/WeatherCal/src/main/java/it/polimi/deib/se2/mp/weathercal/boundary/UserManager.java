@@ -9,6 +9,7 @@ import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Groups;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,14 +44,16 @@ public class UserManager {
             userGroups.add(g);
             em.merge(user);
         }
-        //create user's default calendar
-        CalendarEntity c = new CalendarEntity();
-        em.persist(c);
-        em.flush();
         Collection userCalendars = user.getCalendarCollection();
         if(userCalendars.size() < 1){
+            //create user's default calendar
+            CalendarEntity c = new CalendarEntity();
+            c.setUserCollection(new ArrayList<User>(){{
+                add(user);
+            }});
             userCalendars.add(c);
             em.merge(user);
+            em.flush();
         }
     }
 

@@ -9,6 +9,7 @@ import it.polimi.deib.se2.mp.weathercal.control.PasswordEncrypter;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -71,7 +72,7 @@ public class User implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "username", nullable = false, length = 100)
     private String username;
-    @ManyToMany(mappedBy = "userCollection")
+    @ManyToMany(mappedBy = "userCollection", cascade = CascadeType.ALL)
     private Collection<CalendarEntity> calendarCollection;
 
     public User() {
