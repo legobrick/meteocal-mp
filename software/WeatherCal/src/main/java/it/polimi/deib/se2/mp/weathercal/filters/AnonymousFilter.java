@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.faces.application.ProjectStage;
+import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -24,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AnonymousFilter implements Filter {
     
-    private static final boolean debug = true;
+    private static final boolean debug = FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -62,6 +64,11 @@ public class AnonymousFilter implements Filter {
         String servletPath = req.getServletPath();
         String extension = servletPath.substring(servletPath.indexOf(".") + 1);
         if (debug) {
+            //disable caching while in development mode
+            HttpServletResponse res = (HttpServletResponse) response;
+            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+            res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+            res.setDateHeader("Expires", 0);
             log("AnonymousFilter:user=" + user + "; path=" + servletPath);
         }
         if (!servletPath.equals("/login.xhtml") && "xhtml".equals(extension) && user == null){

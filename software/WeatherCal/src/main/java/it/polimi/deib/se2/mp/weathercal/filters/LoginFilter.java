@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.faces.application.ProjectStage;
+import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -24,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginFilter implements Filter {
     
-    private static final boolean debug = true;
+    private static final boolean debug = FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
