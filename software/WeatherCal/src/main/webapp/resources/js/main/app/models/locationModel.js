@@ -31,9 +31,7 @@ define(["backbone", "models/forecastCollection"],function(Backbone, Forecasts){
             this.fetch();
         },
         setErrorState : function(){
-            if(++this.age > 4){
-                this.trigger("weather:error");
-            }
+            this.trigger("weather:error");
         },
         url: "http://api.openweathermap.org/data/2.5/forecast/daily",
         parse : function( data, xhr ) {
@@ -52,6 +50,10 @@ define(["backbone", "models/forecastCollection"],function(Backbone, Forecasts){
                     lon:    this.longitude
                 }
             });
+            var trigger = this.trigger;
+            options.error = function(){
+                trigger("weather:error");
+            };
             var success = options.success;
             var model = this;
             options.success = function(model, resp, options) {

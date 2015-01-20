@@ -4,14 +4,16 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
 /* 
-    Created on : 14-gen-2015, 9.02.08
-    Author     : paolo
+    Created on :	14-gen-2015, 9.02.08
+    Author     :	paolo
 */
+
+@import"http://use.typekit.net/c/30a901/1w;museo-slab,2,SKB:N:n3,WH7:N:n5;proxima-nova,2,Vmx:N:n3,W0V:N:n4,W0X:N:n6;proxima-nova-sc-osf,2,S86:N:n3/d?3bb2a6e53c9684ffdc9a98f2135b2a6250f2340d8ca0853b7df9677441e251a731c54f407c1f09bb93286ed5d8b6a13bfd39bb98e3e53bfaa449fa93a44541da39ed82de99b4dc9ba9cb3b81fa64e52cbf100c65ea46831bd044cbc14ee4954033891a49409fc18e1db26c1acb7b6a7d4bab5d6754e2597f640c290175e28ccfb7e926ad5f48083d63c5c23008fb7fbdafa156c2b90be39de88663fff6d6da0123d71a6f903166d281f0c989f51202d506fb00912ca4421435f22027a3fe8924009edecac31f8f1e98855b9b669f1c68febba1f3476407fff423bc838e9043c235e02494479fd9fc81d940b7e5315d2fee862ff2db85902f57";
 
 
 /* http://meyerweb.com/eric/tools/css/reset/
     v2.0 | 20110126
-    License: none (public domain)
+    License:	none (public domain)
 */
 
 html, body, div, span, applet, object, iframe,
@@ -27,114 +29,114 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
+    margin:	0;
+    padding:	0;
+    border:	0;
+    font-size:	100%;
+    font:	inherit;
+    vertical-align:	baseline;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
-    display: block;
+    display:	block;
 }
 body {
-    line-height: 1;
+    line-height:	1;
 }
 ol, ul {
-    list-style: none;
+    list-style:	none;
 }
 blockquote, q {
-    quotes: none;
+    quotes:	none;
 }
 blockquote:before, blockquote:after,
 q:before, q:after {
-    content: '';
-    content: none;
+    content:	'';
+    content:	none;
 }
 table {
-    border-collapse: collapse;
-    border-spacing: 0;
+    border-collapse:	collapse;
+    border-spacing:	0;
 }
 
 html, body {
-    height: 100%;
-    width: 100%;
+    height:	100%;
+    width:	100%;
 }
 
 body{
     margin:0;
     padding:0;
-    display: table;
-    /*                line-height: 1.5em;*/
-    min-width: 390px;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    line-height: 1.42857;
-    color: #333;
-    background-color: #FFF;
-    transition: all 0.3s ease-in-out 0s;
+    display:	table;
+    /*                line-height:	1.5em;*/
+    min-width:	390px;
+    font-family:	"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:	14px;
+    line-height:	1.42857;
+    color:	#333;
+    background-color:	#FFF;
+    transition:	all 0.3s ease-in-out 0s;
 }
 
 * {
-    box-sizing: border-box;
+    box-sizing:	border-box;
 }
 
-b{font-size: 110%;}
-em{color: red;}
+b{font-size:	110%;}
+em{color:	red;}
 
 #head {
     width:100%;
     height:6em;
     background-color:rgb(255,255,245);
     color:rgb(29,129,201);
-    box-shadow: 0px 4px 5px rgb(192,192,192);
-    position: relative;
+    box-shadow:	0px 4px 5px rgb(192,192,192);
+    position:	relative;
 }
 
 #title {
-    float: left;
+    float:	left;
     font-size:3.5em;
-    font-weight: 600;
+    font-weight:	600;
     margin-left:25px;
-    padding-top: .2em;
+    padding-top:	.2em;
 }
 
 #title h1 {
-    text-shadow: 2px 2px 3px rgba(35, 47, 82, 0.49);
+    text-shadow:	2px 2px 3px rgba(35, 47, 82, 0.49);
 }
 
 #main_buttons {
-    float: right;
-    margin: 1.3em;
+    float:	right;
+    margin:	1.3em;
 }
 
 #main_buttons ul {
-    float: left;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
+    float:	left;
+    width:	100%;
+    padding:	0;
+    margin:	0;
+    list-style-type:	none;
 }
 
 #main_buttons li {
-    display: inline;
-    padding: 0.2em 1em;
-    float: left;
+    display:	inline;
+    padding:	0.2em 1em;
+    float:	left;
 }
 
 #main_buttons li>* {
-    width: 12em;
-    height: 2.7em;
-    border-radius: 5px;
-    border-width: 0px;
+    width:	12em;
+    height:	2.7em;
+    border-radius:	5px;
+    border-width:	0px;
 }
 
-/* dio porco primefaces di merda: regole per pulsanti */
+/* dio porco primefaces di merda:	regole per pulsanti */
 
 [id$=notification_button] {
-    background-color: rgb(30,130,201);
+    background-color:	rgb(30,130,201);
     color:rgba(255, 255, 255, 0.75);
     border-width:2px;
     border-color:#e2173d;
@@ -144,7 +146,7 @@ em{color: red;}
     background-image:-o-linear-gradient(top, #90C4FF, rgb(30,130,201));
     background-image:linear-gradient(top, #90C4FF, rgb(30,130,201));
     background-image:-moz-linear-gradient(top, #90C4FF, rgb(30,130,201));
-    text-shadow: 0.03em 0 .03em rgba(255, 255, 255, 0.87);
+    text-shadow:	0.03em 0 .03em rgba(255, 255, 255, 0.87);
 }
 
 [id$=logout_button] {
@@ -158,92 +160,92 @@ em{color: red;}
     background-image:-o-linear-gradient(top, #FF8888, #e2173d);
     background-image:linear-gradient(top, #FF8888, #e2173d);
     background-image:-moz-linear-gradient(top, #FF8888, #e2173d);
-    text-shadow: 0.03em 0 .03em rgba(255, 255, 255, 0.87);
+    text-shadow:	0.03em 0 .03em rgba(255, 255, 255, 0.87);
 }
 
 .nontext-center {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left:	auto;
+    margin-right:	auto;
 }
 .text-center {
-    text-align: center;
+    text-align:	center;
 }
 
 #container{
     display:table;
-    width: 100%;
-    height: 100%;
-    margin: 0 0 -48px;
-    padding: 0 0 48px;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    background: #eee;
-    transition: width 0.4s ease 0s;
+    width:	100%;
+    height:	100%;
+    margin:	0 0 -48px;
+    padding:	0 0 48px;
+    -moz-box-sizing:	border-box;
+    box-sizing:	border-box;
+    background:	#eee;
+    transition:	width 0.4s ease 0s;
 }
 
 #container .column {
-    display: table-cell;
+    display:	table-cell;
 }
 
 #topsection{
-    background: #EAEAEA;
-    height: 90px; /*Height of top section*/
+    background:	#EAEAEA;
+    height:	90px; /*Height of top section*/
 }
 
 #topsection h1{
-    margin: 0;
-    padding-top: 15px;
+    margin:	0;
+    padding-top:	15px;
 }
 
 #content{
-    padding: 10px 20px;       /* CC padding */
-    overflow-x: auto;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    padding:	10px 20px;       /* CC padding */
+    overflow-x:	auto;
+    text-overflow:	ellipsis;
+    white-space:	nowrap;
 }
 
 #nav{
-    width: 350px;             /* RC width */
-    min-width: 300px;
-    padding-left: 10px;          /* RC padding */
-    transition: all 0.3s ease-in-out 0s;
-    background: #F5DEB3;
-    box-shadow: -3px 4px 5px rgb(192,192,192);
-    overflow: hidden;
-    position: relative;
+    width:	350px;             /* RC width */
+    min-width:	300px;
+    padding-left:	10px;          /* RC padding */
+    transition:	all 0.3s ease-in-out 0s;
+    background:	#F5DEB3;
+    box-shadow:	-3px 4px 5px rgb(192,192,192);
+    overflow:	hidden;
+    position:	relative;
 }
 
 .footer{
-    margin: 0px auto;
-    color: #F4F4F4;
-    border-top: 1px solid #ccc;
-    width: 100%;
-    height: 48px;
-    position: relative;
-    background-color: #C7C7C7;
+    margin:	0px auto;
+    color:	#F4F4F4;
+    border-top:	1px solid #ccc;
+    width:	100%;
+    height:	48px;
+    position:	relative;
+    background-color:	#C7C7C7;
 }
 
 .footer>div {
-    color: #777777;
-    font-style: italic;
-    font-family: helvetica;
-    font-size: .9em;
-    padding-top: .4em;
+    color:	#777777;
+    font-style:	italic;
+    font-family:	helvetica;
+    font-size:	.9em;
+    padding-top:	.4em;
 }
 
 .footer a {
-    color: #555555;
+    color:	#555555;
 }
 
 #wrap:after, #contentsection:after, #rightcolumn:after, .footer:after {
-    clear: both;
+    clear:	both;
 }
 
 
 .innertube {
-    margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
-    margin-top: 0;
-    margin-top: .5em;
+    margin:	10px; /*Margins for inner DIV inside each column (to provide padding)*/
+    margin-top:	0;
+    margin-top:	.5em;
 }
 
 div.ui-grid-responsive{
@@ -251,22 +253,22 @@ div.ui-grid-responsive{
 }
 
 .innertitle {
-    margin-bottom: .5em;
-    font-weight: 600;
+    margin-bottom:	.5em;
+    font-weight:	600;
 }
 
 h2 {
     color:rgb(29,129,201);
-    font-size: 2em;
+    font-size:	2em;
 }
 
 h3 {
-    font-size: 1.7em;
+    font-size:	1.7em;
     color:rgb(21,104,165);
 }
 
 h4 {
-    font-size:  1.3em;
+    font-size:	 1.3em;
     color:#002a71;
 }
 
@@ -276,74 +278,165 @@ h4 {
 }
 
 div.ui-message-error {
-    text-align: center;
-    border-color: #B20808;
-    position: absolute;
-    -webkit-transition: ease-in-out .1s;
-    -moz-transition: ease-in-out .1s;
-    -ms-transition: ease-in-out .1s;
-    -o-transition: ease-in-out .1s;
-    transition: ease-in-out .1s;
-    padding-right: .5em;
+    text-align:	center;
+    border-color:	#B20808;
+    position:	absolute;
+    -webkit-transition:	ease-in-out .1s;
+    -moz-transition:	ease-in-out .1s;
+    -ms-transition:	ease-in-out .1s;
+    -o-transition:	ease-in-out .1s;
+    transition:	ease-in-out .1s;
+    padding-right:	.5em;
+    z-index:	999;
 }
 
 .ui-message-error-detail {
-    white-space: pre-wrap;
+    white-space:	pre-wrap;
 }
 
 #backboneForecast h4 {
-    margin-left: .7em; 
+    margin-left:	.7em; 
 }
 
 #backboneForecast h3 {
-    margin-top: .4em;
-    margin-bottom: .4em;
-    font-weight: 600;
+    margin-top:	.4em;
+    margin-bottom:	.4em;
+    font-weight:	600;
 }
 
 #backboneForecast .ui-grid-responsive {
-    margin-right: 10px;
-    margin-top: 1em;
+    margin-right:	10px;
+    margin-top:	.4em;
 }
 
 #backboneForecast #place {
-    margin-bottom: .5em;
+    margin-bottom:	.5em;
 }
 
-#backboneForecast #forecast_days {
+#backboneForecast #forecast_days.ui-grid-row {
     border-radius:10px;
     border-style:solid;
     border-width:3px;
     border-color:rgb(29,129,201);
-    border-radius: 10px;
+    border-radius:	10px;
 }
 
 #backboneForecast #forecast_days>div:first-child {
-    background-color: #FFEC67;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    background-color:	#FFEC67;
+    border-top-left-radius:	10px;
+    border-bottom-left-radius:	10px;
 }
 
 #backboneForecast #forecast_days>div:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-right: none;
+    border-top-right-radius:	10px;
+    border-bottom-right-radius:	10px;
+    border-right:	none;
 }
 
 #backboneForecast #forecast_days>div {
     background-color:#fdfd5f;
-    text-align: center;
-    border-right: .2em solid #c2c3b1;
+    text-align:	center;
+    border-right:	.2em solid #c2c3b1;
 }
 
 #backboneForecast #forecast_days .has_detail {
-    cursor: pointer;
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
-    -webkit-transition-property: color, background-color;
-    transition-property: color, background-color, box-shadow, transform;
+    cursor:	pointer;
+    -webkit-transition-duration:	0.3s;
+    transition-duration:	0.3s;
+    -webkit-transition-property:	color, background-color;
+    transition-property:	color, background-color, box-shadow, transform;
 }
 
 #backboneForecast #forecast_days .has_detail:hover, #backboneForecast #forecast_days .has_detail:active {
     background-color:#B3E2FF;
+}
+
+#backboneForecast .forecast_detail {
+}
+
+#backboneForecast .forecast_detail_outer {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.24);
+    margin-top: 1em;
+    border-radius: 1em;
+}
+
+#backboneForecast .ui-messages {
+    width: 100%;
+    padding-right: .5em;
+}
+
+.forecast_detail_inner {
+    height: 100%;
+    width: 100%;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 1em;
+    padding: 1em .6em .8em .8em;
+}
+
+.forecast_detail_inner div.ui-grid-row:first-child {
+    margin-top: -0.9em;
+    margin-bottom:  1em;
+}
+
+.forecast_detail_inner b {
+    font-weight: bold;
+}
+
+.forecast_detail_inner .weather_desc {
+    font-size: 110%;
+    font-style: italic;
+    color: #03006C;
+    font-family: proxima-nova-sc-osf;
+    font-weight: bold;
+}
+
+.forecast_detail_inner div.ui-grid-row:first-of-type>div img {
+    position: relative;
+    left: 50%;
+    height: 88px;
+    margin-left: -50px;
+    margin-bottom: -2.6em;
+    margin-top: -0.7em;
+}
+
+.forecast_detail_inner div.ui-grid-row:not(:first-child) {
+    margin-top: .5em;
+    font-family: proxima-nova;
+}
+
+.forecast_detail_inner div.ui-grid-row:not(:first-child) i {
+    font-style: italic;
+}
+
+.forecast_detail_inner .calendar-heading {
+    font-size: 1.8em;
+    font-family: proxima-nova, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: center;
+    padding-right: .2em;
+    margin-top: .2em;
+    padding-bottom: .6em;
+    margin-left: .3em;
+    font-variant: small-caps;
+}
+
+.forecast_detail_inner .calendar-heading span {
+    font-style: italic;
+}
+
+.forecast_detail_inner div.ui-grid-row:first-of-type>div+div {
+    padding-top: .3em;
+    padding-left: 0.6em;
+    padding-bottom: .4em;
+    background-color: #cccccc;
+    border-radius: .8em;
+    border: .1em solid #aaaaaa;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+    line-height: 100%;
+    margin: 0 1em;
+}
+
+.list-unstyled {
+    padding-left: 0px;
+    list-style: none outside none;
 }

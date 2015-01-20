@@ -1,5 +1,5 @@
 <% _.each(items, function(item){ %>
-<div class="ui-grid-col-2 has_detail">
+<div class="ui-grid-col-2 has_detail" data-id="<%= item.dt %>">
     <span><%= item.dow %></span>
     <span><%= item.doy %></span>
 </div>

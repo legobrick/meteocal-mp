@@ -1,0 +1,47 @@
+<div class="forecast_detail_inner">
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-6">
+                <img title="<%= weather.main %>" alt="<%= weather.main %>" src="<%= weather.icon %>">
+            </div>
+            <div class="ui-grid-col-6">
+                <i class="fa fa-calendar-o"></i><h5 class="calendar-heading"><span><%= dow %></span> <%= doy %></h5>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-6">
+                <h6 class="weather_desc"><%= weather.description %></h6>
+            </div>
+            <div class="ui-grid-col-6">
+                <span><b>Temperature:</b> <%= temp.avg %> <i>°C</i></span>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-6">
+            </div>
+            <div class="ui-grid-col-6">
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-6">
+                <span><b>Pressure:</b> <%= pressure %> <i>hPa</i></span>
+            </div>
+            <div class="ui-grid-col-6">
+                <span><b>Humidity:</b> <%= humidity %> <i>%</i></span>
+            </div>
+        </div>
+        <% if(rain > 1 || snow > 1){ %>
+        <div class="ui-grid-row">
+            <% if(rain > 1){ %>
+            <div class="ui-grid-col-6">
+                <span><b>Rain:</b> <%= rain %> <i>mm</i></span>
+            </div>
+            <% } if(snow > 1){ %>
+            <div class="ui-grid-col-6">
+                <span><b>Snow:</b> <%= snow %> <i>mm</i></span>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+    </div>
+</div>

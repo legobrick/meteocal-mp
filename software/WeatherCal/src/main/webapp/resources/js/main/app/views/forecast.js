@@ -22,10 +22,15 @@ function(Marionette, forecastTemplate){
                 this.$el.attr('id', '');
             else
                 this.$el.attr('id', this.id);
+            var $forecastDetail = this.$el.find("#forecast_detail");
+            $forecastDetail.fadeOut("fast", function(){
+                $forecastDetail.html();
+            });
             return Marionette.ItemView.prototype.render.apply(this, arguments);
         },
-		openDetail: function(){
-            alert("PORCAMADONNA");
+		openDetail: function(e){
+            var model = this.collection.get($(e.currentTarget).data("id"));
+            this.trigger("detail:open", model);
 		},
 		events:{
 			'click .has_detail' : 'openDetail'

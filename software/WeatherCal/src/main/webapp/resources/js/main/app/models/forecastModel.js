@@ -10,13 +10,15 @@ define(["backbone", "moment"],function(Backbone, moment){
         parse : function( data, xhr ) {
             var when = moment.unix(data.dt);
             return {
+                dt: data.dt,
                 dow: when.format("ddd"),
                 doy: when.format("D/M"),
                 temp: data.temp, //°C
-                pressure: data.pressure, //hPa
+                pressure: Math.round(parseFloat(data.pressure)), //hPa
                 humidity: data.humidity, //%
                 weather: _.extend(data.weather[0], {
-                        icon: "http://openweathermap.org/img/w/" + data.weather.icon + ".png"
+                        icon: "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png",
+                        description: data.weather[0].description[0].toUpperCase() + data.weather[0].description.substring(1)
                     }
                 ),
                 speed: data.speed, //km/h
