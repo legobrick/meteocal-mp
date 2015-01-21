@@ -13,7 +13,9 @@ define(["backbone", "moment"],function(Backbone, moment){
                 dt: data.dt,
                 dow: when.format("ddd"),
                 doy: when.format("D/M"),
-                temp: data.temp, //°C
+                temp: _.each(data.temp, function(v, k, temps){
+                    temps[k] = Math.round(parseFloat( v - 273.15));
+                }), //°K
                 pressure: Math.round(parseFloat(data.pressure)), //hPa
                 humidity: data.humidity, //%
                 weather: _.extend(data.weather[0], {

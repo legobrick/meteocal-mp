@@ -9,17 +9,29 @@
             </div>
         </div>
         <div class="ui-grid-row">
-            <div class="ui-grid-col-6">
+            <div class="ui-grid-col-12">
                 <h6 class="weather_desc"><%= weather.description %></h6>
             </div>
-            <div class="ui-grid-col-6">
-                <span><b>Temperature:</b> <%= temp.avg %> <i>°C</i></span>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <span><b>Temperatures:</b></span>
             </div>
         </div>
         <div class="ui-grid-row">
             <div class="ui-grid-col-6">
+                <span><i class="fa fa-sun-o"></i> <%= temp.day %> <i>°C</i></span>
             </div>
             <div class="ui-grid-col-6">
+                <span><i class="fa fa-moon-o"></i> <%= temp.night %> <i>°C</i></span>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-6">
+                <span><i class="fa fa-caret-down"></i> <%= temp.min %> <i>°C</i></span>
+            </div>
+            <div class="ui-grid-col-6">
+                <span><i class="fa fa-caret-up"></i> <%= temp.max %> <i>°C</i></span>
             </div>
         </div>
         <div class="ui-grid-row">

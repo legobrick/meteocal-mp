@@ -339,6 +339,10 @@ div.ui-message-error {
     border-right:	.2em solid #c2c3b1;
 }
 
+#forecast_days>div span {
+    width: 100%;
+}
+
 #backboneForecast #forecast_days .has_detail {
     cursor:	pointer;
     -webkit-transition-duration:	0.3s;
@@ -405,7 +409,7 @@ div.ui-message-error {
     font-family: proxima-nova;
 }
 
-.forecast_detail_inner div.ui-grid-row:not(:first-child) i {
+.forecast_detail_inner div.ui-grid-row:not(:first-child) i:not(.fa) {
     font-style: italic;
 }
 
@@ -434,6 +438,31 @@ div.ui-message-error {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
     line-height: 100%;
     margin: 0 1em;
+}
+
+.forecast_detail_inner i.fa {
+    font-style: normal;
+    font-size: 130%;
+    vertical-align: middle;
+    margin-top: -0.1em;
+    width: 1em;
+    text-align: center;
+}
+
+.forecast_detail_inner i.fa-sun-o {
+    color: #FCA216;
+}
+
+.forecast_detail_inner i.fa-moon-o {
+    color: #0E2ECD;
+}
+
+.forecast_detail_inner i.fa-caret-up {
+    color: #E73717;
+}
+
+.forecast_detail_inner i.fa-caret-down {
+    color: #0B43D3;
 }
 
 .list-unstyled {
