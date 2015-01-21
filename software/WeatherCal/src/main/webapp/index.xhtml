@@ -68,6 +68,35 @@
                 height:25px;
                 border-radius:30px;
             }
+            .empno, .calendarButton .fc-event-inner  {
+
+                font-size:14px;
+                background: red;
+                border-color: red;
+                background-image:-ms-linear-gradient(top, #FF8888, #e2173d);
+                background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#FF8888), to(#e2173d));
+                background-image:-webkit-linear-gradient(top, #FF8888, #e2173d);
+                background-image:-o-linear-gradient(top, #FF8888, #e2173d);
+                background-image:linear-gradient(top, #FF8888, #e2173d);
+                background-image:-moz-linear-gradient(top, #FF8888, #e2173d);
+                color:#ffffff;
+                height:25px;
+                border-radius:30px;
+            }
+             .empletto, .calendarButton .fc-event-inner  {
+                background: rgb(160,160,160);
+                border-color: rgb(160,160,160);
+                font-size:14px;
+                background-image:-ms-linear-gradient(top, rgb(232,232,232), rgb(192,192,192));
+                background-image:-webkit-gradient(linear, 0 0, 0 100%, from(rgb(232,232,232)), to(rgb(192,192,192)));
+                background-image:-webkit-linear-gradient(top, rgb(232,232,232), rgb(192,192,192));
+                background-image:-o-linear-gradient(top, rgb(232,232,232), rgb(192,192,192));
+                background-image:linear-gradient(top, rgb(232,232,232), rgb(192,192,192));
+                background-image:-moz-linear-gradient(top, rgb(232,232,232), rgb(192,192,192));
+                color:#ffffff;
+                height:25px;
+                border-radius:30px;
+            }
         </style>
         <h:outputStylesheet name="css/create_event.css"/>
         <h:outputStylesheet name="css/main.css"/>
@@ -82,7 +111,7 @@
                             <p:commandButton id="notification_button" value="Notifications"/>
                             <p:overlayPanel id="imagePanel" style="height:200px;width:300px" dynamic="true" for="notification_button" hideEffect="fade">
                                 <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('nonletto',true)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
-                                    <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
+                                    <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":header-form:evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
                                         <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
                                     </p:commandButton>
                                 </p:dataScroller>
@@ -231,8 +260,20 @@
                                         <h:outputText value="End" />
                                         <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
                                     </p:panelGrid>
+                                          <script type="text/javascript">
+                                                        function DoAllThese() {
+                                                           PF('myschedule').update();
+                                                            PF('eventDialog').hide();
+                                                            PF('notificationDialog').hide();
+
+                                                        }
+                                                    </script>
                                     <p:commandButton value="Edit" action="#{eventManagerBean.owner}"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
-                                    <p:commandButton value="Abbandona" action="#{eventManagerBean.changeAvailability('no')}"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
+                                    <p:commandButton value="Abbandon" action="#{eventManagerBean.changeAvailability('no')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
+                                     <p:commandButton value="Maybe" action="#{eventManagerBean.changeAvailability('forse')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
+                                      <p:commandButton value="Join" action="#{eventManagerBean.changeAvailability('si')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
+                                   
+                                      
                                 </p:outputPanel>
                             </p:dialog>
                         </h:form>

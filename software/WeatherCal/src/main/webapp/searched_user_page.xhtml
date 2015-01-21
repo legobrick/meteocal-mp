@@ -8,14 +8,70 @@
         xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>User Page</title>
-    </h:head>
-   <h:body  style="background-color:rgb(245,240,230)">
-      <p:commandButton action="#{searchUser.editAction}">
-          <f:param name="action" value="#{param.id}" />
-</p:commandButton>
-       <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
+        
+         <ui:insert name="other-scripts">
+            <script type="text/javascript">
+                $(function () {
+                    $(function () {
+                        $('#new-event').appendTo($('[id$=schedule]').find('td').eq(0).append('<span class="fc-header-space"></span>')).show().find('.fa').css('padding-top', '.15em');
+                    })
+                })
+            </script>
+        </ui:insert>
+          <style type="text/css">
+           
+            .empowner, .calendarButton .fc-event-inner  {
 
-      
+
+                font-size:14px;
+                background-image:-ms-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#90C4FF), to(rgb(30,130,201)));
+                background-image:-webkit-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:-o-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:linear-gradient(top, #90C4FF, rgb(30,130,201));
+                background-image:-moz-linear-gradient(top, #90C4FF, rgb(30,130,201));
+                color:#ffffff;
+                height:25px;
+                border-radius:30px;
+            }
+
+           
+
+            .innertube {
+                margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
+                margin-top: 0;
+                margin-top: .5em;
+            }
+
+            div.ui-grid-responsive{
+                width:100%;
+            }
+
+            .innertitle {
+                margin-bottom: .5em;
+                font-weight: 600;
+            }
+
+            h2 {
+                color:rgb(29,129,201);
+                font-size: 2em;
+            }
+
+            h3 {
+                font-size: 1.7em;
+                color:rgb(21,104,165);
+            }
+
+        </style>
+        
+    </h:head>
+    
+   <h:body  style="background-color:rgb(245,240,230)">
+   
+       <p:outputPanel    style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
+
+           
+       
            <div style="float:right; width:30%; ">
        
                <div style="margin:25px 25px 25px 0px">     
@@ -28,21 +84,26 @@
        
        
        
-       <div style="float:left; width:70%;height:600px;">
-          <h:form>
-
- 
-    <h:panelGrid style="width:100%;">
+       <div value="WeatherCal" style="float:left;  width:70%;height:600px;">
+   <div id="content" class="column" style="background-color:rgb(245,240,235)">
+                <div class="innertube">
+                    <ui:insert name="main-content">
         <h3 style="margin-top: 0"></h3>
         
-    
-        <p:schedule id="schedule" value="#{searchUser.searchEventSchedule()}" style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)" widgetVar="myschedule" timeZone="GMT+2">
-  <f:param name="action" value="#{param.id}" />
+   
+    <p:schedule id="mySchedule" value="#{eventManagerBean.searchedCal()}" style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
+                                    widgetVar="schedule"
+                                    timeZone="GMT+1"
+                                    draggable="false"
+                                    resizable="false"
+                                    firstHour="0" >
+
           </p:schedule>
-        </h:panelGrid>
-          </h:form>
+        
            
-           
+               </ui:insert>
+                </div>
+            </div>
        </div>
        
       

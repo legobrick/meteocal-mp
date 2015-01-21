@@ -11,7 +11,9 @@ import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.Owner;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,16 +27,19 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
@@ -44,9 +49,10 @@ import org.primefaces.model.ScheduleModel;
  */
 @ManagedBean
 @Named
-@SessionScoped
+
 @RequestScoped
-public class EventManagerBean {
+@SessionScoped
+public  class EventManagerBean {
 
     @PersistenceContext
     EntityManager em;
@@ -58,17 +64,94 @@ public class EventManagerBean {
 
     @ManagedProperty("#{param.cal}")
     Long calId;
-
+   
     private Event selectEvent;
-
+    private ScheduleModel lazyModel;
+     private ScheduleModel model;
     /**
      * Creates a new instance of EventManagerBean
      */
     private ScheduleEvent event = new DefaultScheduleEvent();
 
     public EventManagerBean() {
-    }
 
+
+    }
+     public ScheduleModel getModel() {
+             return model;
+}
+    
+    public ScheduleModel getLazyModel() {
+             return lazyModel;
+}
+    
+    public ScheduleModel lazySchedule(Long calId,boolean soloEventiPubblici,String output){
+    
+  
+       ScheduleModel lazyModel2 = new LazyScheduleModel() {
+            @Override
+            public void loadEvents(Date start, Date end) {
+                int n;
+             
+                for (n = 0; n < allEventByNotAvailability("si", calId, false).size(); n++) {
+                    Event e = allEventByNotAvailability("si", calId, false).get(n);
+                    Instant startInstant = e.getStart().atZone(ZoneId.systemDefault()).toInstant();
+                    Date startDate = Date.from(startInstant);
+
+                    Instant endInstant = e.getEnd().atZone(ZoneId.systemDefault()).toInstant();
+                    Date endDate = Date.from(endInstant);
+                    String colore;
+                    Long id = e.getId();
+                    if (isOwner(id,calId)) {
+                        colore = "empowner";
+                    } else {
+
+                        Query q = em.createNamedQuery("Participation.findByIdCalendarandIdEvent");
+                        q.setParameter("idCalendar", calId);//devo passare il parametro
+                        q.setParameter("idEvent", id);
+                        if (q.getResultList().size()>0){
+                        Participation part = (Participation) q.getResultList().get(0);
+                        if (part.getAvailability().equals("si")) {
+                            colore = "empyes";
+                        } else if (part.getAvailability().equals("forse")) {
+                            colore = "empmaybe";
+                        } else if (part.getAvailability().equals("letto")) {
+                            colore = "empletto";
+                        } else {
+                            colore = "empno";
+                        }
+                        
+                        }
+                        else colore="empno";
+                    }
+                    //colore="empno";
+                    Instant instant = Instant.ofEpochMilli(start.getTime());
+                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                    Instant instant2 = Instant.ofEpochMilli(end.getTime());
+                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.systemDefault());
+                    
+                    if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
+                       System.out.println("evento "+e.getName()+" "+colore);
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate,colore);
+                     /*  if (soloEventiPubblici==true){
+                           if (e.getIsPublic()){
+                        addEvent(evento);
+                        
+                           }
+                       }
+                       else*/ addEvent(evento);
+                    }
+                   
+                }
+
+            }
+        };
+    
+     return lazyModel2;
+    }
+    
+    
+    
     public Event getSelectEvent() {
         return selectEvent;
     }
@@ -106,54 +189,125 @@ public class EventManagerBean {
     }
 
     public ScheduleModel loggedEventiMese() {
-        return this.eventiDelMese(this.userCalendarId());
-    }
-
-    public ScheduleModel eventiDelMese(Long calId) {
-        String cal = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("cal");
-
-        ScheduleModel eventi = new DefaultScheduleModel();
        
-        int n;
-        for (n = 0; n < this.allEventByAvailability("si", calId, false).size(); n++) {
-            Event e = this.allEventByAvailability("si", calId, false).get(n);
-            Instant startInstant = e.getStart().atZone(ZoneId.systemDefault()).toInstant();
-            Date startDate = Date.from(startInstant);
-
-            Instant endInstant = e.getEnd().atZone(ZoneId.systemDefault()).toInstant();
-            Date endDate = Date.from(endInstant);
-            String colore;
-            Long id = e.getId();
-            if (this.isOwner(id)) {
-                colore="empowner";
-            } else{
-                
-                
-                 Query q = em.createNamedQuery("Participation.findByIdCalendarandIdEvent");
-                 q.setParameter("idCalendar",this.userCalendarId());
-                 q.setParameter("idEvent", id);
-                 Participation part=(Participation)q.getResultList().get(0);
-                 if(part.getAvailability().equals("si")){
-                 colore="empyes";
-                 }
-                 else colore="empmaybe";
-            }
-           
-            DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate, colore);
-           // evento.setStyleClass("background:red");
-          
-            eventi.addEvent(evento);
-
-        }
-        return eventi;
+        return this.lazySchedule(this.userCalendarId(),false,"ciao" );
     }
 
+   
     public List<Event> loggedEventUsr(String availability, boolean lista) {
-        return this.allEventByAvailability(availability, this.userCalendarId(), lista);
+    
+        return this.allEventByNotAvailability(availability,this.userCalendarId(), lista);
+    }
+
+    public List<Event> notificationUser(String av) {
+        List<Event> allUserEv = new <Event>ArrayList();
+        Query q = em.createNamedQuery("Participation.findByIdCalendarandAvailability");
+        q.setParameter("idCalendar", this.userCalendarId());
+        q.setParameter("av", av);
+        int size = q.getResultList().size();
+        if (size == 0) {
+        } else {
+            for (int n = 0; n < size; n++) {
+                Participation part = (Participation) q.getResultList().get(n);
+                long idEv = part.getParticipationPK().getIdEvent();
+                Query p = em.createNamedQuery("Event.findById");
+                p.setParameter("id", idEv);
+                Event e = (Event) p.getResultList().get(0);
+                allUserEv.add(e);
+            }
+        }
+        return allUserEv;
+    }
+    
+public ScheduleModel searchedCal(){
+ FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        ServletContext sContext = request.getSession().getServletContext();
+        Long id=(Long)sContext.getAttribute("selectedEvent");
+        return this.lazyScheduleSearch(id, true,"c");
+}
+
+  public ScheduleModel lazyScheduleSearch(Long calId,boolean soloEventiPubblici,String output){
+    
+  
+       ScheduleModel lazyModel2 = new LazyScheduleModel() {
+            @Override
+            public void loadEvents(Date start, Date end) {
+                int n;
+             
+                for (n = 0; n < allEventByAvailability("si", calId, false).size(); n++) {
+                    Event e = allEventByAvailability("si", calId, false).get(n);
+                    Instant startInstant = e.getStart().atZone(ZoneId.systemDefault()).toInstant();
+                    Date startDate = Date.from(startInstant);
+
+                    Instant endInstant = e.getEnd().atZone(ZoneId.systemDefault()).toInstant();
+                    Date endDate = Date.from(endInstant);
+                    
+                    //colore="empno";
+                    Instant instant = Instant.ofEpochMilli(start.getTime());
+                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                    Instant instant2 = Instant.ofEpochMilli(end.getTime());
+                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.systemDefault());
+                    
+                    if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
+                       
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate,"empowner");
+                       if (soloEventiPubblici==true){
+                           if (e.getIsPublic()){
+                        addEvent(evento);
+                        
+                           }
+                       }
+                       else addEvent(evento);
+                    }
+                   
+                }
+
+            }
+        };
+    
+     return lazyModel2;
+    }
+
+
+
+
+    public List<Event> allEventByNotAvailability(String availability, Long CalId, boolean lista) {
+        Date currDate = new Date();
+        Instant instant = Instant.ofEpochMilli(currDate.getTime());
+        LocalDateTime currLocal = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        List<Event> allUserEv = new <Event>ArrayList();
+        Query q = em.createNamedQuery("Participation.findByIdCalendarandNotAvailability");
+        q.setParameter("idCalendar", CalId);
+        q.setParameter("av", "nonletto");
+        int size = q.getResultList().size();
+        if (size == 0) {
+
+        } else {
+            for (int n = 0; n < size; n++) {
+                Participation part = (Participation) q.getResultList().get(n);
+                long idEv = part.getParticipationPK().getIdEvent();
+
+                Query p = em.createNamedQuery("Event.findById");
+                p.setParameter("id", idEv);
+                Event e = (Event) p.getResultList().get(0);
+
+                if (lista) {//sapere se caricare o no gli eventi passati
+                    if (e.getStart().isAfter(currLocal)) {
+                        allUserEv.add(e);//carico nella scroll solo gli evnti dopo la data di oggi
+
+                    }
+
+                } else {
+
+                    allUserEv.add(e);
+                }
+            }
+        }
+        return allUserEv;
     }
 
     public List<Event> allEventByAvailability(String availability, Long CalId, boolean lista) {
-
         Date currDate = new Date();
         Instant instant = Instant.ofEpochMilli(currDate.getTime());
         LocalDateTime currLocal = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
@@ -172,32 +326,6 @@ public class EventManagerBean {
                 Query p = em.createNamedQuery("Event.findById");
                 p.setParameter("id", idEv);
                 Event e = (Event) p.getResultList().get(0);
-               
-                if (lista) {//sapere se caricare o no gli eventi passati
-                    if (e.getStart().isAfter(currLocal)) {
-                        allUserEv.add(e);//carico nella scroll solo gli evnti dopo la data di oggi
-
-                    }
-
-                } else {
-
-                    allUserEv.add(e);
-                }
-
-            }
-        }
-        q.setParameter("av", "forse");
-        int size2 = q.getResultList().size();
-        if (size2 == 0) {
-
-        } else {
-            for (int n = 0; n < size2; n++) {
-                Participation part = (Participation) q.getResultList().get(n);
-                long idEv = part.getParticipationPK().getIdEvent();
-
-                Query p = em.createNamedQuery("Event.findById");
-                p.setParameter("id", idEv);
-                Event e = (Event) p.getResultList().get(0);
 
                 if (lista) {//sapere se caricare o no gli eventi passati
                     if (e.getStart().isAfter(currLocal)) {
@@ -209,20 +337,14 @@ public class EventManagerBean {
 
                     allUserEv.add(e);
                 }
-
             }
         }
         return allUserEv;
-
-        /*CalendarEntity cal=(CalendarEntity) q.getResultList().get(0);
-         long calId =cal.getId();
-    
-    
-         return calId;*/
     }
-
+    
+    
     public long userCalendarId() {
-        if (um.getLoggedUser().getCalendarCollection().size() == 0) {
+        if (um.getLoggedUser().getCalendarCollection().isEmpty()) {
             return 0;
         } else {
             CalendarEntity cal = (CalendarEntity) um.getLoggedUser().getCalendarCollection().iterator().next();
@@ -231,12 +353,18 @@ public class EventManagerBean {
 
     }
 
-    public void onEventSelect(SelectEvent selectEventt) {
-        this.event = (ScheduleEvent) selectEventt.getObject();
-        System.out.println(this.event.getTitle() + "il titolo");
+    public void onEventSelect(SelectEvent selectEventt) throws IOException {
+        event = (ScheduleEvent) selectEventt.getObject();
+        Event e=(Event)event.getData();
+        System.out.println("il titolo");
     }
+       public void onDateSelect(SelectEvent e) {
+             Date date = (Date) e.getObject();
+             event = new DefaultScheduleEvent("", date, date);
+System.out.println("date");
+       }
 
-    public boolean isOwner(Long idEv) {
+    public boolean isOwner(Long idEv,Long userid) {
         Query p = em.createNamedQuery("Owner.findByIdEvent");
         p.setParameter("idEvent", idEv);
         if (p.getResultList().size() == 0) {
@@ -244,7 +372,7 @@ public class EventManagerBean {
         } else {
             Owner owncal = (Owner) p.getResultList().get(0);
             Long owncalid = owncal.getOwnerPK().getIdCalendar();
-            if (owncalid == this.userCalendarId()) {
+            if (owncalid == userid) {
                 return true;
             } else {
                 return false;
@@ -257,7 +385,7 @@ public class EventManagerBean {
         String action = params.get("action");
         Long idEv = Long.parseLong(action);
 
-        if (this.isOwner(idEv)) {
+        if (this.isOwner(idEv,this.userCalendarId())) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "SI", "è tuo");
             RequestContext.getCurrentInstance().showMessageInDialog(message);
         } else {
@@ -269,7 +397,7 @@ public class EventManagerBean {
     }
 
     public void changeAvailability(String availability) {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+       Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String action = params.get("action");
         Long idEv = Long.parseLong(action);
         Query p = em.createNamedQuery("Participation.findByIdCalendarandIdEvent");
@@ -278,13 +406,29 @@ public class EventManagerBean {
 
         Participation changepart = (Participation) p.getResultList().get(0);
         evm.changeAvailability(availability, changepart);
-      
-        RequestContext context = RequestContext.getCurrentInstance();
-        context.update("mySchedule");
-        
-        System.out.println("update?");
-      //  em.merge(changepart);
 
+      //  em.merge(changepart);
         //System.out.println("sssss" + changepart.getAvailability());
     }
+
+    public void eventoLetto() {
+        Query q = em.createNamedQuery("Participation.findByIdCalendarandAvailability");
+        q.setParameter("idCalendar", this.userCalendarId());
+        q.setParameter("av", "nonletto");
+        int size = q.getResultList().size();
+
+        if (size == 0) {
+
+        }
+        for (int n = 0; n < size; n++) {
+            Participation part = (Participation) q.getResultList().get(0);
+            System.out.println("Numeri non letti:" + size + part.getParticipationPK().getIdEvent());
+            evm.changeAvailability("letto", part);
+        }
+    }
+    
+     public void addEvent(ActionEvent actionEvent) {
+  
+    }
+
 }

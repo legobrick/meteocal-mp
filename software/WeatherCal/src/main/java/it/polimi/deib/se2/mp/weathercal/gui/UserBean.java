@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  *
- * @author miglie
+ * 
  */
 @Named
 @RequestScoped

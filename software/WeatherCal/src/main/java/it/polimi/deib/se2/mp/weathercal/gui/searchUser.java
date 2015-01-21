@@ -29,6 +29,8 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleModel;
@@ -48,55 +50,60 @@ public class searchUser {
 
     @EJB
     UserManager um;
-    
+
     EventManagerBean emb;
 
-    
+    private Long calid;
     private String searched;
-    
-    public void setSearched(String email){
-        this.searched=email;
+
+    public void setSearched(String email) {
+        this.searched = email;
     }
-    public String getSearched(){
-return this.searched;
-}
+
+    public String getSearched() {
+        return this.searched;
+    }
+
     /**
      * Creates a new instance of EventBean
      */
     public void searchUser() throws IOException {
 
         Query q = em.createNamedQuery("User.findByEmail");
-         q.setParameter("email",this.searched);
-         User searchus= (User)q.getResultList().get(0);
-         
-    
-        
-if (searchus.getCalendarCollection().iterator().next().getIsPublic()){
- 
-  FacesContext.getCurrentInstance().getExternalContext().redirect("searched_user_page.xhtml?id="+searchus.getCalendarCollection().iterator().next().getId()+"&name="+searchus.getFirstName()+"&surname="+searchus.getUsername()+"&mail="+searchus.getEmail());
-}
-else{
-FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", "The user has a private calendar");
-RequestContext.getCurrentInstance().showMessageInDialog(message);
-}
-        
+        q.setParameter("email", this.searched);
+        System.out.println("ricerca");
+        if (q.getResultList().size()>0){
+        User searchus = (User) q.getResultList().get(0);
+
+        if (searchus.getCalendarCollection().iterator().next().getIsPublic()) {
+
+            FacesContext.getCurrentInstance().getExternalContext().redirect("searched_user_page.xhtml?id=" + searchus.getCalendarCollection().iterator().next().getId() + "&name=" + searchus.getFirstName() + "&surname=" + searchus.getUsername() + "&mail=" + searchus.getEmail());
+           FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        ServletContext sContext = request.getSession().getServletContext();
+        sContext.setAttribute("selectedEvent",searchus.getCalendarCollection().iterator().next().getId());
+        } else {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", "The user has a private calendar");
+            RequestContext.getCurrentInstance().showMessageInDialog(message);
+        }
+        }
+        else{
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Not Found", "The email insert doesn't match any result");
+            RequestContext.getCurrentInstance().showMessageInDialog(message);
+        }
     }
-public void editAction() {
-	  Map<String,String> params = 
-                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-	  String action = params.get("action");
-          FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden",action);
-RequestContext.getCurrentInstance().showMessageInDialog(message);
- 
-	}
-   public ScheduleModel searchEventSchedule(){
-       Map<String,String> params = 
-                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-	  String action = params.get("action");
-          FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden",action);
-           RequestContext.getCurrentInstance().showMessageInDialog(message);
-           Long id=Long.decode("12");
-           ScheduleModel prova=new DefaultScheduleModel();
-   return prova;
-   }
+
+    public void editAction() {
+        Map<String, String> params
+                = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+         String action =params.get("action");
+        //calid = Long.parseLong(action);
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", ""+action);
+                RequestContext.getCurrentInstance().showMessageInDialog(message);
+        //  RequestContext.getCurrentInstance().update("schedule1");
+         
+        RequestContext.getCurrentInstance().update("f:schedule1");
+    }
+
+  
 }

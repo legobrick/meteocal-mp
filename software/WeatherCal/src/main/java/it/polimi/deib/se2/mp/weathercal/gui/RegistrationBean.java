@@ -15,7 +15,7 @@ import javax.faces.bean.ManagedProperty;
 
 /**
  * @author paolo
- * @author miglie
+ * 
  */
 @ManagedBean
 @RequestScoped
