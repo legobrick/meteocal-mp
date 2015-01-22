@@ -105,7 +105,7 @@
                         <div class="ui-grid-col-6">
                             <div class="ui-grid ui-grid-responsive" id="form-part-2" >
                                 <div class="ui-grid-row margin-small">
-                                    <div class="ui-grid-col-2">
+                                    <div class="ui-grid-col-2 form-desc">
                                         <p:outputLabel for="description" value="Description:"/>
                                     </div>
                                     <div class="ui-grid-col-7">
@@ -118,7 +118,7 @@
                                     </div>
                                 </div>
                                 <div class="ui-grid-row" >
-                                    <div class="ui-grid-col-2">
+                                    <div class="ui-grid-col-2 form-desc">
                                         <p:outputLabel for="start_date" value="Start Date:"/>
                                     </div>
                                     <div class="ui-grid-col-7">
@@ -132,7 +132,7 @@
                                     </div>
                                 </div>
                                 <div class="ui-grid-row margin-small">
-                                    <div class="ui-grid-col-2">
+                                    <div class="ui-grid-col-2 form-desc">
                                         <p:outputLabel for="end_date" value="End Date:"/>
                                     </div>
                                     <div class="ui-grid-col-7">
@@ -146,7 +146,7 @@
                                     </div>
                                 </div>
                                 <div class="ui-grid-row margin-small taller">
-                                    <div class="ui-grid-col-2">
+                                    <div class="ui-grid-col-2 form-desc">
                                         <p:outputLabel for="start_time" value="Start:"/>
                                     </div>
                                     <div class="ui-grid-col-3">
@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
                                 <div class="ui-grid-row margin-big">
-                                    <div class="ui-grid-col-2" >
+                                    <div class="ui-grid-col-2 form-desc" >
                                         <p:outputLabel for="user-search" value="Invite Friends:"/>
                                     </div>
                                     <div class="ui-grid-col-7">
@@ -194,10 +194,10 @@
                         <div class="ui-grid-col-6">
                             <div class="ui-grid ui-grid-responsive">
                                 <div class="ui-grid-row margin-small tallest">
-                                    <div class="ui-grid-col-3">
+                                    <div class="ui-grid-col-3 form-desc-larger">
                                           <p:outputLabel for="weather-conditions" value="Weather Conditions:"/>
                                     </div>
-                                    <div class="ui-grid-col-9">
+                                    <div class="ui-grid-col-9 multiline-input">
                                         <p:selectManyButton id="weather-conditions" value="#{eventBean.states}" converter="omnifaces.GenericEnumConverter">
                                             <f:selectItem itemLabel="Sun" itemValue="#{State.SUN}"/>
                                             <f:selectItem itemLabel="Rain" itemValue="#{State.RAIN}"/>
@@ -209,10 +209,10 @@
                                     </div>
                                 </div>
                                 <div class="ui-grid-row margin-small taller">
-                                    <div class="ui-grid-col-3">
+                                    <div class="ui-grid-col-3 boolbutton-wrapper">
                                         <p:selectBooleanButton widgetVar="tempSelector" id="value2" value="#{eventBean.hasConstraint}" onLabel="Temperature:" offLabel="Temperature:" onIcon="fa fa-check" offIcon="fa fa-times"/>
                                     </div>
-                                    <div class="ui-grid-col-2">
+                                    <div class="ui-grid-col-2 inputswitch-wrapper">
                                         <p:inputSwitch id="temp-dir" widgetVar="tempDir" onLabel="Below" offLabel="Above" value="#{eventBean.weatherC.isTemperatureLowerThan}"/>
                                     </div>
                                     <div class="ui-grid-col-2 contained-cant-exceed">
@@ -229,7 +229,7 @@
                     </div>
                     <div class="ui-grid-row margin-big">
                         <div class="ui-grid-col-1">
-                            <p:commandButton update="msgs" action="#{eventBean.save()}" value="Create"></p:commandButton>
+                            <p:commandButton widgetVar="create_submit" update="msgs" action="#{eventBean.save()}" value="Create"></p:commandButton>
                         </div>
                         <div class="ui-grid-col-1">
                             <p:commandButton  value="Cancel" action="#{eventBean.goToIndex()}"> </p:commandButton>

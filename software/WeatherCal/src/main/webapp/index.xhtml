@@ -103,58 +103,60 @@
     </h:head>
     <h:body  style="background-color:rgb(245,240,230)">
         <header id="head">
-            <div id="title"><h1>WeatherCal</h1></div>
+            <div id="title"><h:outputLink value="index.xhtml"><h1>WeatherCal</h1></h:outputLink></div>
             <div id="main_buttons">
-                <h:form id="header-form">
-                    <ul>
-                        <li>
-                            <p:commandButton id="notification_button" value="Notifications"/>
-                            <p:overlayPanel id="imagePanel" style="height:200px;width:300px" dynamic="true" for="notification_button" hideEffect="fade">
-                                <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('nonletto',true)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
-                                    <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":header-form:evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
-                                        <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
-                                    </p:commandButton>
-                                </p:dataScroller>
-                            </p:overlayPanel>
-                            <p:dialog header="Event's Info" widgetVar="notificationDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
-                                <p:outputPanel id="evDetail" style="text-align:center;">
-                                    <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
-                                        <h:outputText value="Name" />
-                                        <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
-                                        <h:outputText value="Where" />
-                                        <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
-                                        <h:outputText value="Start" />
-                                        <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
-                                        <h:outputText value="End" />
-                                        <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
-                                    </p:panelGrid>
-                                    <div class="ui-grid ui-grid-responsive" style="width:200px">
-                                        <div class="ui-grid-row">
-                                            <div class="ui-grid-col-3">       <p:commandButton value="Join" action="#{eventManagerBean.changeAvailability('si')}" oncomplete="DoAllThese()" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" />
-                                                    <script type="text/javascript">
-                                                        function DoAllThese() {
-                                                           PF('myschedule').update();
-                                                            PF('notificationDialog').hide();
+                    <h:form id="header-form">
+                        <ul>
+                            <li>
+                                <p:commandButton id="notification_button" value="Notifications"/>
+                                <p:overlayPanel id="imagePanel" style="height:200px;width:300px" dynamic="true" for="notification_button" hideEffect="fade">
+                                    <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('nonletto',true)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
+                                        <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":header-form:evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
+                                            <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
+                                        </p:commandButton>
+                                    </p:dataScroller>
+                                </p:overlayPanel>
+                                <p:dialog header="Event's Info" widgetVar="notificationDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
+                                    <p:outputPanel id="evDetail" style="text-align:center;">
+                                        <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+                                            <h:outputText value="Name" />
+                                            <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                            <h:outputText value="Where" />
+                                            <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
+                                            <h:outputText value="Start" />
+                                            <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
+                                            <h:outputText value="End" />
+                                            <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
+                                        </p:panelGrid>
+                                        <div class="ui-grid ui-grid-responsive" style="width:200px">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-3">       <p:commandButton value="Join" action="#{eventManagerBean.changeAvailability('si')}" oncomplete="DoAllThese()" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" />
+                                                        <script type="text/javascript">
+                                                            function DoAllThese() {
+                                                               PF('myschedule').update();
+                                                                PF('notificationDialog').hide();
 
-                                                        }
-                                                    </script>
-                                                </p:commandButton></div>
-                                            <div class="ui-grid-col-3" style="margin-left:10px">      <p:commandButton value="No"  action="#{eventManagerBean.changeAvailability('no')}" oncomplete="PF('notificationDialog').hide()" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
-                                            <div class="ui-grid-col-3" style="margin-left:10px">  <p:commandButton value="Maybe" action="#{eventManagerBean.changeAvailability('forsea')}" oncomplete="PF('notificationDialog').hide()" style="width:70px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                                            }
+                                                        </script>
+                                                    </p:commandButton></div>
+                                                <div class="ui-grid-col-3" style="margin-left:10px">      <p:commandButton value="No"  action="#{eventManagerBean.changeAvailability('no')}" oncomplete="PF('notificationDialog').hide()" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                                <div class="ui-grid-col-3" style="margin-left:10px">  <p:commandButton value="Maybe" action="#{eventManagerBean.changeAvailability('forsea')}" oncomplete="PF('notificationDialog').hide()" style="width:70px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </p:outputPanel>
-                            </p:dialog>
-                        </li>
-                        <li>
-                            <p:commandButton id="logout_button" value="Logout" action="#{loginBean.logout()}"/>
-                        </li>
-                    </ul>
-                </h:form>
+                                    </p:outputPanel>
+                                </p:dialog>
+                            </li>
+                            <li>
+                                <p:commandButton id="logout_button" value="Logout" action="#{loginBean.logout()}"/>
+                            </li>
+                        </ul>
+                    </h:form>
+                </ui:insert>
             </div>
         </header>
-
+        
         <div id="container">
+            <ui:insert name="wrap">
             <div id="content" class="column">
                 <div class="innertube">
                     <ui:insert name="main-content">
@@ -171,7 +173,7 @@
                                     draggable="false"
                                     resizable="false"
                                     firstHour="0" >
-                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" />
+                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventSchedDialog').show();"/>
                                     <p:growl autoUpdate="true"/>
                                     <!--update="eventDetails" oncomplete="PF('eventSchedDialog').show();"--> 
                                 </p:schedule>
@@ -280,6 +282,7 @@
                     </div>
                 </div>
             </div>
+            </ui:insert>
         </div>
         <footer class="footer">
             <div class="text-center">

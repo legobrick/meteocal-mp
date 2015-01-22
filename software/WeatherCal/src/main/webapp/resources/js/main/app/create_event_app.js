@@ -7,9 +7,10 @@
 define(['moment', 'underscore'], function (moment, _) {
     "use strict";
     var App = function(){};
+    var error = '<div class="ui-messages ui-widget nontext-center" aria-live="polite" data-global="false" data-summary="data-summary" data-detail="data-detail" data-severity="all,error" data-redisplay="true" style="position: relative;margin-top: auto;margin-bottom: auto;width: 40%;height: 60%;"><div class="ui-messages-error ui-corner-all text-center" style="height: 100%;"><span class="ui-messages-error-icon" style="position: relative;top: 43%;width: 48px;height: 48px;background-size: cover;background-position: initial;margin-left: 10px;"></span><ul style="position: relative;top: 45%;font-size: 1.4em;"><li><span class="ui-messages-error-summary">Error!</span><span class="ui-messages-error-detail">Missing internet connection.</span></li></ul></div></div>';
     App.prototype = {
         start: function(){
-            this.setUserTZ().initGMap().initDatePair().initTempSelector();
+            this.setUserTZ().initTempSelector().initGMap().initDatePair();
         },
         exportPF: function(widgetVars){
             _.each(widgetVars, function(v){
@@ -65,6 +66,11 @@ define(['moment', 'underscore'], function (moment, _) {
         },
         initGMap: function(){
             var me = this;
+            if(google === undefined){
+                PF('geoMap').jq.replaceWith(error);
+                PF('create_submit').jq.attr('disabled', 'disabled');
+                return false;
+            }
             var geocode = function(){
                 me.geocode.apply(me, arguments);
             };
