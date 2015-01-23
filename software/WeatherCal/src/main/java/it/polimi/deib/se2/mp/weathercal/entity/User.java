@@ -43,24 +43,27 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "userCollection")
     private Collection<Groups> groupsCollection;
     private static final long serialVersionUID = 1L;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Id
     @Basic(optional = false)
     @NotNull(message = "May not be empty")
     @Size(min = 1, max = 320)
     @Column(name = "email", nullable = false, length = 320)
     @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
-            message = "invalid email")
+            message = "Invalid email")
     private String email;
     @Basic(optional = false)
     @NotNull(message = "May not be empty")
     @Size(min = 1, max = 100)
     @Column(name = "first_name", nullable = false, length = 100)
+    @Pattern(regexp = "/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u",
+            message = "Invalid name")
     private String firstName;
     @Basic(optional = false)
     @NotNull(message = "May not be empty")
     @Size(min = 1, max = 100)
     @Column(name = "last_name", nullable = false, length = 100)
+    @Pattern(regexp = "/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u",
+            message = "Invalid surname")
     private String lastName;
     @Basic(optional = false)
     @NotNull(message = "May not be empty")

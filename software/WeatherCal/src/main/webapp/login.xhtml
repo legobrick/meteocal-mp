@@ -43,45 +43,6 @@ and open the template in the editor.
 
 <!--    <h:body  style="background-color:rgb(245,240,230)">-->
         
-
-<!--        <p:outputPanel style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
-            <p:outputLabel value="WeatherCal" style="font-size:60px; margin-left:25px;margin-top:20px"/>
-            <h:form style="float:right; width:40%; ">
-                <div class="ui-grid ui-grid-responsive" style="float:left; margin-left:10px">
-                    <div class="ui-grid-row" style="margin-top:5px; float:right;">
-                        <div class="ui-grid-col-3" style="width:50%">
-                            <p:inputText id="username_login" placeholder="E-mail" style="width:80%; height:20px; font-size:15px " value="#{loginBean.email}" required="true"/>
-                        </div>
-                        <div class="ui-grid-col-3" style="width:50%">
-                            <p:password id="password_login" placeholder="Password" style="width:80%; height:20px; font-size:15px" value="#{loginBean.password}" required="true"/>
-                        </div>
-                        <div class="ui-grid-col-3" style="margin-top:0px; ">
-                            <p:commandButton action="#{loginBean.login()}" value="Login" style="width:60%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px"></p:commandButton>
-                        </div>
-                    </div>
-                </div>
-            </h:form>-->
-            <!--
-           <h:form style="float:right; width:40%; ">
-             <div class="ui-grid ui-grid-responsive" style="float:left; margin-left:10px  ">
-                  <div class="ui-grid-row" style="margin-top:5px"  >
-                     <div class="ui-grid-col-3" style="width:50%"> <p:outputLabel value="E-mail" style="font-size:17px;"  /></div>
-                     <div class="ui-grid-col-3" style="width:50%; " ><p:outputLabel value="Password" style="font-size:17px; "  /> </div>
-                     <div class="ui-grid-col-3"  ></div>
-       </div>
-                 <div class="ui-grid-row" style="margin-top:5px; float:right; " >
-             
-                     <div class="ui-grid-col-3" style="width:50%"> <p:inputText style="width:80%; height:20px; font-size:15px " /></div>
-                     <div class="ui-grid-col-3" style="width:50%"> <p:password style="width:80%; height:20px; font-size:15px"  /></div>
-                      <div class="ui-grid-col-3" style="margin-top:0px; "><h:commandButton value="Login" style="width:60%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "></h:commandButton></div>
-         
-          </div>
-               
-        </div>          
-         </h:form>
-            -->
-        <!--</p:outputPanel>-->
-        
         <ui:define name="wrap">
 
             <div style="float: left;width: 60%; ">
@@ -111,7 +72,9 @@ and open the template in the editor.
                                 -->
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:inputText id="name" placeholder="First Name" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.firstName}" required="true"/>
+                                        <p:inputText id="name" placeholder="First Name" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.firstName}" required="true" requiredMessage="May not be empty">
+                                            <p:ajax update="name_msg" event="blur"/>
+                                        </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-6">
                                         <p:message id="name_msg" for="name"/>
@@ -119,7 +82,9 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:inputText id="surname" placeholder="Surname" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.lastName}" required="true"/>
+                                        <p:inputText id="surname" placeholder="Surname" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.lastName}" required="true" requiredMessage="May not be empty">
+                                            <p:ajax update="surname_msg" event="blur"/>
+                                        </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-6">
                                         <p:message id="surname_msg" for="surname"/>
@@ -127,7 +92,9 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:inputText id="email" placeholder="E-mail" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.email}" required="true"/>
+                                        <p:inputText id="email" placeholder="E-mail" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.email}" required="true" requiredMessage="May not be empty">
+                                            <p:ajax update="email_msg" event="blur"/>
+                                        </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-6">
                                         <p:message id="email_msg" for="email"/>
@@ -135,7 +102,9 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:inputText id="username" placeholder="Username" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.username}" required="true"/>
+                                        <p:inputText id="username" placeholder="Username" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.username}" required="true" requiredMessage="May not be empty">
+                                            <p:ajax update="username_msg" event="blur"/>
+                                        </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-6">
                                         <p:message id="username_msg" for="username"/>
@@ -143,7 +112,9 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:password id="pwd" placeholder="Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" match="pwd2" required="true"/>
+                                        <p:password id="pwd" placeholder="Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" match="pwd2" required="true" requiredMessage="May not be empty" label="The first password">
+                                            <p:ajax update="psw_msg" event="blur"/>
+                                        </p:password>
                                     </div>
                                     <div class="ui-grid-col-6">
                                         <p:message id="psw_msg" for="pwd"/>
@@ -151,7 +122,9 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:password id="pwd2" placeholder="Repeat Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" required="true"/>
+                                        <p:password id="pwd2" placeholder="Repeat Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" required="true" requiredMessage="May not be empty" label="the second">
+                                            <p:ajax update="psw2_msg" event="blur"/>
+                                        </p:password>
                                     </div>
                                     <div class="ui-grid-col-6">
                                         <p:message id="psw2_msg" for="pwd2"/>
@@ -159,7 +132,7 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:commandButton update="reg_form_content" action="#{registrationBean.register()}" value="Sign Up" style="width:80%; font-size:30px; color:#ffffff; background-color:rgb(29,129,201);border-color:rgb(29,129,201);border-radius:5px; margin:10px"></p:commandButton>
+                                        <p:commandButton update="reg_form_content" action="#{registrationBean.register()}" value="Sign Up"></p:commandButton> <!--style="width:80%; font-size:30px; color:#ffffff; background-color:rgb(29,129,201);border-color:rgb(29,129,201);border-radius:5px; margin:10px"-->
                                     </div>
                                 </div>
                             </h:panelGroup>

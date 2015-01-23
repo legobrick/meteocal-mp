@@ -232,7 +232,7 @@
                             <p:commandButton widgetVar="create_submit" update="msgs" action="#{eventBean.save()}" value="Create"></p:commandButton>
                         </div>
                         <div class="ui-grid-col-1">
-                            <p:commandButton  value="Cancel" action="#{eventBean.goToIndex()}"> </p:commandButton>
+                            <p:commandButton  value="Cancel" immediate="true" action="#{eventBean.goToIndex()}"> </p:commandButton>
                         </div>
                     </div>
                 </div>

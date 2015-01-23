@@ -36,7 +36,9 @@ define(['moment', 'underscore'], function (moment, _) {
             this.timer = setTimeout(callback, ms);
             return this;
         },
-        geocode: function(){
+        geocode: function(e){
+            e.stopPropagation();
+            e.preventDefault();
             var me = this;
             this.myGeocoder.geocode({
                 address: this.$address.val()
