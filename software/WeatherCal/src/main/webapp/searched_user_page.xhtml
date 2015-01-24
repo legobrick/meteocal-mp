@@ -2,24 +2,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:p="http://primefaces.org/ui"
-        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>User Page</title>
-        
-         <ui:insert name="other-scripts">
-            <script type="text/javascript">
-                $(function () {
-                    $(function () {
-                        $('#new-event').appendTo($('[id$=schedule]').find('td').eq(0).append('<span class="fc-header-space"></span>')).show().find('.fa').css('padding-top', '.15em');
-                    })
-                })
-            </script>
+        <title><ui:insert name="title">User Page</ui:insert></title>
+        <script type="text/javascript">
+            var resourcesUrl = "#{request.contextPath}/resources";
+        </script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/main/require_config.js">
+        </script>
+        <ui:insert name="other-scripts">
+            <script data-main="#{request.contextPath}/resources/js/main/app/index_main.js" src="#{request.contextPath}/resources/js/main/lib/require.js"></script>
         </ui:insert>
-          <style type="text/css">
-           
+        <h:outputStylesheet name="webjars/font-awesome/4.2.0/css/font-awesome.css"/>
+        <style type="text/css">
+
             .empowner, .calendarButton .fc-event-inner  {
 
 
@@ -35,7 +34,7 @@
                 border-radius:30px;
             }
 
-           
+
 
             .innertube {
                 margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
@@ -63,73 +62,177 @@
             }
 
         </style>
-        
+        <h:outputStylesheet name="css/create_event.css"/>
+        <h:outputStylesheet name="css/main.css"/>
     </h:head>
-    
-   <h:body  style="background-color:rgb(245,240,230)">
-   
-       <p:outputPanel    style="width:100%;height:75px; background-color:rgb(255,255,245);color:rgb(29,129,201);box-shadow: 0px 4px 5px rgb(192,192,192);  ">
 
-           
-       
-           <div style="float:right; width:30%; ">
-       
-               <div style="margin:25px 25px 25px 0px">     
-    <p:commandButton value="Notifications" style="float:left; width:40%;height:30px; font-size:15px; color:#ffffff; background-color:rgb(30,130,201);border-radius:5px; border-width:0px "/>
-    <p:commandButton value="Logout" action="#{loginBean.logout()}" style="float:right; width:30%;height:30px; font-size:15px; color:#ffffff; background-color:#e2173d;border-radius:5px; border-width:2px;border-color:#e2173d "/>
-   </div>
-   </div>
-          
-  </p:outputPanel>
-       
-       
-       
-       <div value="WeatherCal" style="float:left;  width:70%;height:600px;">
-   <div id="content" class="column" style="background-color:rgb(245,240,235)">
+    <h:body  style="background-color:rgb(245,240,230)">
+
+        <header id="head">
+            <div id="title"><h:outputLink value="index.xhtml"><h1>WeatherCal</h1></h:outputLink></div>
+            <div id="main_buttons">
+                <h:form id="header-form">
+                    <ul>
+                        <li>
+                            <p:commandButton id="notification_button" value="Notifications"/>
+                            <p:overlayPanel id="imagePanel" style="height:200px;width:300px" dynamic="true" for="notification_button" hideEffect="fade">
+                                <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('nonletto',true)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
+                                    <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":header-form:evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
+                                        <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
+                                    </p:commandButton>
+                                </p:dataScroller>
+                            </p:overlayPanel>
+                            <p:dialog header="Event's Info" widgetVar="notificationDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
+                                <p:outputPanel id="evDetail" style="text-align:center;">
+                                    <p:panelGrid  columns="2" style="width:250px" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+                                        <h:outputText value="Name" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                        <h:outputText value="Where" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
+                                        <h:outputText value="Start" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
+                                        <h:outputText value="End" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
+                                    </p:panelGrid>
+                                    <div class="ui-grid ui-grid-responsive" style="width:200px">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-3">       <p:commandButton value="Join" action="#{eventManagerBean.changeAvailability('si')}" oncomplete="DoAllThese()" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" />
+                                                    <script type="text/javascript">
+            function DoAllThese() {
+                PF('myschedule').update();
+                PF('notificationDialog').hide();
+
+            }
+                                                    </script>
+                                                </p:commandButton></div>
+                                            <div class="ui-grid-col-3" style="margin-left:10px">      <p:commandButton value="No"  action="#{eventManagerBean.changeAvailability('no')}" oncomplete="PF('notificationDialog').hide()" style="width:50px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                            <div class="ui-grid-col-3" style="margin-left:10px">  <p:commandButton value="Maybe" action="#{eventManagerBean.changeAvailability('forsea')}" oncomplete="PF('notificationDialog').hide()" style="width:70px;height:25px"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton></div>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:dialog>
+                        </li>
+                        <li>
+                            <p:commandButton id="logout_button" value="Logout" action="#{loginBean.logout()}"/>
+                        </li>
+                    </ul>
+                </h:form>
+            </div>
+        </header>
+        <div id="container">    
+            <div id="content" class="column" >
                 <div class="innertube">
                     <ui:insert name="main-content">
-        <h3 style="margin-top: 0"></h3>
-        
-   
-    <p:schedule id="mySchedule" value="#{eventManagerBean.searchedCal()}" style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
-                                    widgetVar="schedule"
+                        <p:commandButton widgetVar="new_event_button" id="new-event" action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="display:none; width:8em; height:1.9em; font-size:1em;">
+                        </p:commandButton>
+                        <h:form>
+                            <h:panelGrid style="width:100%;">
+                                
+                                <p:schedule
+                                    id="mySchedule"
+                                    value="#{eventManagerBean.searchedCal()}"
+                                    style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
+                                    widgetVar="myschedule"
                                     timeZone="GMT+1"
                                     draggable="false"
                                     resizable="false"
                                     firstHour="0" >
+                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" />
+                                    <p:growl autoUpdate="true"/>
+                                    <!--update="eventDetails" oncomplete="PF('eventSchedDialog').show();"--> 
+                                </p:schedule>
+                            </h:panelGrid>
 
-          </p:schedule>
-        
-           
-               </ui:insert>
+                        </h:form>
+                    </ui:insert>
                 </div>
             </div>
-       </div>
-       
-      
-       
-       
-       
-       <div style="float:right; width:30%;height:600px;background-color:#F5DEB3;box-shadow: -3px 4px 5px rgb(192,192,192);">
-           <div class="ui-grid-responsive" style="width:300px; color:rgb(29,129,201); font-size:20px;margin-top:20px;margin-left: 10px">
-             
-                 <div class="ui-grid-row" style="font-size:30px;">     Personal Info</div>
-                
-                 <div class="ui-grid-row" style="margin-top:40px;"><div class="ui-grid-col-2" style="width:90px">Name:</div><div class="ui-grid-col-2" style="width:180px">#{param.name}</div> </div>
-                     <div class="ui-grid-row" style="margin-top:7px;"><div class="ui-grid-col-2" style=" width:90px">Surname:</div><div class="ui-grid-col-2" style="width:180px">#{param.surname}</div></div>
-                       <div class="ui-grid-row" style="margin-top:7px;"><div class="ui-grid-col-2" style="width:90px">Email:</div><div class="ui-grid-col-2" style="width:180px">#{param.mail}</div></div>
-               
-           </div> 
-           
-      
-       
-       
-       
-       </div>
-       
-       
-       
-       
+
+            <div id="nav" class="column">
+                <div class="innertube">
+                 
+                     <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <h:form style="width:100%">
+                                <div class="ui-grid-col-1" style="width: 100%; padding-right: 92px; margin-right: -85px; margin-top: 2px;">
+                                    <p:autoComplete id="user" multiple="false" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
+                                                    var="user" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="true">
+                                        <p:column style="width:60%">
+                                            <h:outputText value="#{user.firstName} #{user.lastName}"/>
+                                        </p:column>
+
+                                        <p:column>
+                                            <h:outputText value="#{user.email}"/>
+                                        </p:column>
+                                    </p:autoComplete>
+                                </div>
+                                <div class="ui-grid-col-1" style="width:78px;">
+                                    <p:commandButton value="Search" action="#{searchUser.searchUser()}" style=""></p:commandButton>
+                                </div>
+                            </h:form>
+                        </div>
+                    </div>
+                    <div class="ui-grid-responsive" style="width:300px; color:rgb(255,240,240);   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.44); border-radius:10px;  background-color:#f2c55d;font-size:20px;margin-top:20px;margin-left: 10px">
+
+                            <div class="ui-grid-row" style="font-size:30px; margin-left:10px">Personal Info</div>
+
+                            <div class="ui-grid-row" style="margin-top:40px; margin-left:10px"><div class="ui-grid-col-2" style="width:100px">Name:</div><div class="ui-grid-col-2" style="width:180px">#{param.name}</div> </div>
+                            <div class="ui-grid-row" style="margin-top:5px; margin-left:10px"><div class="ui-grid-col-2" style=" width:100px">Surname:</div><div class="ui-grid-col-2" style="width:180px">#{param.surname}</div></div>
+                            <div class="ui-grid-row" style="margin-top:5px; margin-left:10px"><div class="ui-grid-col-2" style="width:100px">Email:</div><div class="ui-grid-col-2" style="width:180px">#{param.mail}</div></div>
+                        </div> 
+                     
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <footer class="footer">
+            <div class="text-center">
+                <h6>Copyright © 2015 WeatherCal. All Rights Reserved.</h6>
+                <h7>Authors: <a href="mailto:polyp91@gmail.com">Paolo Polidori</a>, <a href="mailto:edemantimarco@gmail.com">Marco Edemanti</a></h7>
+            </div>
+        </footer>
     </h:body>
 </html>
 

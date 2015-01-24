@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "WeatherConstraint.findAll", query = "SELECT w FROM WeatherConstraint w"),
-    @NamedQuery(name = "WeatherConstraint.findById", query = "SELECT w FROM WeatherConstraint w WHERE w.id = :id"),
+    @NamedQuery(name = "WeatherConstraint.findById", query = "SELECT w FROM WeatherConstraint w WHERE w.id = :id"), 
     @NamedQuery(name = "WeatherConstraint.findByTemperature", query = "SELECT w FROM WeatherConstraint w WHERE w.temperature = :temperature"),
     @NamedQuery(name = "WeatherConstraint.findByIsTemperatureLowerThan", query = "SELECT w FROM WeatherConstraint w WHERE w.isTemperatureLowerThan = :isTemperatureLowerThan")})
 public class WeatherConstraint implements Serializable {

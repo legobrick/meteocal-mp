@@ -6,6 +6,7 @@
 package it.polimi.deib.se2.mp.weathercal.gui;
 
 import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
+import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.WeatherConstraintManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.WeatherStateConstraintManager;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
@@ -23,13 +24,16 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.inject.Named;
 import javax.inject.Inject;
+import javax.persistence.Query;
 
 /**
  *
@@ -37,28 +41,31 @@ import javax.inject.Inject;
  */
 @RequestScoped
 @Named
+@SessionScoped
 public class EventBean {
-    
+
     @Inject
     private Logger logger;
-    
+
     @EJB
     EventManager manager;
-    
+    @EJB
+    UserManager um;
+
     @EJB
     WeatherStateConstraintManager wscManager;
-    
+
     @EJB
     WeatherConstraintManager wcManager;
-     
+
     private Event event;
     private WeatherConstraint weatherC;
     private boolean hasConstraint = false;
     private final String centerGeoMap = "45.47803760760912, 9.229593882060279";
     private final String zoomGeoMap = "16";
-    
+    private Collection<String> invitedUser;
     private String userTimezone;
-    
+
     private List<State> states;
 
     /**
@@ -68,17 +75,26 @@ public class EventBean {
         this.wscManager = new WeatherStateConstraintManager();
         this.wcManager = new WeatherConstraintManager();
     }
-     
+
     @PostConstruct
     public void init() {
         event = new Event();
         weatherC = new WeatherConstraint();
     }
-    
+
+    public Collection<String> getInvitedUser() {
+        return invitedUser;
+    }
+
+    public void setInvitedUser(Collection<String> inUs) {
+        this.invitedUser = inUs;
+    }
+
     public String getCenterGeoMap() {
         return centerGeoMap;
     }
-    public String goToIndex(){
+
+    public String goToIndex() {
         return "/index?faces-redirect=true";
     }
 
@@ -95,42 +111,64 @@ public class EventBean {
     public void setEvent(Event event) {
         this.event = event;
     }
-    
+
     private LocalDate startDate;
     private LocalTime startTime;
     private ZoneOffset startZone;
     private LocalDate endDate;
     private LocalTime endTime;
     private ZoneOffset endZone;
-    
+
     public String save() {
-        int userTimezone = Integer.valueOf(this.userTimezone);
-        startZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(startDate, startTime)) - userTimezone);
-        event.setStart(ZonedDateTime.of(startDate, startTime, startZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
-        endZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(endDate, endTime)) - userTimezone);
-        event.setEnd(ZonedDateTime.of(endDate, endTime, endZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
-        if(hasConstraint){
-            this.setValueConstraints(weatherC);
-            weatherC.setEvent(event);
+       // System.out.println("Ciao invitati:"+this.invitedUser.size());
+
+         int userTimezone = Integer.valueOf(this.userTimezone);
+         startZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(startDate, startTime)) - userTimezone);
+         event.setStart(ZonedDateTime.of(startDate, startTime, startZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
+         endZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(endDate, endTime)) - userTimezone);
+         event.setEnd(ZonedDateTime.of(endDate, endTime, endZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
+         if(hasConstraint){
+         this.setValueConstraints(weatherC);
+         weatherC.setEvent(event);
+         }
+         Collection<WeatherStateConstraint> wsc = event.getStateConstraints();
+         if(wsc == null){
+         wsc = new ArrayList();
+         event.setStateConstraints(wsc);
+         }
+         for(WeatherStateConstraint w: wsc){
+         if(!states.contains(w.toState())){
+         wsc.remove(w);
+         wscManager.remove(w);
+         }
+         }
+         for(State s: states){
+         WeatherStateConstraint w = new WeatherStateConstraint(event, s);
+         w.setEvent(event);
+         wsc.add(w);
+         }  
+        
+        Iterator i = this.allCalId(this.invitedUser.iterator()).iterator();
+        while (i.hasNext()) {
+            System.out.println(i.next());
         }
-        Collection<WeatherStateConstraint> wsc = event.getStateConstraints();
-        if(wsc == null){
-            wsc = new ArrayList();
-            event.setStateConstraints(wsc);
-        }
-        for(WeatherStateConstraint w: wsc){
-            if(!states.contains(w.toState())){
-                wsc.remove(w);
-                wscManager.remove(w);
+        
+         manager.create(event);
+         this.invitedUser.size();
+      
+              
+        return "";
+    }
+
+    public Collection<Long> allCalId(Iterator i) {
+        Collection<Long> calIds = new ArrayList();
+        while (i.hasNext()) {
+            Long id = um.getCalByEmail((String) i.next());
+            if (!calIds.contains((Long) id)) {
+                calIds.add(id);
             }
         }
-        for(State s: states){
-            WeatherStateConstraint w = new WeatherStateConstraint(event, s);
-            w.setEvent(event);
-            wsc.add(w);
-        }
-        manager.create(event);
-        return "";
+        return calIds;
     }
 
     /**
@@ -251,15 +289,17 @@ public class EventBean {
     public void setHasConstraint(boolean hasConstraint) {
         this.hasConstraint = hasConstraint;
     }
-    
+
     public void setValueConstraints(WeatherConstraint valueConstraint) {
         Collection<WeatherConstraint> wcs = event.getValueConstraints();
-        if(wcs == null)
-            event.setValueConstraints(new ArrayList<WeatherConstraint>(){{
-                add(valueConstraint);
-            }});
-        else {
-            if(!wcs.contains(valueConstraint)){
+        if (wcs == null) {
+            event.setValueConstraints(new ArrayList<WeatherConstraint>() {
+                {
+                    add(valueConstraint);
+                }
+            });
+        } else {
+            if (!wcs.contains(valueConstraint)) {
                 wcs.stream().forEach((wc) -> {
                     wcManager.remove(wc);
                 });

@@ -129,6 +129,11 @@ public class EventManager extends AbstractFacade<Event>{
 
         System.out.println("sssss" + changepart.getAvailability());
     }
+    public void changCalVisibility(boolean visibility,CalendarEntity cal){
+    cal.setIsPublic(visibility);
+    em.merge(cal);
+    em.flush();
+    }
     public List<Event> tGetAll(){
         Query q = em.createNamedQuery("Event.findAll");
         return q.getResultList();

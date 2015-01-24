@@ -55,6 +55,7 @@ public class searchUser {
 
     private Long calid;
     private String searched;
+    
 
     public void setSearched(String email) {
         this.searched = email;
@@ -77,7 +78,7 @@ public class searchUser {
 
         if (searchus.getCalendarCollection().iterator().next().getIsPublic()) {
 
-            FacesContext.getCurrentInstance().getExternalContext().redirect("searched_user_page.xhtml?id=" + searchus.getCalendarCollection().iterator().next().getId() + "&name=" + searchus.getFirstName() + "&surname=" + searchus.getUsername() + "&mail=" + searchus.getEmail());
+            FacesContext.getCurrentInstance().getExternalContext().redirect("searched_user_page.xhtml?id=" + searchus.getCalendarCollection().iterator().next().getId() + "&name=" + searchus.getFirstName() + "&surname=" + searchus.getLastName() + "&mail=" + searchus.getEmail());
            FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         ServletContext sContext = request.getSession().getServletContext();

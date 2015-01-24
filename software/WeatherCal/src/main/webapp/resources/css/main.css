@@ -145,6 +145,7 @@ em{color:	red;}
     background-color:	rgb(30,130,201);
     color:rgba(255, 255, 255, 0.75);
     border-width:2px;
+    
     border-color:#e2173d;
     background-image:-ms-linear-gradient(top, #90C4FF, rgb(30,130,201));
     background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#90C4FF), to(rgb(30,130,201)));

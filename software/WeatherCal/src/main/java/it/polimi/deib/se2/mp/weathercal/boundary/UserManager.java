@@ -60,7 +60,12 @@ public class UserManager {
     public void unregister() {
         em.remove(getLoggedUser());
     }
-
+     public Long getCalByEmail(String mail) {
+         Query q = em.createNamedQuery("User.findByEmail");
+            q.setParameter("email",mail);
+            User u= (User)q.getResultList().iterator().next();
+            return u.getCalendarCollection().iterator().next().getId();
+    }
     public User getLoggedUser() {
         return em.find(User.class, principal.getName());
     }

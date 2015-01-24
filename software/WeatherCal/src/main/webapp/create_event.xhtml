@@ -21,10 +21,12 @@
             <o:importConstants type="it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint.State"/>
             <div class="innertitle"><h2>Create new event</h2></div>
             <h:form id="event_form_content">
+               
                 <p:growl id="msgs" sticky="true"></p:growl>
                 <p:focus context="event_form_content"/>
                 <div class="ui-grid ui-grid-responsive">
                     <div class="ui-grid-row margin-big">
+                        
                         <div class="ui-grid-col-6">
                             <div class="ui-grid ui-grid-responsive">
                                 <div class="ui-grid-row margin-small">
@@ -61,7 +63,10 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        
                         <div class="ui-grid-col-6">
+                            
                             <div class="ui-grid ui-grid-responsive">
                                 <div class="ui-grid-row margin-small">
                                     <div class="ui-grid-col-2">
@@ -90,20 +95,24 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
                 <div class="ui-grid ui-grid-responsive">
+                  
                     <div class="ui-grid-row margin-big" id="geomap-wrapper" >
                         <p:gmap id="geoGmap" widgetVar="geoMap" center="#{eventBean.centerGeoMap}"
                                 zoom="#{eventBean.zoomGeoMap}" type="ROADMAP"
                         />
                     </div>
+                  
                 </div>
                 <div class="ui-grid ui-grid-responsive">
                     <div class="ui-grid-row margin-big">
                         <div class="ui-grid-col-6">
                             <div class="ui-grid ui-grid-responsive" id="form-part-2" >
+                                
                                 <div class="ui-grid-row margin-small">
                                     <div class="ui-grid-col-2 form-desc">
                                         <p:outputLabel for="description" value="Description:"/>
@@ -145,6 +154,7 @@
                                         <p:message id="endd_msg" for="end_date"/>
                                     </div>
                                 </div>
+                                
                                 <div class="ui-grid-row margin-small taller">
                                     <div class="ui-grid-col-2 form-desc">
                                         <p:outputLabel for="start_time" value="Start:"/>
@@ -171,13 +181,14 @@
                                         <p:message id="endt_msg" for="end_time"/>
                                     </div>
                                 </div>
+                                
                                 <div class="ui-grid-row margin-big">
                                     <div class="ui-grid-col-2 form-desc" >
-                                        <p:outputLabel for="user-search" value="Invite Friends:"/>
+                                         <p:outputLabel for="user-search" value="Invite Friends:"/>
                                     </div>
                                     <div class="ui-grid-col-7">
                                         <div >
-                                            <p:autoComplete id="user-search" multiple="true" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
+                                            <p:autoComplete id="user-search" multiple="true" value="#{eventBean.invitedUser}" completeMethod="#{invitationUser.completeUser}"
                                                     var="user" styleClass="input-wide" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="true">
                                                 <p:column >
                                                     <h:outputText value="#{user.firstName}"/>
@@ -185,12 +196,13 @@
                                                 <p:column>
                                                     <h:outputText value="#{user.email}"/>
                                                 </p:column>
-                                            </p:autoComplete>
+                                            </p:autoComplete> 
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                      
                         <div class="ui-grid-col-6">
                             <div class="ui-grid ui-grid-responsive">
                                 <div class="ui-grid-row margin-small tallest">

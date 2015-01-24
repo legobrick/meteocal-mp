@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -47,12 +48,12 @@ import org.primefaces.model.ScheduleModel;
  *
  * @author paolo
  */
-@ManagedBean
-@Named
 
+@Named
+@ViewScoped
 @RequestScoped
 @SessionScoped
-public  class EventManagerBean {
+public  class EventManagerBean implements Serializable {
 
     @PersistenceContext
     EntityManager em;
@@ -62,33 +63,37 @@ public  class EventManagerBean {
     @EJB
     EventManager evm;
 
-    @ManagedProperty("#{param.cal}")
-    Long calId;
-   
+    private boolean lettoNonLetto;
     private Event selectEvent;
-    private ScheduleModel lazyModel;
-     private ScheduleModel model;
-    /**
-     * Creates a new instance of EventManagerBean
-     */
+    private ScheduleModel lazyModel2;
     private ScheduleEvent event = new DefaultScheduleEvent();
 
     public EventManagerBean() {
 
-
     }
-     public ScheduleModel getModel() {
-             return model;
-}
     
-    public ScheduleModel getLazyModel() {
-             return lazyModel;
-}
     
+ public ScheduleModel getLazyModel2() {
+        return lazyModel2;
+    }
+
+    public void setLazyModel2(ScheduleModel eventModel) {
+        this.lazyModel2 = eventModel;
+    }
+    
+      @PostConstruct
+    public void init() {
+        
+        if (um.getLoggedUser() != null) {
+           
+        lazySchedule(userCalendarId(),true,"output");
+            
+        
+        }
+    }
+
     public ScheduleModel lazySchedule(Long calId,boolean soloEventiPubblici,String output){
-    
-  
-       ScheduleModel lazyModel2 = new LazyScheduleModel() {
+      lazyModel2 = new LazyScheduleModel() {
             @Override
             public void loadEvents(Date start, Date end) {
                 int n;
@@ -133,13 +138,7 @@ public  class EventManagerBean {
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
                        System.out.println("evento "+e.getName()+" "+colore);
                         DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate,colore);
-                     /*  if (soloEventiPubblici==true){
-                           if (e.getIsPublic()){
                         addEvent(evento);
-                        
-                           }
-                       }
-                       else*/ addEvent(evento);
                     }
                    
                 }
@@ -165,12 +164,6 @@ public  class EventManagerBean {
 //        FacesContext.getCurrentInstance().getExternalContext().redirect("create_event");
     }
 
-    public Long param() {
-        String cal = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("cal");
-        System.out.println("questo è il strings s " + cal);
-        return this.calId;
-
-    }
 
     public ScheduleEvent getEvent() {
         return event;
@@ -193,7 +186,10 @@ public  class EventManagerBean {
         return this.lazySchedule(this.userCalendarId(),false,"ciao" );
     }
 
-   
+   public List<Event> nonLetti(String availability, boolean lista) {
+    
+        return this.allEventByAvailability(availability,this.userCalendarId(), lista);
+    }
     public List<Event> loggedEventUsr(String availability, boolean lista) {
     
         return this.allEventByNotAvailability(availability,this.userCalendarId(), lista);
@@ -352,13 +348,21 @@ public ScheduleModel searchedCal(){
         }
 
     }
+    
+    
 
     public void onEventSelect(SelectEvent selectEventt) throws IOException {
-        event = (ScheduleEvent) selectEventt.getObject();
-        Event e=(Event)event.getData();
-        System.out.println("il titolo");
+        //event = (ScheduleEvent) selectEventt.getObject();
+        //Event e=(Event)event.getData();
+        
+        if(selectEventt.getObject()!=null){
+        System.out.println("non nullo");
+        
+        }
+        System.out.println("non esiste"+selectEventt.toString()+" " + lazyModel2.getEventCount());
     }
-       public void onDateSelect(SelectEvent e) {
+ 
+    public void onDateSelect(SelectEvent e) {
              Date date = (Date) e.getObject();
              event = new DefaultScheduleEvent("", date, date);
 System.out.println("date");
@@ -406,7 +410,7 @@ System.out.println("date");
 
         Participation changepart = (Participation) p.getResultList().get(0);
         evm.changeAvailability(availability, changepart);
-
+        RequestContext.getCurrentInstance().update("form:next_event");
       //  em.merge(changepart);
         //System.out.println("sssss" + changepart.getAvailability());
     }
@@ -430,5 +434,38 @@ System.out.println("date");
      public void addEvent(ActionEvent actionEvent) {
   
     }
+     public void changeCalendarVisibility(){  
+         CalendarEntity cal=(CalendarEntity)um.getLoggedUser().getCalendarCollection().iterator().next();
+        if (!cal.getIsPublic()){
+               System.out.println("part true");
+        evm.changCalVisibility(true,cal);
+         }
+         else {evm.changCalVisibility(false,cal);
+           System.out.println("vis false");
+         }
+          RequestContext.getCurrentInstance().update("pub:pubButton");
+    }
+  public boolean calVisibility(){
+      CalendarEntity cal=(CalendarEntity)um.getLoggedUser().getCalendarCollection().iterator().next();
+return cal.getIsPublic();
+  }
+  
 
+    public boolean isLettoNonLetto() {
+        return lettoNonLetto;
+    }
+ 
+    public void setLettoNonLetto(boolean lettoNonLetto) {
+        this.lettoNonLetto = lettoNonLetto;
+    }
+  public void changeNotificationToRead() {
+        
+        if (!lettoNonLetto){
+            System.out.println("cambaito");
+            this.eventoLetto();
+            RequestContext.getCurrentInstance().update("h:mySchedule");
+            RequestContext.getCurrentInstance().update("header-form:notification_event");
+            RequestContext.getCurrentInstance().update("form:next_event");
+        }
+    }
 }
