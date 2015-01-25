@@ -10,10 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,6 +26,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -51,7 +49,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Event.findByStart", query = "SELECT e FROM Event e WHERE e.start = :start"),
     @NamedQuery(name = "Event.findByEnd", query = "SELECT e FROM Event e WHERE e.end = :end"),
     @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
-    @NamedQuery(name = "Event.findByDescription", query = "SELECT e FROM Event e WHERE e.description = :description")})
+    @NamedQuery(name = "Event.findByDescription", query = "SELECT e FROM Event e WHERE e.description = :description"),
+    @NamedQuery(name = "Event.deleteById", query="DELETE FROM Event e WHERE e.id = :id")})
 public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -101,10 +100,14 @@ public class Event implements Serializable {
     @Lob
     @Column(name = "description", nullable=false)
     private String description;
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<WeatherConstraint> valueConstraints;
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<WeatherStateConstraint> stateConstraints;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Owner> owners;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Participation> participation;
     
 
     
@@ -116,6 +119,7 @@ public class Event implements Serializable {
     }
 
     public Event(Long id, boolean isPublic, String placeDescription, boolean isOutdoor, LocalDateTime start, LocalDateTime end, String name) {
+        if( start != null && end != null && start.isAfter(end)) throw new ValidationException("End date must be after the start date");
         this.id = id;
         this.isPublic = isPublic;
         this.placeDescription = placeDescription;
@@ -226,6 +230,7 @@ public class Event implements Serializable {
      * @param start the start to set
      */
     public void setStart(LocalDateTime start) {
+        if( end != null && end.isBefore(start)) throw new ValidationException("Start date must be before the end date");
         this.start = start;
     }
 
@@ -240,6 +245,14 @@ public class Event implements Serializable {
      * @param end the end to set
      */
     public void setEnd(LocalDateTime end) {
+        if( start != null && start.isAfter(end)) throw new ValidationException("End date must be after the start date");
+        this.end = end;
+    }
+    
+    public void setDatesTogether(LocalDateTime start, LocalDateTime end){
+        if( start != null && start.isAfter(end)) throw new ValidationException("End date must be after the start date");
+        if( end != null && end.isBefore(start)) throw new ValidationException("Start date must be before the end date");
+        this.start = start;
         this.end = end;
     }
 
@@ -270,6 +283,34 @@ public class Event implements Serializable {
     public void setValueConstraints(Collection<WeatherConstraint> valueConstraints) {
         if(valueConstraints != null && valueConstraints.size() > 1) throw new InvalidParameterException("Invalid length, must be equals to 1. To be implemented.");
         this.valueConstraints = valueConstraints;
+    }
+
+    /**
+     * @return the owners
+     */
+    public Collection<Owner> getOwners() {
+        return owners;
+    }
+
+    /**
+     * @param owners the owners to set
+     */
+    public void setOwners(Collection<Owner> owners) {
+        this.owners = owners;
+    }
+
+    /**
+     * @return the participation
+     */
+    public Collection<Participation> getParticipation() {
+        return participation;
+    }
+
+    /**
+     * @param participation the participation to set
+     */
+    public void setParticipation(Collection<Participation> participation) {
+        this.participation = participation;
     }
     
 }

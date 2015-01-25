@@ -10,7 +10,9 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 /**
  *
@@ -34,5 +36,25 @@ public class WeatherStateConstraintManager extends AbstractFacade<WeatherStateCo
     @Override
     protected EntityManager getEntityManager() {
         return em;
+    }
+
+    @Override
+    public WeatherStateConstraint edit(WeatherStateConstraint entity) {
+        WeatherStateConstraint retVal = super.edit(entity); //To change body of generated methods, choose Tools | Templates.
+        em.flush();
+        return retVal;
+    }
+
+    @Override
+    public void create(WeatherStateConstraint entity) {
+        super.create(entity); //To change body of generated methods, choose Tools | Templates.
+        em.flush();
+    }
+
+    @Override
+    public void remove(WeatherStateConstraint entity) {
+        entity.setEvent(null);
+        super.remove(entity); //To change body of generated methods, choose Tools | Templates.
+        em.flush();
     }
 }

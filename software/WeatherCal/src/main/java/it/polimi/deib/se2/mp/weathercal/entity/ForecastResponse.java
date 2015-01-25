@@ -5,6 +5,7 @@
  */
 package it.polimi.deib.se2.mp.weathercal.entity;
 
+import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint.State;
 import static it.polimi.deib.se2.mp.weathercal.gui.WheaterChecker.getWeather;
 import static it.polimi.deib.se2.mp.weathercal.gui.WheaterChecker.getWeather16;
@@ -12,8 +13,10 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import javax.ejb.EJB;
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONException;
 import org.primefaces.json.JSONObject;
@@ -28,7 +31,8 @@ public class ForecastResponse implements Serializable {
     private float weatherState;
     private State state;
     private LocalDateTime closestSunny;
-
+   @EJB
+    EventManager em;
     public double getTemperatura() {
         return temperatura;
     }
@@ -78,9 +82,10 @@ public class ForecastResponse implements Serializable {
             JSONArray jArray1 = object2.getJSONObject(i).getJSONArray("weather");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.ofEpochSecond(Long.valueOf(date), 1, ZoneOffset.UTC);
-
-            if (dateTime.isAfter(e.getStart())) {
-                int ora = e.getStart().getHour();
+            ZonedDateTime zd= e.getStart().atZone(em.getTimezone(em.getTimezoneOffset(e,e.getStart())));
+            System.out.println("lora eeee:"+zd.getHour()+"vecchia"+e.getStart().getHour());
+            if (dateTime.isAfter(zd.toLocalDateTime())) {
+                int ora = zd.getHour();
                 String intervallogiorno = "day";
                 if (ora >= 18) {
                     intervallogiorno = "eve";

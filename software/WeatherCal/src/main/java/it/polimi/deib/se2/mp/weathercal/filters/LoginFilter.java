@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -27,6 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginFilter implements Filter {
     
     private static final boolean debug = FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development;
+    
+    @Inject
+    private Logger logger;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -236,7 +242,7 @@ public class LoginFilter implements Filter {
     }
     
     public void log(String msg) {
-        filterConfig.getServletContext().log(msg);        
+        logger.log(Level.INFO, msg);
     }
     
 }

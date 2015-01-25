@@ -161,15 +161,13 @@ public class WheaterChecker implements Serializable {
                 System.out.println("In check " + nexttemp + state + fr.getState());
                 if (!e.getValueConstraints().isEmpty()) {
                     WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
-                    if (temperatura.getIsTemperatureLowerThan() == true && nexttemp < temperatura.getTemperature().floatValue()) {
-
-                    } else if (temperatura.getIsTemperatureLowerThan() == true && nexttemp > temperatura.getTemperature().floatValue()) {
+                    if (temperatura.getIsTemperatureLowerThan() == true && nexttemp >= temperatura.getTemperature().floatValue()) {
                         attention = "Temperature is higher then the desired one";
 
-                    } else if (temperatura.getIsTemperatureLowerThan() == false && nexttemp > temperatura.getTemperature().floatValue()) {
-
-                    } else {
-                        attention = "The temperature is lower then the desired one";
+                    } else if (temperatura.getIsTemperatureLowerThan() == false && nexttemp < temperatura.getTemperature().floatValue()) {
+                          attention = "The temperature is lower then the desired one";
+                    }  else {
+                        
                     }
 
                 }
@@ -215,15 +213,13 @@ public class WheaterChecker implements Serializable {
                 System.out.println("In check " + nexttemp + state + fr.getState());
                 if (!e.getValueConstraints().isEmpty()) {
                     WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
-                    if (temperatura.getIsTemperatureLowerThan() == true && nexttemp < temperatura.getTemperature().floatValue()) {
-
-                    } else if (temperatura.getIsTemperatureLowerThan() == true && nexttemp > temperatura.getTemperature().floatValue()) {
+                   if (temperatura.getIsTemperatureLowerThan() == true && nexttemp >= temperatura.getTemperature().floatValue()) {
                         attention = "Temperature is higher then the desired one";
 
-                    } else if (temperatura.getIsTemperatureLowerThan() == false && nexttemp > temperatura.getTemperature().floatValue()) {
-
+                    } else if (temperatura.getIsTemperatureLowerThan() == false && nexttemp < temperatura.getTemperature().floatValue()) {
+                          attention = "The temperature is lower then the desired one";
                     } else {
-                        attention = "The temperature is lower then the desired one";
+                        
                     }
 
                 }
@@ -246,16 +242,17 @@ public class WheaterChecker implements Serializable {
 
                     if (attention.equals("")) {
                     } else {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                         String giorno;
                         if (fr.weatherDailyNext(e).format(formatter) == null) {
-                            giorno = " Sorry no closest day matches with your desired constraint.";
+                            giorno = " Sorry no closest day that matches with your desired constraint were found.";
                         } else {
-                            giorno = fr.weatherDailyNext(e).format(formatter);
+                            giorno = "The closest day that match with your constraint is "+fr.weatherDailyNext(e).format(formatter);
                         }
 
-                        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Attenzione", "The weather forecast for the event " + e.getName() + " scheduled for " + e.getStart().getYear() + "/" + e.getStart().getMonthValue() + "/" + e.getStart().getDayOfMonth() + ". " + attention + " Do you want to postpone the event? " + giorno);
+                        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning", "The weather forecast for the event " + e.getName() + " scheduled for " + e.getStart().getYear() + "/" + e.getStart().getMonthValue() + "/" + e.getStart().getDayOfMonth() + ". " + attention + " Do you want to postpone the event? " + giorno);
                         RequestContext.getCurrentInstance().showMessageInDialog(message);
+                    
                     }
                 }
             }
@@ -310,15 +307,12 @@ public class WheaterChecker implements Serializable {
     public void triggerNotificaiton() throws IOException, JSONException {
 
         RequestContext context2 = RequestContext.getCurrentInstance();
-       // context2.execute("PF('myDialogVar1').show();");
-       
-        
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         ServletContext sContext = request.getSession().getServletContext();
-        LocalDateTime lastNot = (LocalDateTime) sContext.getAttribute("lastNotification");
+       
         
-        if (lastNot == null) {
+        if (sContext.getAttribute("lastNotification") == null) {
             System.out.println("creata data");
             Date currDate = new Date();
             Instant instant = Instant.ofEpochMilli(currDate.getTime());
@@ -328,10 +322,11 @@ public class WheaterChecker implements Serializable {
             this.check();
             
         } else {
+            LocalDateTime lastNot = (LocalDateTime) sContext.getAttribute("lastNotification");
             Date currDate = new Date();
             Instant instant = Instant.ofEpochMilli(currDate.getTime());
             LocalDateTime currLocal = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-            if (currLocal.isAfter(lastNot.plusMinutes(20))) {
+            if (currLocal.isAfter(lastNot.plusHours(2))) {
                 System.out.println("passati 5 minuti");
 
                 this.check();

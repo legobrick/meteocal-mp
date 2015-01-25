@@ -115,7 +115,7 @@
                             <p:outputPanel id="carDetail" style="text-align:center;">
                                 <p:panelGrid style="width:300px" columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
                                     <h:outputText value="Name" />
-                                    <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                    <h:outputText value="#{eventManagerBean.selectEvent.name}" /> 
                                     <h:outputText value="Where" />
                                     <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
                                     <h:outputText value="Start" />
@@ -124,15 +124,15 @@
                                     <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
                                 </p:panelGrid>
                                 <script type="text/javascript">
-            function DoAllThese() {
-                PF('myschedule').update();
-                PF('eventDialog').hide();
-                PF('notificationDialog').hide();
+                                    function DoAllThese() {
+                                        PF('myschedule').update();
+                                        PF('eventDialog').hide();
+                                        PF('notificationDialog').hide();
 
-            }
+                                    }
                                 </script>
                                 <div style="margin-top:10px">
-                                    <p:commandButton value="Edit" action="#{eventManagerBean.owner}"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
+                                    <p:commandButton value="Edit" action="#{eventManagerBean.editEvent()}"><f:param name="id" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
                                     <p:commandButton value="Abbandon"  action="#{eventManagerBean.changeAvailability('no')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
                                     <p:commandButton value="Maybe" action="#{eventManagerBean.changeAvailability('forse')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
                                     <p:commandButton value="Join" action="#{eventManagerBean.changeAvailability('si')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
@@ -150,10 +150,10 @@
 
                         <ul>
                             <li>
-                                <p:selectBooleanButton  onLabel="#{eventManagerBean.numberOfNot()}" offLabel="#{eventManagerBean.numberOfNot()}" id="notification_button" value="#{eventManagerBean.lettoNonLetto}">
+                                <p:selectBooleanButton widgetVar="notif-button"  onLabel="#{eventManagerBean.numberOfNot()}" offLabel="#{eventManagerBean.numberOfNot()}" id="notification_button" value="#{eventManagerBean.lettoNonLetto}">
                                     <p:ajax  listener="#{eventManagerBean.changeNotificationToRead()}" />
                                 </p:selectBooleanButton>
-                                <p:overlayPanel id="imagePanel" style="height:200px;width:300px" dynamic="true" for="notification_button" hideEffect="fade">
+                                <p:overlayPanel id="imagePanel" styleClass="notificadiocane" style="width:300px" dynamic="true" for="notification_button" hideEffect="fade">
                                     <p:dataScroller id="notification_event" value="#{eventManagerBean.nonLetti('nonletto',false)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
                                         <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":header-form:evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
                                             <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
@@ -164,7 +164,7 @@
                                     <p:outputPanel id="evDetail" style="text-align:center;">
                                         <p:panelGrid  columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
                                             <h:outputText value="Name" />
-                                            <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                            <h:outputText value="#{eventManagerBean.selectEvent.name}" /> 
                                             <h:outputText value="Where" />
                                             <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
                                             <h:outputText value="Start" />
@@ -215,8 +215,10 @@
                                 })
 
                             </script>
-                            <p:commandButton widgetVar="new_event_button" id="new-event" action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="display:none; width:8em; height:1.9em; font-size:1em;">
+                            <h:form id="f">
+                            <p:commandButton widgetVar="new_event_button" id="new-event" action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="position: absolute;left: 190px;width:8em; height:1.9em; font-size:1em;">
                             </p:commandButton>
+                                </h:form>
                             <h:form id="h">
                                 <h:panelGrid style="width:100%;">
 
@@ -224,7 +226,7 @@
                                         id="mySchedule"
                                         value="#{eventManagerBean.lazyModel2}"
                                         style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
-
+                                        styleClass="tabella"
                                         widgetVar="myschedule"
                                         timeZone="GMT+1"
                                         draggable="false"
@@ -297,13 +299,15 @@
                                                         </div>
                                                     </div>-->
                         </div>
-                        <div style="margin-top:50px;margin-rigth:10px">
-                            <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" value="" class="text-center">Next events</h3>
-                            <h:form id="form">
-                                <p:dataScroller id="next_event" widgetVar="nextEvent" value="#{eventManagerBean.loggedEventUsr('si',true)}" var="event" chunkSize="5" style="margin-right:10px">
-                                    <p:outputPanel>
-                                        <h:panelGrid columns="2" cellpadding="5">
+
+                    <div style="margin-top:50px;margin-rigth:10px">
+                        <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" value="" class="text-center">Next events</h3>
+                        <h:form id="form">
+                            <p:dataScroller styleClass="madonna-la-cantante" id="next_event" widgetVar="nextEvent" rows="4" value="#{eventManagerBean.loggedEventUsr('si',true)}" var="event" chunkSize="4" style="margin-right:10px">
+                                <p:outputPanel>
+                                    <h:panelGrid columns="2" cellpadding="5">
                                             <p:commandButton  value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" style="width:300px;height:30px; margin-top:5px;" update=":dialog-form:carDetail" oncomplete="PF('eventDialog').show()" title="View Detail">
+
                                                 <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
                                             </p:commandButton>
                                         </h:panelGrid>

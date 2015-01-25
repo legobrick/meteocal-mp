@@ -5,12 +5,14 @@
  */
 package it.polimi.deib.se2.mp.weathercal.gui;
 
+import it.polimi.deib.se2.mp.weathercal.boundary.AbstractFacade;
 import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.Owner;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
+import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.Serializable;
@@ -20,10 +22,13 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -32,10 +37,12 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Transient;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.context.RequestContext;
@@ -53,11 +60,27 @@ import org.primefaces.model.ScheduleModel;
 @Named
 @ViewScoped
 //@RequestScoped
-@SessionScoped
+
 public class EventManagerBean implements Serializable {
+    
+    @Inject
+    private transient Logger logger;
 
     @PersistenceContext
     EntityManager em;
+    
+    AbstractFacade ef = new AbstractFacade(Event.class) {
+
+        @Override
+        protected Logger getLogger() {
+            return Logger.getLogger("cielcio");
+        }
+
+        @Override
+        protected EntityManager getEntityManager() {
+            return em;
+        }
+    };
 
     @EJB
     UserManager um;
@@ -126,7 +149,7 @@ public class EventManagerBean implements Serializable {
                     Date endDate = Date.from(endInstant);
                     String colore;
                     Long id = e.getId();
-                    if (isOwner(id, calId)) {
+                    if (isOwner(id,um.getLoggedUser(), ef)) {
                         colore = "empowner";
                     } else {
 
@@ -207,6 +230,7 @@ public class EventManagerBean implements Serializable {
     public List<Event> nonLetti(String availability, boolean lista) {
 
         return this.allEventByAvailability(availability, this.userCalendarId(), lista);
+
     }
 
     public List<Event> loggedEventUsr(String availability, boolean lista) {
@@ -405,20 +429,37 @@ public class EventManagerBean implements Serializable {
         System.out.println("date");
     }
 
-    public boolean isOwner(Long idEv, Long userid) {
-        Query p = em.createNamedQuery("Owner.findByIdEvent");
-        p.setParameter("idEvent", idEv);
-        if (p.getResultList().size() == 0) {
+    public static boolean isOwner(Long idEv,User user, AbstractFacade af) {
+        Collection<Owner> owners = ((Event) af.find(idEv)).getOwners();
+        if (owners.isEmpty()) 
             return false;
+        Owner owncal = (Owner) owners.iterator().next();
+        Long owncalid = owncal.getOwnerPK().getIdCalendar();
+        if (owncal.getCalendar().equals(user.getCalendarCollection().iterator().next())) {
+            return true;
         } else {
-            Owner owncal = (Owner) p.getResultList().get(0);
-            Long owncalid = owncal.getOwnerPK().getIdCalendar();
-            if (owncalid == userid) {
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
+    }
+    
+    
+    
+    public String editEvent(){
+        Long idEv = Long.valueOf(
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+        logger.log(Level.FINER, "Opening edit page for event " + idEv);
+        if (EventManagerBean.isOwner(idEv, um.getLoggedUser(), ef)){
+//            return "/create_event?faces-redirect=true&amp;includeViewParams=true";
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect(String.format("create_event.xhtml?evt=%s", idEv));
+            } catch (IOException ex) {
+                logger.log(Level.SEVERE, null, ex);
+            }
+          return "";
+        }
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "NO", "You are not allowed to edit this event, since you are not an owner.");
+        RequestContext.getCurrentInstance().showMessageInDialog(message);
+        return "";
     }
 
     public void owner() {
@@ -426,7 +467,7 @@ public class EventManagerBean implements Serializable {
         String action = params.get("action");
         Long idEv = Long.parseLong(action);
 
-        if (this.isOwner(idEv, this.userCalendarId())) {
+        if (this.isOwner(idEv,um.getLoggedUser(), ef)) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "SI", "è tuo");
             RequestContext.getCurrentInstance().showMessageInDialog(message);
         } else {
@@ -527,7 +568,8 @@ public class EventManagerBean implements Serializable {
             this.eventoLetto();
             RequestContext.getCurrentInstance().update("h:mySchedule");
             RequestContext.getCurrentInstance().update("header-form:notification_event");
-            RequestContext.getCurrentInstance().update("header-form:notification_button");
+            RequestContext.getCurrentInstance().update("header-form:notification-button");
+            RequestContext.getCurrentInstance().update("f:new-event");
             RequestContext.getCurrentInstance().update("form:next_event");
         }
     }

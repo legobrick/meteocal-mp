@@ -8,21 +8,34 @@ package it.polimi.deib.se2.mp.weathercal.boundary;
 import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.Owner;
+import it.polimi.deib.se2.mp.weathercal.entity.OwnerPK;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
 import it.polimi.deib.se2.mp.weathercal.entity.TimeZoneResponse;
+import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.Transactional;
+import javax.transaction.UserTransaction;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
@@ -102,38 +115,84 @@ public class EventManager extends AbstractFacade<Event>{
     
     @Override
     public void create(Event event) {
-        EntityTransaction t = em.getTransaction();
-        t.begin();
         try{
+            System.out.print("iltitolo "+event.getPlaceDescription());
+            Long ev=event.getId();
             super.create(event);
             CalendarEntity c = um.getLoggedUser().getCalendarCollection().iterator().next();
-            em.persist(new Owner(){{
+            Owner o=new Owner();
+           // o.setEvent(event);
+            //o.setCalendar(c);
+          /*  OwnerPK ok=new OwnerPK();
+            ok.setIdCalendar(c.getId());
+            ok.setIdEvent(ev);
+            o.setOwnerPK(ok);*/
+            //em.persist(o);
+            //em.persist(o);
+           /* em.persist(new Participation(){{
                 setCalendar(c);
                 setEvent(event);
-            }});
+                setAvailability("si");
+            }});*/
         } catch (Exception e){
-            t.rollback();
             throw e;
         }
-        t.commit();
+        em.flush();
+    }
+    public void creatOwner(User u,Event e){
+        Owner ok=new Owner();
+        OwnerPK o=new OwnerPK();
+        o.setIdEvent(e.getId());
+        o.setIdCalendar(u.getCalendarCollection().iterator().next().getId());
+        ok.setOwnerPK(o);
+        em.merge(ok);
+        em.flush();
+           // o.setEvent(event);
+            //o.setCalendar(c);
+        
     }
     
     public void changeAvailability(String av,Participation changepart){
-  
-        
         changepart.setAvailability(av);
         em.merge(changepart);
         em.flush();
-        
       //  em.merge(changepart);
-
         System.out.println("sssss" + changepart.getAvailability());
     }
+    
+    public void removeParticipation(Participation p){
+        em.remove(p);
+        em.flush();
+    }
+    
+    public void createParticipation(Participation p){
+        em.persist(p);
+        em.flush();
+    }
+    
     public void changCalVisibility(boolean visibility,CalendarEntity cal){
     cal.setIsPublic(visibility);
     em.merge(cal);
     em.flush();
     }
+    
+    public void invitaUser(Participation p){
+    em.merge(p);
+    em.flush();
+    }
+    
+    public List<Participation> getParticipationsForCalendarToEvent(CalendarEntity c, Event e){
+        Query q = em.createNamedQuery("Participation.findByIdCalendarandIdEvent");
+        q.setParameter("idCalendar", c.getId());
+        q.setParameter("idEvent", e.getId());
+        return q.getResultList();
+    }
+    
+    public List<Participation> getParticipationsForUserToEvent(User u, Event e){
+        return u.getCalendarCollection().size() == 0? new ArrayList():
+            getParticipationsForCalendarToEvent(u.getCalendarCollection().iterator().next(), e);
+    }
+    
     public List<Event> tGetAll(){
         Query q = em.createNamedQuery("Event.findAll");
         return q.getResultList();
@@ -143,5 +202,21 @@ public class EventManager extends AbstractFacade<Event>{
     protected Logger getLogger() {
         return logger;
     }
-    
+
+    @Override
+    public Event edit(Event entity) {
+        Event retVal = super.edit(entity); //To change body of generated methods, choose Tools | Templates.
+        em.flush();
+        return retVal;
+    }
+
+    @Override
+    public void remove(Event entity) {
+        super.remove(entity); //To change body of generated methods, choose Tools | Templates.
+        em.flush();
+    }
+    public void removeById(long id){
+     this.remove(find(id));
+     em.flush();
+    }
 }

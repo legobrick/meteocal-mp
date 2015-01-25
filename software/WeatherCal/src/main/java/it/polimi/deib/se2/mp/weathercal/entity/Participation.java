@@ -8,6 +8,7 @@ package it.polimi.deib.se2.mp.weathercal.entity;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -51,10 +52,10 @@ public class Participation implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date notification;
     @JoinColumn(name = "id_calendar", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private CalendarEntity calendar;
     @JoinColumn(name = "id_event", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
     private Event event;
 
     public Participation() {
@@ -71,6 +72,11 @@ public class Participation implements Serializable {
 
     public Participation(long idCalendar, long idEvent) {
         this.participationPK = new ParticipationPK(idCalendar, idEvent);
+    }
+
+    public Participation(long idCalendar, long idEvent, String availability) {
+        this.participationPK = new ParticipationPK(idCalendar, idEvent);
+        this.availability = availability;
     }
 
     public ParticipationPK getParticipationPK() {

@@ -7,6 +7,7 @@ package it.polimi.deib.se2.mp.weathercal.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -79,7 +80,7 @@ public class WeatherConstraint implements Serializable {
     }
 
     public BigDecimal getTemperature() {
-        return temperature;
+        return temperature.setScale(0, RoundingMode.HALF_UP);
     }
 
     public void setTemperature(BigDecimal temperature) {
@@ -116,9 +117,13 @@ public class WeatherConstraint implements Serializable {
             return false;
         }
         WeatherConstraint other = (WeatherConstraint) object;
-        return (other.id != null && this.id != null && this.id.equals(other.id)) ||
-                (other.isTemperatureLowerThan == this.isTemperatureLowerThan && this.event.equals(other.event)
-                && this.temperature.equals(other.temperature));
+        return (other.id != null && this.id != null && this.id.equals(other.id))
+            || (other.isTemperatureLowerThan == this.isTemperatureLowerThan
+                && ((this.event == null && other.event == null)
+                    || (this.event != null && this.event.equals(other.event)))
+                && this.temperature.equals(other.temperature
+            )
+        );
     }
 
     @Override

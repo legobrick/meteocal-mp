@@ -57,6 +57,14 @@ public class WeatherStateConstraint implements Serializable {
         private State(String value) {
                 this.value = value;
         }
+        public static State getFor(String value){
+            for(State s : values()){
+                if( s.toString().equals(value)){
+                    return s;
+                }
+            }
+            return null;
+        }
         @Override
         public String toString() {
             return value;
@@ -134,8 +142,11 @@ public class WeatherStateConstraint implements Serializable {
             return false;
         }
         WeatherStateConstraint other = (WeatherStateConstraint) object;
-        return (other.id != null && this.id != null && !this.id.equals(other.id)) ||
-                (this.event.equals(other.event) && this.weatherState.equals(other.weatherState));
+        return (other.id != null && this.id != null && this.id.equals(other.id)) ||
+                ((this.event == null && other.event == null) ||
+                (this.event != null && this.event.equals(other.event)) && 
+                (this.weatherState == null && other.weatherState == null) ||
+                (this.weatherState != null && this.weatherState.equals(other.weatherState)));
     }
 
     @Override
@@ -143,7 +154,7 @@ public class WeatherStateConstraint implements Serializable {
         return getWeatherState();
     }
     public State toState() {
-        return State.valueOf(weatherState);
+        return State.getFor(weatherState);
     }
     
 }

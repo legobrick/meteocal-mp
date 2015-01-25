@@ -155,8 +155,34 @@ em{color:	red;}
     background-image:-moz-linear-gradient(top, #90C4FF, rgb(30,130,201));
     text-shadow:	0.03em 0 .03em rgba(255, 255, 255, 0.87);
 }
+[id$=pubButton]{
+    margin-top:15px; 
+    color:#ffffff;
+  background-color:	rgb(203,56,39);
+    background-image:-ms-linear-gradient(top, #d84534, rgb(203,56,39));
+    background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#d84534), to(rgb(203,56,39)));
+    background-image:-webkit-linear-gradient(top, #d84534, rgb(203,56,39));
+    background-image:-o-linear-gradient(top, #d84534, rgb(203,56,39));
+    background-image:linear-gradient(top, #d84534, rgb(203,56,39));
+    background-image:-moz-linear-gradient(top, #d84534, rgb(203,56,39));
+    text-shadow:	0.03em 0 .03em rgba(255, 255, 255, 0.87);
+}
 
 [id$=logout_button] {
+    
+    color:rgba(255, 255, 255, 0.75);
+    background-color:#e2173d;
+    border-width:2px;
+    border-color:#e2173d;
+    background-image:-ms-linear-gradient(top, #FF8888, #e2173d);
+    background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#FF8888), to(#e2173d));
+    background-image:-webkit-linear-gradient(top, #FF8888, #e2173d);
+    background-image:-o-linear-gradient(top, #FF8888, #e2173d);
+    background-image:linear-gradient(top, #FF8888, #e2173d);
+    background-image:-moz-linear-gradient(top, #FF8888, #e2173d);
+    text-shadow:	0.03em 0 .03em rgba(255, 255, 255, 0.87);
+}
+[id$=Public] {
     color:rgba(255, 255, 255, 0.75);
     background-color:#e2173d;
     border-width:2px;
@@ -295,6 +321,11 @@ div.ui-message-error {
     transition:	ease-in-out .1s;
     padding-right:	.5em;
     z-index:	999;
+}
+
+label.ui-state-error {
+    background: initial;
+    color: initial;
 }
 
 .ui-message-error-detail {
@@ -495,4 +526,22 @@ div.ui-message-error {
 
 .multiline-input {
     white-space: pre-line;
+}
+
+.madonna-la-cantante {
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+.madonna-la-cantante>div{
+    background-color: rgba(255, 115, 5, 0.22);
+}
+
+.notificadiocane {
+    height: 350px;
+    overflow-y: auto;
+}
+
+.notificadiocane .ui-datascroller-content {
+    border: 0;
 }

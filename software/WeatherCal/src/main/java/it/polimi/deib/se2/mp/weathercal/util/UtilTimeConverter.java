@@ -5,9 +5,12 @@
  */
 package it.polimi.deib.se2.mp.weathercal.util;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 /**
@@ -16,16 +19,19 @@ import java.util.Date;
  */
 public class UtilTimeConverter {
     public static LocalDate utilDateToLocalDate(Date input){
-        return input == null? null: input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return input == null? null: LocalDate.ofEpochDay(input.getTime()/86400000);
     }
     public static Date localDateToUtilDate(LocalDate input){
-        return input == null? null: Date.from(input.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return input == null? null: Date.from(input.atStartOfDay(ZoneId.of("UTC")).toInstant());
     }
 
     public static LocalTime utilDateToLocalTime(Date input){
-        return input == null? null: input.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        return input == null? null: LocalTime.ofSecondOfDay(((long)input.getTime()/1000) % 86400);
     }
     public static Date localTimeToUtilDate(LocalTime input){
-        return input == null? null: Date.from(input.atDate(LocalDate.MIN).atZone(ZoneId.systemDefault()).toInstant());
+        if(input == null) return null;
+        ZonedDateTime zdt = input.atDate(LocalDate.now()).atZone(ZoneId.of("UTC"));
+        Instant i = zdt.toInstant();
+        return Date.from(i);
     }
 }

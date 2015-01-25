@@ -139,6 +139,7 @@ public class User implements Serializable {
     }
 
     public void setCalendarCollection(Collection<CalendarEntity> calendarCollection) {
+        if (calendarCollection.isEmpty()) throw new IllegalStateException("Cannot have a user without calendars" +  this.toString());
         this.calendarCollection = calendarCollection;
     }
 

@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import org.primefaces.context.RequestContext;
 
 /**
  * @author paolo
@@ -54,13 +55,14 @@ public class LoginBean {
     }
 
     public String login() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         try {
             request.login(this.email, this.password);
             return "/index?faces-redirect=true";
         } catch (ServletException e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login Failed","Login Failed"));
+            RequestContext.getCurrentInstance().showMessageInDialog(
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed", "Wrong user/password, try again.")
+            );
             logger.log(Level.SEVERE,"Login Failed");
             return null;
         }

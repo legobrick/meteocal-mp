@@ -7,6 +7,7 @@
 define(['moment', 'underscore'], function (moment, _) {
     "use strict";
     var App = function(){};
+    var latLngChecker = /^(\-?1?\d{1,2}(\.(\d)+)?)$/;
     var error = '<div class="ui-messages ui-widget nontext-center" aria-live="polite" data-global="false" data-summary="data-summary" data-detail="data-detail" data-severity="all,error" data-redisplay="true" style="position: relative;margin-top: auto;margin-bottom: auto;width: 40%;height: 60%;"><div class="ui-messages-error ui-corner-all text-center" style="height: 100%;"><span class="ui-messages-error-icon" style="position: relative;top: 43%;width: 48px;height: 48px;background-size: cover;background-position: initial;margin-left: 10px;"></span><ul style="position: relative;top: 45%;font-size: 1.4em;"><li><span class="ui-messages-error-summary">Error!</span><span class="ui-messages-error-detail">Missing internet connection.</span></li></ul></div></div>';
     App.prototype = {
         start: function(){
@@ -21,7 +22,18 @@ define(['moment', 'underscore'], function (moment, _) {
         },
         setUserTZ: function(){
             moment().format();
-            this.exportPF(['userTimezone']).$userTimezone.val(moment().utcOffset());
+            this.exportPF(['startTime', 'startDate', 'endTime', 'endDate', 'userTimezone']);
+            this.$userTimezone.val(moment().utcOffset());
+            if(!_.isNull(startDT)){
+               var start = moment.utc(startDT).local(moment().utcOffset());
+               this.$startDate.val(start.format("DD/MM/YYYY"));
+               this.$startTime.val(start.format("HH:mm"));
+            }
+            if(!_.isNull(endDT)){
+               var end = moment.utc(endDT).local(moment().utcOffset());
+               this.$endDate.val(end.format("DD/MM/YYYY"));
+               this.$endTime.val(end.format("HH:mm"));
+            }
             return this;
         },
         timer: 0,
@@ -36,34 +48,38 @@ define(['moment', 'underscore'], function (moment, _) {
             this.timer = setTimeout(callback, ms);
             return this;
         },
+        geoCallback : function(results, status){
+            if (status === google.maps.GeocoderStatus.OK)
+            {
+                this.$latitude.val(results[0].geometry.location.lat());
+                this.$longitude.val(results[0].geometry.location.lng());
+                var bounds = new google.maps.LatLngBounds(
+                    results[0].geometry.viewport.getSouthWest(), 
+                    results[0].geometry.viewport.getNorthEast()
+                );
+                this.map.__proto__.fitBounds.call(this.map, bounds);
+                this.marker.setValues({
+                    position: results[0].geometry.location,
+                    map: this.map,
+                    title: results[0].formatted_address,
+                    draggable: false,
+                    animation: google.maps.Animation.BOUNCE
+                });
+                var me = this;
+                this.delay(function(){
+                    me.marker.setAnimation(null);
+                }, 500);
+            }
+        },
         geocode: function(e){
-            e.stopPropagation();
-            e.preventDefault();
+            if(e){
+                e.stopPropagation();
+                e.preventDefault();
+            }
             var me = this;
             this.myGeocoder.geocode({
                 address: this.$address.val()
-            }, function(results, status){
-                if (status === google.maps.GeocoderStatus.OK)
-                {
-                    me.$latitude.val(results[0].geometry.location.lat());
-                    me.$longitude.val(results[0].geometry.location.lng());
-                    var bounds = new google.maps.LatLngBounds(
-                        results[0].geometry.viewport.getSouthWest(), 
-                        results[0].geometry.viewport.getNorthEast()
-                    );
-                    me.map.__proto__.fitBounds.call(me.map, bounds);
-                    me.marker.setValues({
-                        position: results[0].geometry.location,
-                        map: me.map,
-                        title: results[0].formatted_address,
-                        draggable: false,
-                        animation: google.maps.Animation.BOUNCE
-                    });
-                    me.delay(function(){
-                        me.marker.setAnimation(null);
-                    }, 500);
-                }
-            });
+            }, function(){ me.geoCallback.apply(me, arguments);});
             return this;
         },
         initGMap: function(){
@@ -79,6 +95,14 @@ define(['moment', 'underscore'], function (moment, _) {
             this.myGeocoder = new google.maps.Geocoder();
             this.marker = new google.maps.Marker();
             this.exportPF(['address', 'latitude', 'longitude', 'go']);
+            if(latLngChecker.test(this.$latitude.val()) && latLngChecker.test(this.$longitude.val())){
+                var oldLat = this.$latitude.val();
+                var oldLng = this.$longitude.val();
+                this.geocode({stopPropagation:function(){},preventDefault:function(){}});
+                if(oldLat != this.$latitude.val() || oldLng != this.$longitude.val())
+                    console.error("New position is different from the preceding one: why?!\nOLD: " + oldLat + ", "
+                        + oldLng + "\nNEW: " + this.$latitude.val() + ", " + this.$longitude.val());
+            }
             this.$address.keyup(function() {
                 me.delay(geocode, 8000);
             });
@@ -86,7 +110,6 @@ define(['moment', 'underscore'], function (moment, _) {
             return this;
         },
         initDatePair: function(){
-            this.exportPF(['startTime', 'startDate', 'endTime', 'endDate']);
             var $time = this.$startTime.add(this.$endTime);
             var $date = this.$startDate.add(this.$endDate);
             // initialize input widgets first
@@ -219,7 +242,7 @@ define(['moment', 'underscore'], function (moment, _) {
                     enabled = false;
                 }
             };
-            activationClassSetter({ data: this });
+            activationClassSetter.call(this.$tempSelector, { data: this });
             this.$tempSelector.on('click', this, activationClassSetter);
             return this;
         }

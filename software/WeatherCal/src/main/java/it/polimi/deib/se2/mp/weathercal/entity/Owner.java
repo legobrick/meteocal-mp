@@ -7,6 +7,7 @@ package it.polimi.deib.se2.mp.weathercal.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -40,10 +41,10 @@ public class Owner implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date notification;
     @JoinColumn(name = "id_calendar", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private CalendarEntity calendar;
     @JoinColumn(name = "id_event", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Event event;
 
     public Owner() {
