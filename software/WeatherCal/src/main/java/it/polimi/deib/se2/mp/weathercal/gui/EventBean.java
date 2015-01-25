@@ -60,6 +60,9 @@ public class EventBean {
     @EJB
     UserManager um;
     @EJB
+    UserManager um;
+    
+    @EJB
     WeatherStateConstraintManager wscManager;
 
     @EJB
@@ -86,12 +89,17 @@ public class EventBean {
     }
 
     
-
-
     @PostConstruct
     public void init() {
-        event = new Event();
-        weatherC = new WeatherConstraint();
+        if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id") == null){
+            event = new Event();
+            weatherC = new WeatherConstraint();
+        } else {
+            event = editingEvent = manager.find(Long.parseLong(
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id")
+            ));
+            weatherC = event.getValueConstraints().isEmpty()? new WeatherConstraint(): event.getValueConstraints().iterator().next();
+        }
     }
 
     public Collection<String> getInvitedUser() {
@@ -377,7 +385,7 @@ public class EventBean {
         if(wcs == null){
             if(valueConstraint != null)
                 event.setValueConstraints(new ArrayList<WeatherConstraint>(){{
-                        add(valueConstraint);
+                    add(valueConstraint);
                 }});
         } else {
             if(valueConstraint == null){
@@ -468,5 +476,58 @@ public class EventBean {
         event = manager.find(editId);
         weatherC = event.getValueConstraints().isEmpty() ? new WeatherConstraint() : event.getValueConstraints().iterator().next();
         setEditingEvent(event);
+    }
+
+    /**
+     * @return the editingEvent
+     */
+    public Event getEditingEvent() {
+        return editingEvent;
+    }
+
+    /**
+     * @param editingEvent the editingEvent to set
+     */
+    public void setEditingEvent(Event editingEvent) {
+        if(editingEvent == null) return;
+        createButtonText = "Modify";
+        pageTitle = "Edit Event";
+        RequestContext requestContextInstance = RequestContext.getCurrentInstance();
+        event = this.editingEvent = editingEvent;
+        Collection<WeatherConstraint> wcs = event.getValueConstraints();
+        hasConstraint = !wcs.isEmpty();
+        weatherC = hasConstraint? wcs.iterator().next(): new WeatherConstraint();
+        LocalDateTime eventStart = event.getStart();
+        ZonedDateTime startZdt = ZonedDateTime.of(eventStart, ZoneId.of("UTC")).withZoneSameInstant(
+                manager.getTimezone(manager.getTimezoneOffset(
+                        event, LocalDateTime.of(eventStart.toLocalDate(), eventStart.toLocalTime()))
+                )
+        );
+        requestContextInstance.execute(String.format("startDT='%s'", startZdt.toLocalDateTime().toString()));
+        LocalDateTime eventEnd = event.getEnd();
+        ZonedDateTime endZdt = ZonedDateTime.of(eventEnd, ZoneId.of("UTC")).withZoneSameInstant(
+                manager.getTimezone(manager.getTimezoneOffset(
+                        event, LocalDateTime.of(eventEnd.toLocalDate(), eventEnd.toLocalTime()))
+                )
+        );
+        requestContextInstance.execute(String.format("endDT='%s'", endZdt.toLocalDateTime().toString()));
+        states = new ArrayList<>();
+        event.getStateConstraints().iterator().forEachRemaining(
+                st -> states.add(st.toState())
+        );
+    }
+
+    /**
+     * @return the createButtonText
+     */
+    public String getCreateButtonText() {
+        return createButtonText;
+    }
+
+    /**
+     * @return the pageTitle
+     */
+    public String getPageTitle() {
+        return pageTitle;
     }
 }
