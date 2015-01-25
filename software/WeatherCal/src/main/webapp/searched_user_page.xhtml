@@ -21,7 +21,7 @@
 
             .empowner, .calendarButton .fc-event-inner  {
 
-
+ cursor: pointer;
                 font-size:14px;
                 background-image:-ms-linear-gradient(top, #90C4FF, rgb(30,130,201));
                 background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#90C4FF), to(rgb(30,130,201)));
@@ -71,12 +71,37 @@
         <header id="head">
             <div id="title"><h:outputLink value="index.xhtml"><h1>WeatherCal</h1></h:outputLink></div>
             <div id="main_buttons">
+                
+                  
+                    <h:form id="dialog-form"> 
+                    <p:dialog header="Event's Info" widgetVar="eventDialog"  modal="true" showEffect="clip" hideEffect="clip" resizable="false">
+                                    <p:outputPanel id="carDetail" style="text-align:center;">
+                                        <p:panelGrid style="width:300px" columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+                                            <h:outputText value="Name" />
+                                            <h:outputText value="#{eventManagerBean.selectEvent.description}" /> 
+                                            <h:outputText value="Where" />
+                                            <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
+                                            <h:outputText value="Start" />
+                                            <h:outputText value="#{eventManagerBean.dateSt}" /> 
+                                            <h:outputText value="End" />
+                                            <h:outputText value="#{eventManagerBean.dateEn}"/> 
+                                        </p:panelGrid>
+                         
+                                       
+
+                                    </p:outputPanel>
+                                </p:dialog>
+                    
+                    </h:form>
+                
                 <h:form id="header-form">
                     <ul>
                         <li>
-                            <p:commandButton id="notification_button" value="Notifications"/>
+                            <p:selectBooleanButton onLabel="Notifications" offLabel="Notifications" id="notification_button" value="#{eventManagerBean.lettoNonLetto}">
+                                    <p:ajax  listener="#{eventManagerBean.changeNotificationToRead()}" />
+                                </p:selectBooleanButton>
                             <p:overlayPanel id="imagePanel" style="height:200px;width:300px" dynamic="true" for="notification_button" hideEffect="fade">
-                                <p:dataScroller id="notification_event" value="#{eventManagerBean.loggedEventUsr('nonletto',true)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
+                                <p:dataScroller id="notification_event" value="#{eventManagerBean.nonLetti('nonletto',false)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
                                     <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":header-form:evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
                                         <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
                                     </p:commandButton>
@@ -130,14 +155,14 @@
                                 
                                 <p:schedule
                                     id="mySchedule"
-                                    value="#{eventManagerBean.searchedCal()}"
+                                    value="#{eventManagerBean.lazySearch}"
                                     style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
                                     widgetVar="myschedule"
                                     timeZone="GMT+1"
                                     draggable="false"
                                     resizable="false"
                                     firstHour="0" >
-                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" />
+                                    <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelectSearch}" update=":dialog-form:carDetail" oncomplete="PF('eventDialog').show();"/>
                                     <p:growl autoUpdate="true"/>
                                     <!--update="eventDetails" oncomplete="PF('eventSchedDialog').show();"--> 
                                 </p:schedule>

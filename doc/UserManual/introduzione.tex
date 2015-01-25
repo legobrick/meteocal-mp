@@ -1,0 +1,51 @@
+\chapter{Introduction} \label{cap:cap1}
+\section{System Overview}
+WeatherCal  it's a Web application that allows the registered users to manage their schedule basing on the weather conditions. The users are also able to invite people to their event and to publicize their event. The system is even capable of notifying the users, as they log on to the system, if the weather forecast for the event is not the desired one. The target of this software is, therefore, to give the users a tool for schedule their events smartly, giving the possibility to change preferences as the weather forecast changes.
+\section{Purpose}
+This document describes all the functionalities offered to the users by the WeatherCal platform and how the users can actually take advantage of them.
+\section{Audience}
+This manual is mainly addressed to anyone who want to use the WeatherCal system, it can be either a stakeholder, a developer or an simple external user.
+\section{References}
+{\it Requirement Analysis and Specification Document WeatherCal },  Paolo Polidori,Edemanti Marco.\\
+{\it Design Document WeatherCal },  Paolo Polidori,Edemanti Marco.
+
+\chapter {WeatherCal Functionalities}
+This section explains the services offered to both an anonymous user and a registered user. 
+\section{Anonymous User Services}
+\subsection{Sign In}
+As anonymous user, a visitor who reach our login page is able to interact with the system only by registering to it. He needs to fill the register form place in the login page and submit valid credentials. The system will take care to store his information and create a new registered user that can access to all the platform functionalities.
+\section{Registered User Services}
+\subsection{Log In}
+It possibile to log in to the WeatherCal system from the login page. Once the form its filled you just click the button Login and the system will redirect your home page.
+\subsection{Log Out}
+Once logged in a user can log out from the platform from any page by clicking the button logout placed in the top right corner of any accesible page.
+\subsection{Main Page}
+In this page the user can see its agenda and all of its event. The calendar will display the event in different color depending of your participation:
+\begin{itemize}
+\item {\bf Blue Event}: means that you are the owner of this event;
+\item  {\bf Green Event}: means that you are going to attend this event;
+\item {\bf Orange Event}: means that you don't know yet if you will attend this event or not;
+\item  {\bf Red Event}: means that you are not going to this event;
+\item  {\bf Grey Event}: means that you received the invite to the event but you still not response to it;
+\end{itemize}
+From this page is also possible to search an user, see the next five days weather forecast details and the next event scheduled.
+\subsection{Check Invitation}
+Once logged in a user can see  its new invitation to an event by clicking on the button NOTIFiCATION, it will display only the list of "non-read" participation giving you the possibility to set your availability directly from this view. Once you dismiss the list the system it will mark all notification as "read" and will not show them to you anymore in this view. Of course you can always modify your availability from the calendar view.  
+\subsection{Create Event}
+From the main page you can create a new event by clicking on the "Create Event" button placed on the top of the calendar view.
+Once clicked, it will redirect you to the create\_event\_page where you can insert into to the system a new event setting all of its information such that the weather desired or the place where it will be hosted.  
+\subsection{Modify an Event}
+From the main page you can also modify an existing event by clicking the "Edit" button shown when you click on an event. Of course this operation it allowed only to the owner of the event. 
+Once clicked, it will redirect you to the create\_event\_page where you can replace the old event information with the new one.
+\subsection{Search an User}
+From the main page you can search an user and see its calendar if its pubblic.
+Filling the search bar in the right side with the email of the searched user will show all the result that match the input email. Once you found the correct user you will just click the button search and you will be redirected to the searched calendar.  
+\subsection{See weather forecast}
+From the main page it is also possibile see the weather forecast for the next five days of your current location. Clicking on the desired day a view will display the weather detail about it.
+
+ 
+ 
+ 
+ 
+ 
+ 

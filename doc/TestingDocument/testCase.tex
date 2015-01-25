@@ -1,0 +1,239 @@
+\chapter{Testing} \label{cap:cap2}
+In this section we report all the test case result according to the functional requirements specified in RASD document.
+
+ \section{Features to be tested}
+ \begin{tabularx}{\linewidth}{|r|X|X|}
+  \hline  {\bf Test Case Id} &{\bf Description}\\
+  \hline TC1 & Log In/Out \\
+  \hline TC2 & User Registration \\
+  \hline TC3 & Event Creation \\
+  \hline TC4 & Event Management \\
+  \hline TC5 & Manage Event Visibility \\
+  \hline TC6 & Manage Calendar Visibility \\
+  \hline TC7 & Search an user \\
+  \hline TC8 & Notify bad weather condition \\ 
+  \hline TC9 & Suggest the closest day with the desired weather constraint \\
+  \hline
+\end{tabularx}
+ 
+\section{Test Report and Specification}
+Test cases and their results are going to be documented as follows\\
+\begin{tabularx}{\linewidth}{|r|X|X|}
+  \hline   {\bf Test Case Id} &  The ID or the number of the test case\\
+  \hline  {\bf Goal} & Description of the test case\\
+  \hline  {\bf Actors Involved} & The actors of this test case\\
+  \hline  {\bf Precondition} & The state of the system at the time the test starts\\ 
+   \hline  {\bf Main Path} & List of steps that needs to be applied for this test case\\
+   \hline  {\bf Possible Errors} & List of errors that can occur in this test case\\
+  \hline  {\bf Expected Result} & The result that should be observed from a succesfull test\\
+  \hline  {\bf Actual Result} & The result which is observed after applying the test steps\\
+  \hline  {\bf Conclusion} & F: Failed, N: Not tested, S: Succesful, M: manually tested\\
+  \hline
+\end{tabularx}
+
+\chapter{Test Case} \label{cap:cap3}
+\section{Log In/Out}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC1\\
+  \hline  {\bf Goal} & Log in to or out from the system\\
+  \hline  {\bf Actors Involved} & Registered User, System\\
+  \hline  {\bf Precondition} & To be a registered user\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item User fills the login form with its credentials
+   \item User submits its information
+   \item System verifies the user's credentials
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item User submits wrong credentials
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system redirects the user to its home page\\
+  \hline  {\bf Actual Result} & The system redirects the user to its home page\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Sign In}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC2\\
+  \hline  {\bf Goal} & Sign in to system\\
+  \hline  {\bf Actors Involved} & Anonymous User,Registered User, System\\
+  \hline  {\bf Precondition} & None\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item Anonymous User fills the register form with its credentials
+   \item Anonymous User submits its information
+   \item System verifies the submitted user's credentials
+    \item System creates a new Registered User
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item User submits wrong credentials 
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system creates a new Registered User and its associated calendar\\
+  \hline  {\bf Actual Result} & The system creates and new Registered User and its associated calendar\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Event Creation}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC3\\
+  \hline  {\bf Goal} & Create new event\\
+  \hline  {\bf Actors Involved} & Registered User, System, Event\\
+  \hline  {\bf Precondition} & To be logged in\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item Registered User clicks the "create new event" button
+   \item System redirects him to the "create event" page
+   \item User changes event information
+    \item System validates the submitted values and create a new Event
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item User inserts wrong event's information.
+   \item System doesn't store correctly the event
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system creates a new Event and notify all of its participant\\
+  \hline  {\bf Actual Result} & The system creates a new Event and notify all of its participant\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+\section{Event Management}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC4\\
+  \hline  {\bf Goal} & Modify or delete a existing event\\
+  \hline  {\bf Actors Involved} & Registered User, System, Event\\
+  \hline  {\bf Precondition} & To be logged in, to be the owner of the event\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item Registered User select an event
+   \item System allows him to modify the event if and only he's its owner
+   \item User changes event information
+    \item System validates the new submitted values and modify the Event
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item User inserts wrong event's information.
+   \item System doesn't store correctly the event
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system modifies the event's information\\
+  \hline  {\bf Actual Result} & The system modifies the event's information\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Event Visibility}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC5\\
+  \hline  {\bf Goal} & Modify the visibility of a existing event\\
+  \hline  {\bf Actors Involved} & Registered User, System, Event\\
+  \hline  {\bf Precondition} & To be logged in, to be the owner of the event\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item Registered User selects an event
+   \item System allows him to modify the event if and only he's its owner
+   \item User changes event visibility
+    \item System changes the visibility of the event according to the user will.
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item System doesn't change the visibility
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system modifies the event visibility\\
+  \hline  {\bf Actual Result} & The system modifies the event visibility\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Calendar Visibility}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC6\\
+  \hline  {\bf Goal} & Modify the visibility of the user calendar\\
+  \hline  {\bf Actors Involved} & Registered User, System\\
+  \hline  {\bf Precondition} & To be logged in, to be the owner of the calendar\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item Registered User changes calendar visibility
+    \item System changes the visibility of the calendar
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item System doesn't change the calendar visibility
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system modifies the calendar visibility\\
+  \hline  {\bf Actual Result} & The system modifies the calendar visibility\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+
+
+\section{Calendar Visibility}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC7\\
+  \hline  {\bf Goal} & See other user calendar\\
+  \hline  {\bf Actors Involved} & Registered User, System\\
+  \hline  {\bf Precondition} & To be logged in\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item Registered User searches for other user
+    \item System redirects the user to the searched user calendar if and only if it is public
+    \item System loads into the searched calendar only the public event
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item User searches an invalid user
+   \item System does not found the searched user
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system correctly shows the calendar an it public event associated\\
+  \hline  {\bf Actual Result} & The system correctly shows the calendar an it public event associated\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Notify bad weather condition}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC8\\
+  \hline  {\bf Goal} & Notify in case of bad weather condition\\
+  \hline  {\bf Actors Involved} & Registered User, System\\
+  \hline  {\bf Precondition} & To be logged in, to be a participant or the owner of the event\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item System fetches the weather condition for the closest scheduled event
+    \item If the condition does not match with the one specified by the event then notify the owner and all its participant
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item System doesn't notify the participant
+   \item System does not get the right weather condition 
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system notifies the participant and the owner\\
+  \hline  {\bf Actual Result} & The system notifies the participant and the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Suggest closest day}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC8\\
+  \hline  {\bf Goal} & Suggest the closest day that suits the event weather constraint in case of bad weather condition\\
+  \hline  {\bf Actors Involved} & Registered User, System\\
+  \hline  {\bf Precondition} & To be logged in, to be the owner of the event\\ 
+   \hline  {\bf Main Path} & \begin{enumerate} 
+   \item System fetches the weather condition for the closest event
+    \item If the condition does not match with the one specified by the event then notify the owner and all its participant
+    \item The owner gets notify and the system will suggest the closest day that match the event preferences
+   \end{enumerate}\\
+   \hline  {\bf Possible Errors} & \begin{enumerate} 
+   \item System doesn't notify the owner
+   \item System does not suggest the closest available day
+   \end{enumerate}\\
+  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+
+
+
+

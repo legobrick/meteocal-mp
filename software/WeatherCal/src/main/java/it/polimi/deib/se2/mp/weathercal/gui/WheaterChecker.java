@@ -43,7 +43,9 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.ServletContext;
 import static javax.servlet.SessionTrackingMode.URL;
+import javax.servlet.http.HttpServletRequest;
 import static org.omnifaces.util.Ajax.data;
 import org.primefaces.context.RequestContext;
 import org.primefaces.json.JSONArray;
@@ -66,7 +68,7 @@ public class WheaterChecker implements Serializable {
 
     @EJB
     UserManager um;
-
+    EventManagerBean evm = new EventManagerBean();
     ForecastResponse fr = new ForecastResponse();
 
     public static String getWeather(float lat, float lon, int cnt) {
@@ -106,6 +108,7 @@ public class WheaterChecker implements Serializable {
 
         return null;
     }
+
     public static String getWeather16(float lat, float lon, int cnt) {
 
         HttpURLConnection con = null;
@@ -144,22 +147,15 @@ public class WheaterChecker implements Serializable {
         return null;
     }
 
-    public void checkParticipant() {
+    public void checkParticipant() throws JSONException {
         List<Event> checkEv = this.getEventToCheck(false, 1);
-        System.out.println("In check + eventi " + checkEv.size());
-    }
-
-    public void check() throws JSONException {
-
-        List<Event> checkEv = this.getEventToCheck(true, 5);
-
+        System.out.println("participanti =" + checkEv.size());
         double nexttemp = 0;
         if (!checkEv.isEmpty()) {
             for (int i = 0; i < checkEv.size(); i++) {
                 String attention = "";
                 Event e = checkEv.get(i);
                 fr.weatherJson(e);
-                
                 nexttemp = fr.getTemperatura();
                 float state = fr.getWeatherState();
                 System.out.println("In check " + nexttemp + state + fr.getState());
@@ -177,7 +173,7 @@ public class WheaterChecker implements Serializable {
                     }
 
                 }
-               boolean weather=false;
+                boolean weather = false;
                 if (!e.getStateConstraints().isEmpty()) {
                     Collection<WeatherStateConstraint> collState = e.getStateConstraints();
                     System.out.println("vincoli: " + e.getStateConstraints().size());
@@ -185,40 +181,82 @@ public class WheaterChecker implements Serializable {
                         if (!sta.getWeatherState().equals(fr.getState().toString())) {
                             System.out.println("Diverse" + sta.toString());
                         } else {
-                            weather=true;
+                            weather = true;
                             System.out.println("Uguale");
                         }
                     }
-                   
-                    if (!weather){
-                    attention=attention+". Also the state is different from the one you specified.";
+
+                    if (!weather) {
+                        attention = attention + " The state is different from the one you specified.";
                     }
-                    
-                    /* for (int z = 0; z < collState.size(); z++) {
-                        WeatherStateConstraint sta = collState.iterator().next();
+
+                    if (attention.equals("")) {
+                    } else {
+                        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Attenzione", "The weather forecast for the event " + e.getName() + " scheduled for " + e.getStart().getYear() + "/" + e.getStart().getMonthValue() + "/" + e.getStart().getDayOfMonth() + ". " + attention + " Do you want to attend the event to?");
+                        RequestContext.getCurrentInstance().showMessageInDialog(message);
+                    }
+                }
+            }
+        }
+    }
+
+    public void check() throws JSONException {
+
+        List<Event> checkEv = this.getEventToCheck(true, 3);
+        double nexttemp = 0;
+        if (!checkEv.isEmpty()) {
+            for (int i = 0; i < checkEv.size(); i++) {
+                String attention = "";
+                Event e = checkEv.get(i);
+                fr.weatherJson(e);
+
+                nexttemp = fr.getTemperatura();
+                float state = fr.getWeatherState();
+                System.out.println("In check " + nexttemp + state + fr.getState());
+                if (!e.getValueConstraints().isEmpty()) {
+                    WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
+                    if (temperatura.getIsTemperatureLowerThan() == true && nexttemp < temperatura.getTemperature().floatValue()) {
+
+                    } else if (temperatura.getIsTemperatureLowerThan() == true && nexttemp > temperatura.getTemperature().floatValue()) {
+                        attention = "Temperature is higher then the desired one";
+
+                    } else if (temperatura.getIsTemperatureLowerThan() == false && nexttemp > temperatura.getTemperature().floatValue()) {
+
+                    } else {
+                        attention = "The temperature is lower then the desired one";
+                    }
+
+                }
+                boolean weather = false;
+                if (!e.getStateConstraints().isEmpty()) {
+                    Collection<WeatherStateConstraint> collState = e.getStateConstraints();
+                    System.out.println("vincoli: " + e.getStateConstraints().size());
+                    for (WeatherStateConstraint sta : collState) {
                         if (!sta.getWeatherState().equals(fr.getState().toString())) {
                             System.out.println("Diverse" + sta.toString());
                         } else {
+                            weather = true;
                             System.out.println("Uguale");
                         }
+                    }
 
-                        //   WeatherStateConstraint vincoli=checkEv.get(i).getStateConstraints().iterator().next();
-                    }*/
+                    if (!weather) {
+                        attention = attention + " The state is different from the one you specified.";
+                    }
+
                     if (attention.equals("")) {
                     } else {
-                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); 
-                         String giorno;
-                         if(fr.weatherDailyNext(e).format(formatter)==null){
-                         giorno=" Sorry no closest day matches with your desired constraint.";
-                         }
-                         else giorno=fr.weatherDailyNext(e).format(formatter);
-                         
-                        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Attenzione", "The weather forecast for the event " + e.getName() + " scheduled for " + e.getStart().getYear() + "/" + e.getStart().getMonthValue() + "/" + e.getStart().getDayOfMonth() + ". " + attention + " Do you want to postpone the event? "+giorno);
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        String giorno;
+                        if (fr.weatherDailyNext(e).format(formatter) == null) {
+                            giorno = " Sorry no closest day matches with your desired constraint.";
+                        } else {
+                            giorno = fr.weatherDailyNext(e).format(formatter);
+                        }
+
+                        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Attenzione", "The weather forecast for the event " + e.getName() + " scheduled for " + e.getStart().getYear() + "/" + e.getStart().getMonthValue() + "/" + e.getStart().getDayOfMonth() + ". " + attention + " Do you want to postpone the event? " + giorno);
                         RequestContext.getCurrentInstance().showMessageInDialog(message);
-                        
-                          }
-                // WeatherConstraint temperatura=checkEv.get(i).getValueConstraints().iterator().next();
-                    // WeatherStateConstraint vincoli=checkEv.get(i).getStateConstraints().iterator().next();
+                    }
                 }
             }
         }
@@ -232,6 +270,7 @@ public class WheaterChecker implements Serializable {
         Instant instant = Instant.ofEpochMilli(currDate.getTime());
         LocalDateTime currLocal = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         if (participantOrOwner) {
+            System.out.println("event man" + em == null);
             Query p = em.createNamedQuery("Owner.findByIdCalendar");
             p.setParameter("idCalendar", um.getLoggedUser().getCalendarCollection().iterator().next().getId());
             List<Owner> eventOwned = p.getResultList();
@@ -257,13 +296,53 @@ public class WheaterChecker implements Serializable {
                     Query q = em.createNamedQuery("Event.findById");
                     q.setParameter("id", eventParticipant.get(i).getParticipationPK().getIdEvent());
                     Event e = (Event) q.getResultList().get(0);
-                    if (e.getStart().isAfter(currLocal) && e.getStart().isBefore(currLocal.plusDays(deltadays))) {
-                        eventToCheck.add(e);
-                    }
+                   // if (evm.isOwner(e.getId(), um.getLoggedUser().getCalendarCollection().iterator().next().getId())) {
+                        if (e.getStart().isAfter(currLocal) && e.getStart().isBefore(currLocal.plusDays(deltadays))) {
+                            eventToCheck.add(e);
+                        }
+                    //}
                 }
             }
         }
         return eventToCheck;
+    }
+
+    public void triggerNotificaiton() throws IOException, JSONException {
+
+        RequestContext context2 = RequestContext.getCurrentInstance();
+       // context2.execute("PF('myDialogVar1').show();");
+       
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        ServletContext sContext = request.getSession().getServletContext();
+        LocalDateTime lastNot = (LocalDateTime) sContext.getAttribute("lastNotification");
+        
+        if (lastNot == null) {
+            System.out.println("creata data");
+            Date currDate = new Date();
+            Instant instant = Instant.ofEpochMilli(currDate.getTime());
+            LocalDateTime currLocal = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            sContext.setAttribute("lastNotification", currLocal);
+            this.checkParticipant();
+            this.check();
+            
+        } else {
+            Date currDate = new Date();
+            Instant instant = Instant.ofEpochMilli(currDate.getTime());
+            LocalDateTime currLocal = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            if (currLocal.isAfter(lastNot.plusMinutes(20))) {
+                System.out.println("passati 5 minuti");
+
+                this.check();
+                this.checkParticipant();
+                sContext.setAttribute("lastNotification", currLocal);
+            } else {
+                System.out.println("non passati 5 minuti");
+
+            }
+        }
+
     }
 
 }

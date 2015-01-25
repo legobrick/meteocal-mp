@@ -1,0 +1,87 @@
+\chapter{Introduction} \label{cap:cap1}
+\section{System Overview}
+WeatherCal  it's a Web application that allows the registered users to manage their schedule basing on the weather conditions. The users are also able to invite people to their event and to publicize their event. The system is even capable of notifying the users, as they log on to the system, if the weather forecast for the event is not the desired one. The target of this software is, therefore, to give the users a tool for schedule their events smartly, giving the possibility to change preferences as the weather forecast changes.
+\section{Purpose}
+This document describes how to correctly set up the system in order to be able to run this application. This document will guide you in order to perform the installation and the configuration of the needed components used  by WeatherCal.
+\chapter{Installation}
+\section{Software Required}
+WeatherCal  it's a Web application developed for the application server GlassFish Server and it use PostgresSQL Database to save the data. Therefore in order to execute it you need to download and install the following software:
+\begin{itemize}
+\item {\it Glassfish Open Source Edition 4.1}, download \href{https://glassfish.java.net/download.html}{here}
+\item  {\it PostgreSQL >= 9.1}, download \href{http://www.postgresql.org/download/}{here}
+\item {\it Java SE Development Kit 8}, download  \href{http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html}{here}
+
+\end{itemize}
+\subsection{Install JDK 8}
+It is recommended to install JDK 8 from \href{http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html}{here}, but if you want to install JDK 7 you can do it  but remember to switch the maven.compiler.source and maven.compiler.target version in your pom.xml from 1.8 to 1.7.
+JDK is needed in order to be able to use Glassfish Server. 
+Please be careful and install the correct version of the JDK depending on your system (32 bit or 64 bit) and your Operating System (Windows, Linux or OS X).
+\subsection{Install Glassfish Server}
+Once you get JDK 8 you can proceed with the installation of Glassfish Server. First of all download it from \href{https://glassfish.java.net/download.html}{here} and then unpacking it in the folder you desire, keep in mind that for the correct execution of our application it is important to execute it in the same context it is developed.
+\subsection{Install PostgreSQL}
+The next step is to complete the installation procedure is  download PostgreSQL from \href{http://www.postgresql.org/download/}{here}, be care to get a version greater then 9.1.
+\chapter{Configuration}
+\section{PostgreSQL configuration}
+ Set up PostgreSQL  for accepting Unix-socket and TCP/IP connections from localhost without password for the user {\it postgres}, creating it if does not exists with the this query:\\
+ 
+{\bf \it CREATE ROLE postgres\\ WITH SUPERUSER LOGIN UNENCRYPTED \\PASSWORD 'postgres';}\\
+
+Now we have to establish a connection to the DBMS (psql, pgAdmin, DBC coding, ...) using this query:\\
+
+{\bf \it DROP DATABASE IF EXISTS weathercal;\\
+CREATE DATABASE weathercal\\
+  WITH OWNER = postgres\\
+       ENCODING = UTF8\\
+       TABLESPACE = pg default\\
+       LC\_COLLATE = it\_IT.UTF-8\\
+       LC\_CTYPE = it\_IT.UTF-8\\
+       CONNECTION LIMIT = 100;}\\
+       
+  The last step now is to connect  weathercal database and create the schema for the application issue the next query:\\
+  
+  {\bf \it CREATE SCHEMA development\\
+  AUTHORIZATION postgres;}
+  \section{Glassfish Server configuration}
+  In order to make the authorization and authentication system provided by Glassfish work, the configuration of a Realm is needed.
+ To perform this operation you must start the server and open the Glassfish Admin Console accesible at {\it \\http:localhost:4848}. From there, edit the service-config Configuration and, in particular, add a new Realm in the Security section. Set an arbitrary name for the realm and associate it to the JDBCRealm Class name.
+Now set the class-specific properties as follows:
+\\
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline  {\bf Parameter} & {\bf Value} \\
+\hline   {  JAAS Context} &  jdbcRealm \\
+  \hline  { User Table} & development.user\_ \\
+  \hline  { User Name Column} & email\\
+  \hline  { Password Column} & password\\ 
+   \hline  { Group Table} & development.user\_has\_group  \\
+   \hline  { Group Name Column} & id\_group        \\
+  \hline  { Password Encryption} & SHA-256   \\
+  \hline  { Encoding} & Hex \\
+  \hline  { Charset} & UTF-8\\
+  \hline
+\end{tabularx}
+\\
+Optionally you can also use the command-line tool , issuing the next command:
+
+\begin{lstlisting}
+  $ asadmin create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property 'datasource-jndi=java\:app/jdbc/pgResource:digestrealm-password-enc-algorithm=SHA-256:group-name-column=id_group:group-table=development.user_has_group:jaas-context=jdbcRealm:password-column=password:user-name-column=email:user-table=development.user_:charset=UTF-8:encoding=Hex' mpRealm
+      
+  \end{lstlisting}
+       Or, you can edit the <glassfish\_home>/domains/<domain\_name>/config/domain.xml file and add the next node as a child of the security-service node:
+        \begin{lstlisting}
+       <auth-realm classname="com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm" name="mpRealm">
+  <property name="jaas-context" description="null" value="jdbcRealm"></property>
+  <property name="encoding" value="Hex"></property>
+  <property name="charset" value="UTF-8"></property>
+  <property name="password-column" description="null" value="password"></property>
+  <property name="datasource-jndi" value="java:app/jdbc/pgResource"></property>
+  <property name="group-table" value="development.user_has_group"></property>
+  <property name="user-table" value="development.user_"></property>
+  <property name="group-name-column" description="null" value="id_group"></property>
+  <property name="password-encryption-algorithm" value="SHA-256"></property>
+  <property name="user-name-column" description="null" value="email"></property>
+</auth-realm>
+ \end{lstlisting}
+ 
+ 
+ 
+ 
