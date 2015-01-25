@@ -1,0 +1,208 @@
+\chapter{Testing} \label{cap:cap2}
+In this section we report all the test case result according to the functional requirements specified in RASD document.
+
+ \section{Features to be tested}
+ \begin{tabularx}{\linewidth}{|r|X|X|}
+  \hline  {\bf Test Case Id} &{\bf Description}\\
+  \hline TC1 & Log In/Out \\
+  \hline TC2 & User Registration \\
+  \hline TC3 & Event Creation \\
+  \hline TC4 & Event Deletion \\
+  \hline TC5 & Notify Event Deletion \\
+  \hline TC6 & Event Management \\
+  \hline TC7 & Event Loading\\
+  \hline TC8 & User Invitation \\
+  \hline TC9 & Check Notifications \\
+  \hline TC10 & Manage Event Visibility \\
+  \hline TC11 & Manage Calendar Visibility \\
+  \hline TC12 & Search an user \\
+  \hline TC13 & Notify bad weather condition \\ 
+  \hline TC14 & Suggest the closest day with the desired weather constraint \\
+  \hline
+\end{tabularx}
+ 
+\section{Test Report and Specification}
+Test cases and their results are going to be documented as follows\\
+\begin{tabularx}{\linewidth}{|r|X|X|}
+  \hline   {\bf Test Case Id} &  The ID or the number of the test case\\
+  \hline  {\bf Goal} & Description of the test case\\
+  \hline  {\bf Expected Result} & The result that should be observed from a succesfull test\\
+  \hline  {\bf Actual Result} & The result which is observed after applying the test steps\\
+  \hline  {\bf Conclusion} & F: Failed, N: Not tested, S: Succesful, M: manually tested\\
+  \hline
+\end{tabularx}
+
+\chapter{Test Case} \label{cap:cap3}
+\section{Log In/Out}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC1\\
+  \hline  {\bf Goal} & Log in to or out from the system\\
+  
+  \hline  {\bf Expected Result} & The system redirects the user to its home page\\
+  \hline  {\bf Actual Result} & The system redirects the user to its home page\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Sign In}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC2\\
+  \hline  {\bf Goal} & Sign in to system\\
+  
+  \hline  {\bf Expected Result} & The system creates a new Registered User and its associated calendar\\
+  \hline  {\bf Actual Result} & The system creates and new Registered User and its associated calendar\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Event Creation}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC3\\
+  \hline  {\bf Goal} & Create new event\\
+  
+  \hline  {\bf Expected Result} & The system creates a new Event and notify all of its participant\\
+  \hline  {\bf Actual Result} & The system creates a new Event and notify all of its participant\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+\section{Event Deletion}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+
+  \hline   {\bf Test Case Id} &  TC4\\
+  \hline  {\bf Goal} & Delete a existing event\\
+  
+  \hline  {\bf Expected Result} & The system modifies the event's information\\
+  \hline  {\bf Actual Result} & The system modifies the event's information\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Notify Event Deletion}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC5\\
+  \hline  {\bf Goal} & Notify the event deletion to its participant\\
+ 
+  \hline  {\bf Expected Result} & The system modifies the event visibility\\
+  \hline  {\bf Actual Result} & The system modifies the event visibility\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Event Management}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC6\\
+  \hline  {\bf Goal} & Modify the event info\\
+   \hline  {\bf Expected Result} & The system modifies the calendar visibility\\
+  \hline  {\bf Actual Result} & The system modifies the calendar visibility\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+
+
+\section{Event Loading}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC7\\
+  \hline  {\bf Goal} & Load the schedule of the logged user\\
+ 
+  \hline  {\bf Expected Result} & The system correctly shows the calendar an it public event associated\\
+  \hline  {\bf Actual Result} & The system correctly shows the calendar an it public event associated\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{User Invitation}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC8\\
+  \hline  {\bf Goal} & Invite other user to the event\\
+ 
+  \hline  {\bf Expected Result} & The system notifies the participant and the owner\\
+  \hline  {\bf Actual Result} & The system notifies the participant and the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Check Notification}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC9\\
+  \hline  {\bf Goal} & Check the notification received\\
+  
+  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+\section{Manage Event Visibility}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC10\\
+  \hline  {\bf Goal} & Change event visibility\\
+  
+  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+\section{Manage Calendar Visibility}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC11\\
+  \hline  {\bf Goal} & Change calendar visibility\\
+  
+  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+\section{Search other user}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC12\\
+  \hline  {\bf Goal} & Search for other user\\
+  
+  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+\section{Notify weather conditions}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC13\\
+  \hline  {\bf Goal} & Notify in case of bad weather conditions\\
+  
+  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+\section{Suggest the closest sunny day}
+\begin{tabularx}{\linewidth}{|r|X|X|}
+\hline   {\bf Test Case Id} &  TC13\\
+  \hline  {\bf Goal} & Know the closest sunny day in case of bad weather conditions\\
+  
+  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
+  \hline  {\bf Conclusion} & M\\
+  \hline
+  
+\end{tabularx}
+
+
+
+
+
+

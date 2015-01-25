@@ -10,8 +10,10 @@ import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
+import it.polimi.deib.se2.mp.weathercal.entity.LocalizedEvent;
 import it.polimi.deib.se2.mp.weathercal.entity.Owner;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
+import it.polimi.deib.se2.mp.weathercal.entity.ParticipationPK;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -88,7 +90,7 @@ public class EventManagerBean implements Serializable {
     EventManager evm;
 
     private boolean lettoNonLetto;
-    private Event selectEvent;
+    private LocalizedEvent selectEvent;
     private String dateSt;
     private String dateEn;
     private ScheduleModel lazyModel2;
@@ -130,7 +132,7 @@ public class EventManagerBean implements Serializable {
 
             this.lazyModel2 = lazySchedule(userCalendarId(), true, "output");
             this.lazySearch = searchedCal();
-
+            
         }
     }
 
@@ -139,14 +141,12 @@ public class EventManagerBean implements Serializable {
             @Override
             public void loadEvents(Date start, Date end) {
                 int n;
+                
+                LocalizedEvent le = null;
 
                 for (n = 0; n < allEventByNotAvailability("si", calId, false).size(); n++) {
                     Event e = allEventByNotAvailability("si", calId, false).get(n);
-                    Instant startInstant = e.getStart().atZone(ZoneId.systemDefault()).toInstant();
-                    Date startDate = Date.from(startInstant);
-
-                    Instant endInstant = e.getEnd().atZone(ZoneId.systemDefault()).toInstant();
-                    Date endDate = Date.from(endInstant);
+                    le = LocalizedEvent.from(e, ZoneId.of("UTC"));
                     String colore;
                     Long id = e.getId();
                     if (isOwner(id,um.getLoggedUser(), ef)) {
@@ -174,31 +174,27 @@ public class EventManagerBean implements Serializable {
                     }
                     //colore="empno";
                     Instant instant = Instant.ofEpochMilli(start.getTime());
-                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
                     Instant instant2 = Instant.ofEpochMilli(end.getTime());
-                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.systemDefault());
+                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.of("UTC"));
 
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
                         System.out.println("evento " + e.getName() + " " + colore);
-                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate, colore);
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getName(), le.getStartD(), le.getEndD(), colore);
                         evento.setData(e);
                         addEvent(evento);
                     }
 
-                }
+                } 
 
             }
         };
-
+System.out.println("Schedule count "+ lazyModel.getEventCount());
         return lazyModel;
     }
 
-    public Event getSelectEvent() {
+    public LocalizedEvent getSelectEvent() {
         return selectEvent;
-    }
-
-    public void setSelectEvent(Event sel) {
-        this.selectEvent = sel;
     }
 
     public String createNew() throws IOException {
@@ -271,31 +267,33 @@ public class EventManagerBean implements Serializable {
     }
 
     public ScheduleModel lazyScheduleSearch(Long calId, boolean soloEventiPubblici, String output) {
-
-        ScheduleModel lazyModel2 = new LazyScheduleModel() {
+    System.out.println("Carico altro cal");
+        ScheduleModel lazyModel3 = new LazyScheduleModel() {
             @Override
             public void loadEvents(Date start, Date end) {
                 int n;
-
-                for (n = 0; n < allEventByAvailability("si", calId, false).size(); n++) {
-                    Event e = allEventByAvailability("si", calId, false).get(n);
-                    Instant startInstant = e.getStart().atZone(ZoneId.systemDefault()).toInstant();
-                    Date startDate = Date.from(startInstant);
-
-                    Instant endInstant = e.getEnd().atZone(ZoneId.systemDefault()).toInstant();
-                    Date endDate = Date.from(endInstant);
+                
+                LocalizedEvent le = null;
+                List<Event>searchEvents=allEventByAvailability("si", calId, false);
+                System.out.println("size: "+searchEvents.size());
+                for (n = 0; n < searchEvents.size(); n++) {
+                   
+                    Event e=searchEvents.get(n);
+                    le = LocalizedEvent.from(e, ZoneId.of("UTC"));
 
                     //colore="empno";
                     Instant instant = Instant.ofEpochMilli(start.getTime());
-                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
                     Instant instant2 = Instant.ofEpochMilli(end.getTime());
-                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.systemDefault());
+                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.of("UTC"));
 
+                   
+                    
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
-
-                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate, "empowner");
+ 
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getName(), le.getStartD(), le.getEndD(), "empowner");
                         if (soloEventiPubblici == true) {
-
+    System.out.println("search ev"+evento.getTitle());
                             addEvent(evento);
                             evento.setData(e);
 
@@ -308,8 +306,8 @@ public class EventManagerBean implements Serializable {
 
             }
         };
-
-        return lazyModel2;
+        System.out.println("Schedule count search "+ lazyModel3.getEventCount());
+        return lazyModel3;
     }
 
     public List<Event> allEventByNotAvailability(String availability, Long CalId, boolean lista) {
@@ -391,36 +389,35 @@ public class EventManagerBean implements Serializable {
         }
 
     }
+    private boolean selectedEvtAccessible = false;
 
     public void onEventSelectSearch(SelectEvent selectEventt) throws IOException {
         event = (ScheduleEvent) selectEventt.getObject();
-        Event e = (Event) event.getData();
+        Event ev=(Event)event.getData();
+        this.selectEvent = LocalizedEvent.from(ev, ZoneId.of("UTC"));
+        //serve per saper se il loggato partecipa all'evento cercato
+        Participation p = new Participation(new ParticipationPK(this.userCalendarId(), ev.getId()), "si");
+        p.setCalendar(um.getLoggedUser().getCalendarCollection().iterator().next());
+        p.setEvent(ev);
+        selectedEvtAccessible = selectEvent.getOwners().iterator().next()
+                .getCalendar()
+                .getUserCollection()
+                .contains(
+                        um.getLoggedUser()
+                ) || selectEvent.getIsPublic()||selectEvent.getParticipation().contains(p); 
 
-        if (e.getIsPublic()) {
-            this.selectEvent = e;
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            this.dateSt = e.getStart().format(formatter);
-            this.dateEn = e.getEnd().format(formatter);
-        } else {
-            this.selectEvent = new Event();
-            this.selectEvent.setDescription("Is Private");
-            this.selectEvent.setPlaceDescription("Is Private");
-            this.dateEn = "Is Private";
-            this.dateSt = "Is Private";
-        }
-
-        System.out.println("non esiste" + e.getName() + " " + lazyModel2.getEventCount());
+        System.out.println("non esiste search " + selectEvent.getName());
     }
 
     public void onEventSelect(SelectEvent selectEventt) throws IOException {
         event = (ScheduleEvent) selectEventt.getObject();
-        Event e = (Event) event.getData();
-        this.selectEvent = e;
+        selectEvent = LocalizedEvent.from((Event) event.getData(), ZoneId.of("UTC"));
+        selectedEvtAccessible =true;
         if (selectEventt.getObject() == null) {
             System.out.println("non nullo");
 
         }
-        System.out.println("non esiste" + e.getName() + " " + lazyModel2.getEventCount());
+        System.out.println("non esiste" + selectEvent.getName() + " " + lazyModel2.getEventCount());
     }
 
     public void onDateSelect(SelectEvent e) {
@@ -568,9 +565,16 @@ public class EventManagerBean implements Serializable {
             this.eventoLetto();
             RequestContext.getCurrentInstance().update("h:mySchedule");
             RequestContext.getCurrentInstance().update("header-form:notification_event");
-            RequestContext.getCurrentInstance().update("header-form:notification-button");
+            RequestContext.getCurrentInstance().update("header-form:notification_button");
             RequestContext.getCurrentInstance().update("f:new-event");
             RequestContext.getCurrentInstance().update("form:next_event");
         }
+    }
+
+    /**
+     * @return the selectedEvtAccessible
+     */
+    public boolean isSelectedEvtAccessible() {
+        return selectedEvtAccessible;
     }
 }

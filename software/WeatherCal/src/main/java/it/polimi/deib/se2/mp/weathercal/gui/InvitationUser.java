@@ -5,22 +5,13 @@
  */
 package it.polimi.deib.se2.mp.weathercal.gui;
 
-import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
-import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -29,7 +20,6 @@ import javax.persistence.Query;
  *
  * @author paolo
  */
-@ManagedBean
 @Named
 @RequestScoped
 public class InvitationUser {
@@ -42,6 +32,8 @@ public class InvitationUser {
 
     /**
      * Creates a new instance of EventBean
+     * @param query
+     * @return 
      */
     public List<User> completeUser(String query) {
 
@@ -49,8 +41,30 @@ public class InvitationUser {
 
         List<User> allUser = q.getResultList();
 
-        List<User> filteredUser = new ArrayList<User>();
+        List<User> filteredUser = new ArrayList<>();
+        
+        for (int i = 0; i < allUser.size(); i++) {
+            User us = allUser.get(i);
+            if (!us.getEmail().equals(um.getLoggedUser().getEmail())) {
+                if (us.getEmail().toLowerCase().contains(query.toLowerCase()) ||
+                        us.getUsername().toLowerCase().contains(query.toLowerCase())||
+                        (us.getFirstName() + " " + us.getLastName()).toLowerCase().contains(query.toLowerCase())) {
+                    filteredUser.add(us);
+                }
+            }
+        }
 
+        return filteredUser;
+    }
+    
+    public List<User> completeUsers(String query) {
+
+        Query q = em.createNamedQuery("User.findAll");
+
+        List<User> allUser = q.getResultList();
+
+        List<User> filteredUser = new ArrayList<User>();
+        
         for (int i = 0; i < allUser.size(); i++) {
             User us = allUser.get(i);
             if (us.getEmail().equals(um.getLoggedUser().getEmail())) {

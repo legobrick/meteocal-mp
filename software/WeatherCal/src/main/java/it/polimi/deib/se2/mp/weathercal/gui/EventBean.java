@@ -6,35 +6,36 @@
 package it.polimi.deib.se2.mp.weathercal.gui;
 
 import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
+import it.polimi.deib.se2.mp.weathercal.boundary.OwnerManager;
+import it.polimi.deib.se2.mp.weathercal.boundary.ParticipationManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.WeatherConstraintManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.WeatherStateConstraintManager;
+import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
+import it.polimi.deib.se2.mp.weathercal.entity.LocalizedEvent;
+import it.polimi.deib.se2.mp.weathercal.entity.Owner;
+import it.polimi.deib.se2.mp.weathercal.entity.OwnerPK;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
 import it.polimi.deib.se2.mp.weathercal.entity.ParticipationPK;
+import it.polimi.deib.se2.mp.weathercal.entity.User;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherConstraint;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint.State;
-import it.polimi.deib.se2.mp.weathercal.util.UtilTimeConverter;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.inject.Named;
-import javax.inject.Inject;
-import javax.persistence.Query;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -49,7 +50,6 @@ import org.primefaces.context.RequestContext;
  */
 @RequestScoped
 @Named
-@SessionScoped
 public class EventBean {
 
     @Inject
@@ -57,24 +57,31 @@ public class EventBean {
 
     @EJB
     EventManager manager;
+    
+    @EJB
+    OwnerManager ownerM;
+    
+    @EJB
+    ParticipationManager participationM;
+    
     @EJB
     UserManager um;
+
     @EJB
     WeatherStateConstraintManager wscManager;
 
     @EJB
     WeatherConstraintManager wcManager;
     private Event event;
+    private LocalizedEvent lEvent;
     private WeatherConstraint weatherC;
     private boolean hasConstraint = false;
     private final String centerGeoMap = "45.47803760760912, 9.229593882060279";
     private final String zoomGeoMap = "16";
-    private Collection<String> invitedUser=new ArrayList();
     private String createButtonText = "Create";
     private String pageTitle = "New Event";
     private Long editId;
-    private String userTimezone;
-
+     private List<User> invitedUsers=new <User>ArrayList();
     private List<State> states;
 
     /**
@@ -83,23 +90,93 @@ public class EventBean {
     public EventBean() {
         this.wscManager = new WeatherStateConstraintManager();
         this.wcManager = new WeatherConstraintManager();
+        this.ownerM = new OwnerManager();
+        this.participationM = new ParticipationManager();
     }
-
-    
-
 
     @PostConstruct
     public void init() {
-        event = new Event();
-        weatherC = new WeatherConstraint();
+        if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id") == null) {
+            event = new Event();
+            lEvent = new LocalizedEvent();
+            weatherC = new WeatherConstraint();
+        } else {
+            event = manager.find(Long.parseLong(
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id")
+            ));
+            lEvent = LocalizedEvent.from(event, null);
+            weatherC = event.getValueConstraints().isEmpty() ? new WeatherConstraint() : event.getValueConstraints().iterator().next();
+        }
     }
 
-    public Collection<String> getInvitedUser() {
-        return invitedUser;
+    public List<User> getInvitedUsers() {
+        Collection<Participation> oldParts = participationM.findByEvent(event);
+        List<User> invitedUsers = new ArrayList<>();
+        Long idc;
+        boolean match;
+        for(Participation p: oldParts){
+            idc = p.getCalendar().getId();
+            match = false;
+            for(Owner o: event.getOwners()){
+                match = idc.equals(o.getCalendar().getId());
+                if(match) break;
+            }
+            if(!match) invitedUsers.add(p.getCalendar().getUserCollection().iterator().next());
+        }
+        return invitedUsers;
     }
 
-    public void setInvitedUser(Collection<String> inUs) {
-        this.invitedUser = inUs==null?new ArrayList<>():inUs;
+    public void setInvitedUsers(List<User> inUs) {
+        if(inUs == null) inUs = new ArrayList<>();
+        Collection<Participation> oldParts = event.getParticipation();
+        List<CalendarEntity> newCals = new ArrayList<>();
+        Pattern userRegex = Pattern.compile("(" + Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email=") + ")(.+)(" + Matcher.quoteReplacement(" ]") + ")");
+        for(Object u: inUs){
+            if(u instanceof String){
+                if(userRegex.matcher((String)u).matches())
+                    u = ((String) u)
+                            .replaceAll(Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email="), "")
+                            .replaceAll(Matcher.quoteReplacement(" ]"), "");
+                u = um.find(u);
+            }
+            for(CalendarEntity uc: ((User) u).getCalendarCollection())
+                if(!newCals.contains(uc)) newCals.add(uc);
+        }
+        List<CalendarEntity> ownerCals = new ArrayList<>();
+        for(Owner o: event.getOwners())
+            ownerCals.add(o.getCalendar());
+        List<Participation> toRemove = new ArrayList<>();
+        List<CalendarEntity> retainCals = new ArrayList<>();
+        for (Participation p : oldParts) {
+            if (!(newCals.contains(p.getCalendar()) || ownerCals.contains(p.getCalendar()))) {
+                toRemove.add(p);
+                p.getCalendar().getParticipationCollection().remove(p);
+                //participationM.remove(p);
+            } else {
+                retainCals.add(p.getCalendar());
+            }
+        }
+        oldParts.removeAll(toRemove);
+        newCals.removeAll(retainCals);
+        ownerCals.removeAll(retainCals);
+        Participation p;
+        for (CalendarEntity cal : newCals) {
+            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "nonletto");
+            p.setCalendar(cal);
+            p.setEvent(event);
+            //manager.createParticipation(p);
+            oldParts.add(p);
+            cal.getParticipationCollection().add(p);
+        }
+        for (CalendarEntity cal : ownerCals) {
+            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "si");
+            p.setCalendar(cal);
+            p.setEvent(event);
+            //manager.createParticipation(p);
+            oldParts.add(p);
+            cal.getParticipationCollection().add(p);
+        }
+        event.setParticipation(oldParts);
     }
 
     public String getCenterGeoMap() {
@@ -113,37 +190,25 @@ public class EventBean {
     /**
      * @return the event
      */
-    public Event getEvent() {
-        return event;
+    public LocalizedEvent getEvent() {
+        return lEvent;
     }
 
     /**
      * @param event the event to set
      */
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setEvent(LocalizedEvent event) {
+        this.lEvent = event;
     }
 
-    private LocalDate startDate;
-    private LocalTime startTime;
+    private String startDate;
+    private String startTime;
     private ZoneOffset startZone;
-    private LocalDate endDate;
-    private LocalTime endTime;
+    private String endDate;
+    private String endTime;
     private ZoneOffset endZone;
 
-    public List<Long> allCalId(Iterator i) {
-        List<Long> calIds = new ArrayList();
-        while (i.hasNext()) {
-            Long id = um.getCalByEmail((String) i.next());
-            if (!calIds.contains((Long) id)) {
-                calIds.add(id);
-            }
-        }
-        return calIds;
-    }
-
     public String save() {
-        int userTimezone = Integer.valueOf(this.userTimezone);
         //startZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(startDate, startTime)) - userTimezone);
         //endZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(endDate, endTime)) - userTimezone);
 //        System.out.println("========================================");
@@ -154,11 +219,24 @@ public class EventBean {
 //        System.out.println("Start enddatetime:" +ZonedDateTime.of(endDate, endTime, ZoneId.ofOffset("UTC", manager.getTimezone(userTimezone))).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
 //        System.out.println("========================================");
 
-        event.setDatesTogether(
-                ZonedDateTime.of(startDate, startTime, ZoneId.of("UTC")).plusDays(1).plusHours(1).toLocalDateTime(),
-                ZonedDateTime.of(endDate, endTime, ZoneId.of("UTC")).plusDays(1).plusHours(1).toLocalDateTime()
+        lEvent.setLocalDatesTogether(
+                new Date(
+                        Integer.parseInt(startDate.substring(startDate.lastIndexOf("/") + 1)) - 1900,
+                        Integer.parseInt(startDate.substring(startDate.indexOf("/") + 1, startDate.lastIndexOf("/"))) - 1,
+                        Integer.parseInt(startDate.substring(0, startDate.indexOf("/"))),
+                        Integer.parseInt(startTime.substring(0, startTime.indexOf(":"))),
+                        Integer.parseInt(startTime.substring(startTime.indexOf(":") + 1)), 0
+                ),
+                new Date(
+                        Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1)) - 1900,
+                        Integer.parseInt(endDate.substring(endDate.indexOf("/") + 1, endDate.lastIndexOf("/"))) - 1,
+                        Integer.parseInt(endDate.substring(0, endDate.indexOf("/"))),
+                        Integer.parseInt(endTime.substring(0, endTime.indexOf(":"))),
+                        Integer.parseInt(endTime.substring(endTime.indexOf(":") + 1)), 0
+                )
         );
-        if(hasConstraint){
+        event = lEvent.toServerEvent();
+        if (hasConstraint) {
             weatherC.setEvent(event);
             this.setValueConstraints(weatherC);
         } else {
@@ -166,14 +244,14 @@ public class EventBean {
             this.setValueConstraints(null);
         }
         Collection<WeatherStateConstraint> wsc = event.getStateConstraints();
-        if(wsc == null){
+        if (wsc == null) {
             wsc = new ArrayList();
             event.setStateConstraints(wsc);
         }
         Collection<WeatherStateConstraint> toRemove = new ArrayList<>();
         Collection<State> yetPresent = new ArrayList<>();
-        for(WeatherStateConstraint w: wsc){
-             if(!states.contains(w.toState())){
+        for (WeatherStateConstraint w : wsc) {
+            if (!states.contains(w.toState())) {
                 toRemove.add(w);
                 wscManager.remove(w);
             } else {
@@ -182,131 +260,185 @@ public class EventBean {
         }
         wsc.removeAll(toRemove);
         final Collection<WeatherStateConstraint> wscSubset = wsc;
-        for(State s: states){
-            if(yetPresent.contains(s)) continue;
+        for (State s : states) {
+            if (yetPresent.contains(s)) {
+                continue;
+            }
             WeatherStateConstraint w;
             w = new WeatherStateConstraint(event, s);
             w.setEvent(event);
             wscSubset.add(w);
         }
         System.out.println("informazione evento nome:" + event.getName() + " posto " + event.getPlaceDescription() + " ");
-         if(editId == null){
-         manager.create(event);
-         manager.creatOwner(um.getLoggedUser(), event);
-         this.addUser(event.getId(),um.getLoggedUser().getCalendarCollection().iterator().next().getId(),"si");
-           this.saveParticipation();}
-         else{
-         event.setId(editId);
-         manager.edit(event);
-         }
-         RequestContext.getCurrentInstance().showMessageInDialog(
-         new FacesMessage(FacesMessage.SEVERITY_INFO,
-         "Event submitted", "Event successfully " + (editId == null? "created.": "modified."))
-         );
-       
-         return "index?faces-redirect=true";
-         }
-    
-    public String deleteEvent(){
+        if (editId == null) {
+            manager.create(event);
+            
+            CalendarEntity c = um.getLoggedUser().getCalendarCollection().iterator().next();
+            Participation p = new Participation(c.getId(), event.getId(), pageTitle);
+            //participationM.create(p);
+            event.getParticipation().add(p);
+            c.getParticipationCollection().add(p);
+
+            Owner o=new Owner();
+            o.setEvent(event);
+            o.setCalendar(c);
+            OwnerPK ok=new OwnerPK();
+            ok.setIdCalendar(c.getId());
+            o.setOwnerPK(ok);
+            ok.setIdEvent(event.getId());
+            //ownerM.create(o);
+            c.getOwnerCollection().add(o);
+            event.getOwners().add(o);
+            //manager.creatOwner(um.getLoggedUser(), event);
+            //this.saveParticipation();
+        } else {
+            event.setId(editId);
+            //saveParticipation();
+        }
+        manager.edit(event);
+        RequestContext.getCurrentInstance().showMessageInDialog(
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Event submitted", "Event successfully " + (editId == null ? "created." : "modified."))
+        );
+
+        return "index?faces-redirect=true";
+    }
+
+    public String deleteEvent() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         ServletContext sContext = request.getSession().getServletContext();
-        editId=(Long)sContext.getAttribute("pressedEv");
+        editId = (Long) sContext.getAttribute("pressedEv");
         manager.removeById(editId);
         sContext.removeAttribute("pressedEv");
         RequestContext.getCurrentInstance().showMessageInDialog(
                 new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Event submitted", "Event successfully deleted.")
         );
-      return "index?faces-redirect=true";
+        return "index?faces-redirect=true";
     }
 
-    public void saveParticipation() {
-        Collection<Participation> oldParts = event.getParticipation();
-        List<Long> newCalIds = this.allCalId(this.invitedUser.iterator());
-        List<Participation> toRemove = new ArrayList<>();
-        List<Long> retainCalIds = new ArrayList<>();
-        for(Participation p: oldParts){
-            if(!newCalIds.contains(p.getCalendar().getId())){
-                toRemove.add(p);
-                manager.removeParticipation(p);
-            } else
-                retainCalIds.add(p.getCalendar().getId());
-        }
-        oldParts.removeAll(toRemove);
-        newCalIds.removeAll(retainCalIds);
-        Participation p;
-        for(Long calId: newCalIds){
-            p = new Participation(new ParticipationPK(calId, event.getId()), "nonletto");
-            manager.createParticipation(p);
-            oldParts.add(p);
-        }
+//    public void saveParticipation() {
+//        Collection<Participation> oldParts = event.getParticipation();
+//        List<CalendarEntity> newCals = new ArrayList<>();
+//        Pattern userRegex = Pattern.compile("(" + Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email=") + ")(.+)(" + Matcher.quoteReplacement(" ]") + ")");
+//        for(Object u: this.invitedUsers){
+//            if(u instanceof String){
+//                if(userRegex.matcher((String)u).matches())
+//                    u = ((String) u)
+//                            .replaceAll(Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email="), "")
+//                            .replaceAll(Matcher.quoteReplacement(" ]"), "");
+//                u = um.find(u);
+//            }
+//            for(CalendarEntity uc: ((User) u).getCalendarCollection())
+//                if(!newCals.contains(uc)) newCals.add(uc);
+//        }
+//        List<CalendarEntity> ownerCals = new ArrayList<>();
+//        for(Owner o: event.getOwners())
+//            ownerCals.add(o.getCalendar());
+//        List<Participation> toRemove = new ArrayList<>();
+//        List<CalendarEntity> retainCals = new ArrayList<>();
+//        for (Participation p : oldParts) {
+//            if (!(newCals.contains(p.getCalendar()) || ownerCals.contains(p.getCalendar()))) {
+//                toRemove.add(p);
+//                p.getCalendar().getParticipationCollection().remove(p);
+//                //manager.removeParticipation(p);
+//            } else {
+//                retainCals.add(p.getCalendar());
+//            }
+//        }
+//        oldParts.removeAll(toRemove);
+//        newCals.removeAll(retainCals);
+//        ownerCals.removeAll(retainCals);
+//        Participation p;
+//        for (CalendarEntity cal : newCals) {
+//            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "nonletto");
+//            p.setCalendar(cal);
+//            p.setEvent(event);
+//            //manager.createParticipation(p);
+//            oldParts.add(p);
+//            cal.getParticipationCollection().add(p);
+//        }
+//        for (CalendarEntity cal : ownerCals) {
+//            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "si");
+//            p.setCalendar(cal);
+//            p.setEvent(event);
+//            //manager.createParticipation(p);
+//            oldParts.add(p);
+//            cal.getParticipationCollection().add(p);
+//        }
+//        event.setParticipation(oldParts);
+//    }
+    
+    public void loadParticipation(){
     }
 
-    public void addUser(Long id, Long calId, String av) {
+    public void addUser(Event evt, CalendarEntity cal, String av) {
         ParticipationPK p = new ParticipationPK();
-        p.setIdCalendar(calId);
-        p.setIdEvent(id);
+        p.setIdCalendar(cal.getId());
+        p.setIdEvent(evt.getId());
         Participation prova = new Participation();
         prova.setParticipationPK(p);
         prova.setAvailability(av);
         manager.invitaUser(prova);
+        cal.getParticipationCollection().add(prova);
+        evt.getParticipation().add(prova);
     }
-
+  
     /**
      * @return the startDate
      */
-    public Date getStartDate() {
-        return UtilTimeConverter.localDateToUtilDate(startDate);
+    public String getStartDate() {
+        return startDate;
     }
 
     /**
      * @param startDate the startDate to set
      */
-    public void setStartDate(Date startDate) {
-        this.startDate = UtilTimeConverter.utilDateToLocalDate(startDate);
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
     /**
      * @return the startTime
      */
-    public Date getStartTime() {
-        return UtilTimeConverter.localTimeToUtilDate(startTime);
+    public String getStartTime() {
+        return startTime;
     }
 
     /**
      * @param startTime the startTime to set
      */
-    public void setStartTime(Date startTime) {
-        this.startTime = UtilTimeConverter.utilDateToLocalTime(startTime);
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     /**
      * @return the endDate
      */
-    public Date getEndDate() {
-        return UtilTimeConverter.localDateToUtilDate(endDate);
+    public String getEndDate() {
+        return endDate;
     }
 
     /**
      * @param endDate the endDate to set
      */
-    public void setEndDate(Date endDate) {
-        this.endDate = UtilTimeConverter.utilDateToLocalDate(endDate);
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     /**
      * @return the endTime
      */
-    public Date getEndTime() {
-        return UtilTimeConverter.localTimeToUtilDate(endTime);
+    public String getEndTime() {
+        return endTime;
     }
 
     /**
      * @param endTime the endTime to set
      */
-    public void setEndTime(Date endTime) {
-        this.endTime = UtilTimeConverter.utilDateToLocalTime(endTime);
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     /**
@@ -321,20 +453,6 @@ public class EventBean {
      */
     public void setStates(List<State> states) {
         this.states = states;
-    }
-
-    /**
-     * @return the userTimezone
-     */
-    public String getUserTimezone() {
-        return userTimezone;
-    }
-
-    /**
-     * @param userTimezone the userTimezone to set
-     */
-    public void setUserTimezone(String userTimezone) {
-        this.userTimezone = userTimezone;
     }
 
     /**
@@ -374,64 +492,75 @@ public class EventBean {
 
     public void setValueConstraints(WeatherConstraint valueConstraint) {
         Collection<WeatherConstraint> wcs = event.getValueConstraints();
-        if(wcs == null){
-            if(valueConstraint != null)
-                event.setValueConstraints(new ArrayList<WeatherConstraint>(){{
+        if (wcs == null) {
+            if (valueConstraint != null) {
+                event.setValueConstraints(new ArrayList<WeatherConstraint>() {
+                    {
                         add(valueConstraint);
-                }});
+                    }
+                });
+            }
         } else {
-            if(valueConstraint == null){
-                for (WeatherConstraint wc : wcs){
+            if (valueConstraint == null) {
+                for (WeatherConstraint wc : wcs) {
                     wcManager.remove(wc); //porcodio
                 }
                 wcs.clear();
             } else {
                 //remove the deleted
                 List<WeatherConstraint> toRemove = new ArrayList<>();
-                for (WeatherConstraint wc : wcs)
-                    if(!wc.equals(valueConstraint)){
+                for (WeatherConstraint wc : wcs) {
+                    if (!wc.equals(valueConstraint)) {
                         toRemove.add(wc);
                         wcManager.remove(wc);
                     }
+                }
                 wcs.removeAll(toRemove);
                 //add the missing
-                if(!wcs.contains(valueConstraint))
+                if (!wcs.contains(valueConstraint)) {
                     wcs.add(valueConstraint);
                 }
             }
         }
-
-
+    }
 
     /**
      * @param editingEvent the editingEvent to set
      */
-    public void setEditingEvent(Event editingEvent) {
-        if(editingEvent == null) return;
+    private void setEditingEvent(Event editingEvent) {
+        if (editingEvent == null) {
+            return;
+        }
         createButtonText = "Modify";
         pageTitle = "Edit Event";
         RequestContext requestContextInstance = RequestContext.getCurrentInstance();
         Collection<WeatherConstraint> wcs = event.getValueConstraints();
         hasConstraint = !wcs.isEmpty();
-        weatherC = hasConstraint? wcs.iterator().next(): new WeatherConstraint();
+        weatherC = hasConstraint ? wcs.iterator().next() : new WeatherConstraint();
         LocalDateTime eventStart = event.getStart();
-        ZonedDateTime startZdt = ZonedDateTime.of(eventStart, ZoneId.of("UTC")).withZoneSameInstant(
-                manager.getTimezone(manager.getTimezoneOffset(
-                                event, LocalDateTime.of(eventStart.toLocalDate(), eventStart.toLocalTime()))
-                )
-        );
+        ZonedDateTime startZdt = ZonedDateTime.of(eventStart, ZoneId.of("UTC"));//.withZoneSameInstant(
+//                manager.getTimezone(manager.getTimezoneOffset(
+//                                event, LocalDateTime.of(eventStart.toLocalDate(), eventStart.toLocalTime()))
+//                )
+//        );
         requestContextInstance.execute(String.format("startDT='%s'", startZdt.toLocalDateTime().toString()));
         LocalDateTime eventEnd = event.getEnd();
-        ZonedDateTime endZdt = ZonedDateTime.of(eventEnd, ZoneId.of("UTC")).withZoneSameInstant(
-                manager.getTimezone(manager.getTimezoneOffset(
-                                event, LocalDateTime.of(eventEnd.toLocalDate(), eventEnd.toLocalTime()))
-                )
-        );
+        ZonedDateTime endZdt = ZonedDateTime.of(eventEnd, ZoneId.of("UTC"));//.withZoneSameInstant(
+//                manager.getTimezone(manager.getTimezoneOffset(
+//                                event, LocalDateTime.of(eventEnd.toLocalDate(), eventEnd.toLocalTime()))
+//                )
+//        );
         requestContextInstance.execute(String.format("endDT='%s'", endZdt.toLocalDateTime().toString()));
         states = new ArrayList<>();
         event.getStateConstraints().iterator().forEachRemaining(
                 st -> states.add(st.toState())
         );
+        lEvent = LocalizedEvent.from(event, ZoneId.of("UTC"));
+        //loadParticipation();
+        startDate = "01/01/1970";
+        startTime = "00:00";
+        endDate = "01/01/1970";
+        endTime = "00:00";
     }
 
     /**
@@ -460,11 +589,13 @@ public class EventBean {
      */
     public void setEditId(Long editId) {
         this.editId = editId;
-        if(editId==null)return;
+        if (editId == null) {
+            return;
+        }
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         ServletContext sContext = request.getSession().getServletContext();
-        sContext.setAttribute("pressedEv",this.editId);
+        sContext.setAttribute("pressedEv", this.editId);
         event = manager.find(editId);
         weatherC = event.getValueConstraints().isEmpty() ? new WeatherConstraint() : event.getValueConstraints().iterator().next();
         setEditingEvent(event);

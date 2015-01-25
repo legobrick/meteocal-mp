@@ -51,7 +51,7 @@ public class CalendarEntity implements Serializable {
     @JoinTable(schema = "development", name = "user_has_calendar", joinColumns = {
         @JoinColumn(name = "id_calendar", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
         @JoinColumn(name = "id_user", referencedColumnName = "email", nullable = false)})
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private Collection<User> userCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "calendar")
     private Collection<Owner> ownerCollection;

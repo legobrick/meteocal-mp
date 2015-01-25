@@ -9,6 +9,7 @@ and open the template in the editor.
 */
 
 @import"http://use.typekit.net/c/30a901/1w;museo-slab,2,SKB:N:n3,WH7:N:n5;proxima-nova,2,Vmx:N:n3,W0V:N:n4,W0X:N:n6;proxima-nova-sc-osf,2,S86:N:n3/d?3bb2a6e53c9684ffdc9a98f2135b2a6250f2340d8ca0853b7df9677441e251a731c54f407c1f09bb93286ed5d8b6a13bfd39bb98e3e53bfaa449fa93a44541da39ed82de99b4dc9ba9cb3b81fa64e52cbf100c65ea46831bd044cbc14ee4954033891a49409fc18e1db26c1acb7b6a7d4bab5d6754e2597f640c290175e28ccfb7e926ad5f48083d63c5c23008fb7fbdafa156c2b90be39de88663fff6d6da0123d71a6f903166d281f0c989f51202d506fb00912ca4421435f22027a3fe8924009edecac31f8f1e98855b9b669f1c68febba1f3476407fff423bc838e9043c235e02494479fd9fc81d940b7e5315d2fee862ff2db85902f57";
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:500italic);
 
 
 /* http://meyerweb.com/eric/tools/css/reset/
@@ -116,6 +117,7 @@ em{color:	red;}
 #main_buttons {
     float:	right;
     margin:	1.3em;
+    margin-bottom: -1.3em;
 }
 
 #main_buttons ul {
@@ -124,6 +126,16 @@ em{color:	red;}
     padding:	0;
     margin:	0;
     list-style-type:	none;
+}
+
+#main_buttons ul>li:first-child {
+    text-align: right;
+    margin-right: 1em;
+    font-family: Ubuntu;
+    font-weight: 500;
+    margin-top: .3em;
+    margin-bottom: -.3em;
+    font-style: italic;
 }
 
 #main_buttons li {
@@ -141,11 +153,12 @@ em{color:	red;}
 
 /* dio porco primefaces di merda:	regole per pulsanti */
 
-[id$=notification_button] {
+.notif_btn {
     background-color:	rgb(30,130,201);
     color:rgba(255, 255, 255, 0.75);
     border-width:2px;
-    
+    display: table-cell!important;
+    vertical-align: middle!important;
     border-color:#e2173d;
     background-image:-ms-linear-gradient(top, #90C4FF, rgb(30,130,201));
     background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#90C4FF), to(rgb(30,130,201)));
@@ -168,7 +181,7 @@ em{color:	red;}
     text-shadow:	0.03em 0 .03em rgba(255, 255, 255, 0.87);
 }
 
-[id$=logout_button] {
+.logout_btn {
     
     color:rgba(255, 255, 255, 0.75);
     background-color:#e2173d;
@@ -379,6 +392,7 @@ label.ui-state-error {
 
 #forecast_days>div span {
     width: 100%;
+    display: block;
 }
 
 #backboneForecast #forecast_days .has_detail {

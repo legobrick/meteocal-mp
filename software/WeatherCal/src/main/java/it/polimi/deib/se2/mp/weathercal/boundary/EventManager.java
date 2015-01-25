@@ -18,24 +18,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.ejb.EJB;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.Transactional;
-import javax.transaction.UserTransaction;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
@@ -101,43 +90,12 @@ public class EventManager extends AbstractFacade<Event>{
         return (tz.getDstOffset() + tz.getRawOffset()) / 60;
     }
     
-    /**
-     *
-     * @param resultOffset the offset expressed in minutes
-     * @return
-     */
-    public ZoneOffset getTimezone(int resultOffset) {
-        return ZoneOffset.of(
-                String.format("%.1s%02d:%02d", resultOffset < 0? "-": "+",
-                        Math.abs(resultOffset / 60), resultOffset % 60)
-        );
-    }
-    
     @Override
     public void create(Event event) {
-        try{
-            System.out.print("iltitolo "+event.getPlaceDescription());
-            Long ev=event.getId();
-            super.create(event);
-            CalendarEntity c = um.getLoggedUser().getCalendarCollection().iterator().next();
-            Owner o=new Owner();
-           // o.setEvent(event);
-            //o.setCalendar(c);
-          /*  OwnerPK ok=new OwnerPK();
-            ok.setIdCalendar(c.getId());
-            ok.setIdEvent(ev);
-            o.setOwnerPK(ok);*/
-            //em.persist(o);
-            //em.persist(o);
-           /* em.persist(new Participation(){{
-                setCalendar(c);
-                setEvent(event);
-                setAvailability("si");
-            }});*/
-        } catch (Exception e){
-            throw e;
-        }
+        System.out.print("iltitolo "+event.getPlaceDescription());
+        super.create(event);
         em.flush();
+        em.refresh(event);
     }
     public void creatOwner(User u,Event e){
         Owner ok=new Owner();
@@ -145,7 +103,8 @@ public class EventManager extends AbstractFacade<Event>{
         o.setIdEvent(e.getId());
         o.setIdCalendar(u.getCalendarCollection().iterator().next().getId());
         ok.setOwnerPK(o);
-        em.merge(ok);
+        e.getOwners().add(ok);
+        em.persist(ok);
         em.flush();
            // o.setEvent(event);
             //o.setCalendar(c);

@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -260,14 +261,14 @@ public class Event implements Serializable {
      * @return the valueConstraints
      */
     public Collection<WeatherConstraint> getValueConstraints() {
-        return valueConstraints;
+        return valueConstraints == null? new ArrayList<>(): valueConstraints;
     }
 
     /**
      * @return the stateConstraints
      */
     public Collection<WeatherStateConstraint> getStateConstraints() {
-        return stateConstraints;
+        return stateConstraints == null? new ArrayList<>(): stateConstraints;
     }
 
     /**
@@ -289,7 +290,7 @@ public class Event implements Serializable {
      * @return the owners
      */
     public Collection<Owner> getOwners() {
-        return owners;
+        return owners == null? new ArrayList<>(): owners;
     }
 
     /**
@@ -303,7 +304,7 @@ public class Event implements Serializable {
      * @return the participation
      */
     public Collection<Participation> getParticipation() {
-        return participation;
+        return participation == null? new ArrayList<>(): participation;
     }
 
     /**
