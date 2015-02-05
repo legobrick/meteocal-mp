@@ -97,6 +97,9 @@
                 <h:form id="header-form">
                     <ul>
                         <li>
+                            <h2><ui:insert name="welcome_msg">#{searchUser.reverted.username}'s calendar</ui:insert></h2>
+                        </li>
+                        <li>
                             <p:selectBooleanButton onLabel="Notifications" offLabel="Notifications" id="notification_button" value="#{eventManagerBean.lettoNonLetto}">
                                     <p:ajax  listener="#{eventManagerBean.changeNotificationToRead()}" />
                                 </p:selectBooleanButton>
@@ -148,6 +151,10 @@
             <div id="content" class="column" >
                 <div class="innertube">
                     <ui:insert name="main-content">
+                        <f:metadata>
+                            <f:viewParam name="id" value="#{searchUser.searched}"/>
+                            <f:event type="preRenderView" listener="#{searchUser.reverse}" />
+                        </f:metadata>
                         <p:commandButton widgetVar="new_event_button" id="new-event" action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="display:none; width:8em; height:1.9em; font-size:1em;">
                         </p:commandButton>
                         <h:form>
@@ -158,7 +165,6 @@
                                     value="#{eventManagerBean.lazySearch}"
                                     style="margin-left:20px;margin-right:20px; color:rgb(29,129,201)"
                                     widgetVar="myschedule"
-                                    timeZone="GMT+1"
                                     draggable="false"
                                     resizable="false"
                                     firstHour="0" >
@@ -201,56 +207,14 @@
 
                             <div class="ui-grid-row" style="font-size:30px; margin-left:10px">Personal Info</div>
 
-                            <div class="ui-grid-row" style="margin-top:40px; margin-left:10px"><div class="ui-grid-col-2" style="width:100px">Name:</div><div class="ui-grid-col-2" style="width:180px">#{param.name}</div> </div>
-                            <div class="ui-grid-row" style="margin-top:5px; margin-left:10px"><div class="ui-grid-col-2" style=" width:100px">Surname:</div><div class="ui-grid-col-2" style="width:180px">#{param.surname}</div></div>
-                            <div class="ui-grid-row" style="margin-top:5px; margin-left:10px"><div class="ui-grid-col-2" style="width:100px">Email:</div><div class="ui-grid-col-2" style="width:180px">#{param.mail}</div></div>
+                            <div class="ui-grid-row" style="margin-top:40px; margin-left:10px"><div class="ui-grid-col-2" style="width:100px">Name:</div><div class="ui-grid-col-2" style="width:180px">#{searchUser.reverted.firstName}</div> </div>
+                            <div class="ui-grid-row" style="margin-top:5px; margin-left:10px"><div class="ui-grid-col-2" style=" width:100px">Surname:</div><div class="ui-grid-col-2" style="width:180px">#{searchUser.reverted.lastName}</div></div>
+                            <div class="ui-grid-row" style="margin-top:5px; margin-left:10px"><div class="ui-grid-col-2" style="width:100px">Email:</div><div class="ui-grid-col-2" style="width:180px">#{searchUser.reverted.email}</div></div>
                         </div> 
                      
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         <footer class="footer">
             <div class="text-center">
