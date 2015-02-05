@@ -75,6 +75,8 @@ Or, you can edit the <glassfish_home>/domains/<domain_name>/config/domain.xml fi
 </auth-realm>
 ```
 
+* Install the postgresql JDBC connector on glassfish (by copying it under glassfish/libs/)
+
 # Project deployment
 Now open http://localhost:4848 or the glassfish admin console you configured and go to the Applications task using the left common tasks menu, click the "Deploy" button and select the WAR. Confirm all the default options and click "OK".
 You are now able to select the deployed application under the "Applications" task on the left menu: click on if, go to the descriptor and click "Launch" in the bottom table, first row. Click on the non-SSL link and enjoy the application.

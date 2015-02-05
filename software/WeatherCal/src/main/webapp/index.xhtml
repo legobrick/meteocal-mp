@@ -150,6 +150,9 @@
 
                         <ul>
                             <li>
+                                <h2><ui:insert name="welcome_msg">Welcome, #{userBean.username}</ui:insert></h2>
+                            </li>
+                            <li>
                                 <p:selectBooleanButton widgetVar="notif-button"  onLabel="#{eventManagerBean.numberOfNot()}" offLabel="#{eventManagerBean.numberOfNot()}" id="notification_button" value="#{eventManagerBean.lettoNonLetto}">
                                     <p:ajax  listener="#{eventManagerBean.changeNotificationToRead()}" />
                                 </p:selectBooleanButton>

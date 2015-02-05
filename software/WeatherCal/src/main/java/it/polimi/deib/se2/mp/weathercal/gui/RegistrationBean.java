@@ -10,17 +10,17 @@ import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
+import javax.faces.application.FacesMessage;
 import javax.inject.Named;
+import org.primefaces.context.RequestContext;
 
 /**
  * @author paolo
- * 
+ *
  */
 @Named
 @RequestScoped
-public class RegistrationBean implements Serializable{
+public class RegistrationBean implements Serializable {
 
     @EJB
     private UserManager um;
@@ -43,6 +43,11 @@ public class RegistrationBean implements Serializable{
 
     public String register() {
         um.save(user);
+        RequestContext.getCurrentInstance().showMessageInDialog(
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Registration", "Registration successful!")
+        );
+        user = new User();
         return "";
     }
 
