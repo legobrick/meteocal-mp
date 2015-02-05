@@ -33,6 +33,7 @@ CREATE SCHEMA development
 ```
 
 # Glassfish setup
+Create a clean domain or recycle an older one.
 In order to make the authorization and authentication system provided by Glassfish work, the configuration of a **Realm** is needed.
 
 * To perform this operation you must start the server and open the *Glassfish Admin Console*.
@@ -73,3 +74,7 @@ Or, you can edit the <glassfish_home>/domains/<domain_name>/config/domain.xml fi
   <property name="user-name-column" description="null" value="email"></property>
 </auth-realm>
 ```
+
+# Project deployment
+Now open http://localhost:4848 or the glassfish admin console you configured and go to the Applications task using the left common tasks menu, click the "Deploy" button and select the WAR. Confirm all the default options and click "OK".
+You are now able to select the deployed application under the "Applications" task on the left menu: click on if, go to the descriptor and click "Launch" in the bottom table, first row. Click on the non-SSL link and enjoy the application.
