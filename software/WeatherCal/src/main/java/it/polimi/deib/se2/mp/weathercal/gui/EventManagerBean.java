@@ -15,6 +15,7 @@ import it.polimi.deib.se2.mp.weathercal.entity.Participation;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -93,9 +94,6 @@ public class EventManagerBean implements Serializable {
     private ScheduleModel lazyModel2;
     private ScheduleModel lazySearch;
     private ScheduleEvent event = new DefaultScheduleEvent();
-    
-    @Inject
-    private Logger logger;
 
     public EventManagerBean() {
 
