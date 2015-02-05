@@ -48,9 +48,11 @@ public class UserManager {
         if(userCalendars.size() < 1){
             //create user's default calendar
             CalendarEntity c = new CalendarEntity();
-            c.setUserCollection(new ArrayList<User>(){{
-                add(user);
-            }});
+            em.persist(c);
+            em.flush();
+//            c.setUserCollection(new ArrayList<User>(){{
+//                add(user);
+//            }});
             userCalendars.add(c);
             em.merge(user);
             em.flush();

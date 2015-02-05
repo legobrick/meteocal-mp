@@ -12,12 +12,13 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.inject.Named;
 
 /**
  * @author paolo
  * 
  */
-@ManagedBean
+@Named
 @RequestScoped
 public class RegistrationBean implements Serializable{
 

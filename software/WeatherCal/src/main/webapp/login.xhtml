@@ -24,6 +24,26 @@ and open the template in the editor.
                     width: 100%;
                 }
             </style>
+            <script type="text/javascript">
+                //<![CDATA[
+                var firstTime = true;
+                var cielcio = function(){
+                    var pw1 = PF('pwd1').jq,
+                        pw2 = PF('pwd2');
+                    var val1 = pw1.val(),
+                        val2 = pw2.jq.val();
+                    if(val2 == "" && $(this).is(pw1) && firstTime || val1 == val2)
+                        pw1.add(pw2).closest('.ui-grid-row').find('.ui-message').html('').attr('class', '').addClass('ui-message');
+                    if($(this).is(pw2)) firsTime = false;
+                }
+                $(function(){
+                    $(function(){
+                        PF('pwd1').jq.on('blur', cielcio);
+                        PF('pwd2').jq.on('blur', cielcio);
+                    })
+                })
+                //]]>
+            </script>
         </ui:define>
         <ui:define name="header-buttons">
             <h:form>
@@ -93,6 +113,10 @@ and open the template in the editor.
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
                                         <p:inputText id="email" placeholder="E-mail" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.email}" required="true" requiredMessage="May not be empty">
+                                            <f:attribute name="entity" value="${registrationBean.user}" />
+                                            <f:attribute name="property" value="email" />
+                                            <f:attribute name="message" value="Email yet registered. Did you forget your credentials?" />
+                                            <f:validator validatorId="jpaUniqueValidator"/>
                                             <p:ajax update="email_msg" event="blur"/>
                                         </p:inputText>
                                     </div>
@@ -103,6 +127,10 @@ and open the template in the editor.
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
                                         <p:inputText id="username" placeholder="Username" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.username}" required="true" requiredMessage="May not be empty">
+                                            <f:attribute name="entity" value="${registrationBean.user}" />
+                                            <f:attribute name="property" value="username" />
+                                            <f:attribute name="message" value="Username already taken." />
+                                            <f:validator validatorId="jpaUniqueValidator"/>
                                             <p:ajax update="username_msg" event="blur"/>
                                         </p:inputText>
                                     </div>
@@ -112,7 +140,7 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:password id="pwd" placeholder="Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" match="pwd2" required="true" requiredMessage="May not be empty" label="The first password">
+                                        <p:password id="pwd" placeholder="Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" match="pwd2" required="true" requiredMessage="May not be empty" label="The first password" widgetVar="pwd1">
                                             <p:ajax update="psw_msg" event="blur"/>
                                         </p:password>
                                     </div>
@@ -122,7 +150,7 @@ and open the template in the editor.
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
-                                        <p:password id="pwd2" placeholder="Repeat Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" required="true" requiredMessage="May not be empty" label="the second">
+                                        <p:password id="pwd2" placeholder="Repeat Password" style="height:30px; font-size:20px; margin:10px" value="#{registrationBean.user.password}" required="true" requiredMessage="May not be empty" label="the second" widgetVar="pwd2">
                                             <p:ajax update="psw2_msg" event="blur"/>
                                         </p:password>
                                     </div>
