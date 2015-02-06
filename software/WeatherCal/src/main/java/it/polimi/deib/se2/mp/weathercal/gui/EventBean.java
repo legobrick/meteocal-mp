@@ -261,7 +261,7 @@ public class EventBean {
         prova.setAvailability(av);
         manager.invitaUser(prova);
     }
-
+  
     /**
      * @return the startDate
      */

@@ -195,13 +195,7 @@
                                     <div class="ui-grid-col-7">
                                         <div >
                                             <p:autoComplete onkeypress="if (event.keyCode == 13) {  return false; }" id="user-search" multiple="true" value="#{eventBean.invitedUser}" completeMethod="#{invitationUser.completeUser}"
-                                                    var="user" styleClass="input-wide" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="false">
-                                                <p:column >
-                                                    <h:outputText value="#{user.firstName}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <h:outputText value="#{user.email}"/>
-                                                </p:column>
+                                                     styleClass="input-wide"forceSelection="true">
                                             </p:autoComplete> 
                                         </div>
                                     </div>
