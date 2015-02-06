@@ -10,6 +10,7 @@ import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.entity.CalendarEntity;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
+import it.polimi.deib.se2.mp.weathercal.entity.LocalizedEvent;
 import it.polimi.deib.se2.mp.weathercal.entity.Owner;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
@@ -88,7 +89,7 @@ public class EventManagerBean implements Serializable {
     EventManager evm;
 
     private boolean lettoNonLetto;
-    private Event selectEvent;
+    private LocalizedEvent selectEvent;
     private String dateSt;
     private String dateEn;
     private ScheduleModel lazyModel2;
@@ -139,14 +140,12 @@ public class EventManagerBean implements Serializable {
             @Override
             public void loadEvents(Date start, Date end) {
                 int n;
+                
+                LocalizedEvent le = null;
 
                 for (n = 0; n < allEventByNotAvailability("si", calId, false).size(); n++) {
                     Event e = allEventByNotAvailability("si", calId, false).get(n);
-                    Instant startInstant = e.getStart().atZone(ZoneId.systemDefault()).toInstant();
-                    Date startDate = Date.from(startInstant);
-
-                    Instant endInstant = e.getEnd().atZone(ZoneId.systemDefault()).toInstant();
-                    Date endDate = Date.from(endInstant);
+                    le = LocalizedEvent.from(e, ZoneId.of("UTC"));
                     String colore;
                     Long id = e.getId();
                     if (isOwner(id,um.getLoggedUser(), ef)) {
@@ -174,13 +173,13 @@ public class EventManagerBean implements Serializable {
                     }
                     //colore="empno";
                     Instant instant = Instant.ofEpochMilli(start.getTime());
-                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
                     Instant instant2 = Instant.ofEpochMilli(end.getTime());
-                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.systemDefault());
+                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.of("UTC"));
 
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
                         System.out.println("evento " + e.getName() + " " + colore);
-                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate, colore);
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), le.getStart(), le.getEnd(), colore);
                         evento.setData(e);
                         addEvent(evento);
                     }
@@ -193,12 +192,8 @@ public class EventManagerBean implements Serializable {
         return lazyModel;
     }
 
-    public Event getSelectEvent() {
+    public LocalizedEvent getSelectEvent() {
         return selectEvent;
-    }
-
-    public void setSelectEvent(Event sel) {
-        this.selectEvent = sel;
     }
 
     public String createNew() throws IOException {
@@ -276,24 +271,22 @@ public class EventManagerBean implements Serializable {
             @Override
             public void loadEvents(Date start, Date end) {
                 int n;
+                
+                LocalizedEvent le = null;
 
                 for (n = 0; n < allEventByAvailability("si", calId, false).size(); n++) {
                     Event e = allEventByAvailability("si", calId, false).get(n);
-                    Instant startInstant = e.getStart().atZone(ZoneId.systemDefault()).toInstant();
-                    Date startDate = Date.from(startInstant);
-
-                    Instant endInstant = e.getEnd().atZone(ZoneId.systemDefault()).toInstant();
-                    Date endDate = Date.from(endInstant);
+                    le = LocalizedEvent.from(e, ZoneId.of("UTC"));
 
                     //colore="empno";
                     Instant instant = Instant.ofEpochMilli(start.getTime());
-                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                    LocalDateTime startCalDate = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
                     Instant instant2 = Instant.ofEpochMilli(end.getTime());
-                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.systemDefault());
+                    LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.of("UTC"));
 
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
 
-                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), startDate, endDate, "empowner");
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), le.getStart(), le.getEnd(), "empowner");
                         if (soloEventiPubblici == true) {
 
                             addEvent(evento);
@@ -391,36 +384,35 @@ public class EventManagerBean implements Serializable {
         }
 
     }
+    private boolean selectedEvtAccessible = false;
 
     public void onEventSelectSearch(SelectEvent selectEventt) throws IOException {
         event = (ScheduleEvent) selectEventt.getObject();
-        Event e = (Event) event.getData();
+        this.selectEvent = LocalizedEvent.from((Event) event.getData(), ZoneId.of("UTC"));
+        selectedEvtAccessible = selectEvent.getOwners().iterator().next()
+                .getCalendar()
+                .getUserCollection()
+                .contains(
+                        um.getLoggedUser()
+                ) || selectEvent.getIsPublic();
 
-        if (e.getIsPublic()) {
-            this.selectEvent = e;
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            this.dateSt = e.getStart().format(formatter);
-            this.dateEn = e.getEnd().format(formatter);
-        } else {
-            this.selectEvent = new Event();
-            this.selectEvent.setDescription("Is Private");
-            this.selectEvent.setPlaceDescription("Is Private");
-            this.dateEn = "Is Private";
-            this.dateSt = "Is Private";
-        }
-
-        System.out.println("non esiste" + e.getName() + " " + lazyModel2.getEventCount());
+        System.out.println("non esiste" + selectEvent.getName() + " " + lazyModel2.getEventCount());
     }
 
     public void onEventSelect(SelectEvent selectEventt) throws IOException {
         event = (ScheduleEvent) selectEventt.getObject();
-        Event e = (Event) event.getData();
-        this.selectEvent = e;
+        selectEvent = LocalizedEvent.from((Event) event.getData(), ZoneId.of("UTC"));
+        selectedEvtAccessible = selectEvent.getOwners().iterator().next()
+                .getCalendar()
+                .getUserCollection()
+                .contains(
+                        um.getLoggedUser()
+                ) || selectEvent.getIsPublic();
         if (selectEventt.getObject() == null) {
             System.out.println("non nullo");
 
         }
-        System.out.println("non esiste" + e.getName() + " " + lazyModel2.getEventCount());
+        System.out.println("non esiste" + selectEvent.getName() + " " + lazyModel2.getEventCount());
     }
 
     public void onDateSelect(SelectEvent e) {
@@ -572,5 +564,12 @@ public class EventManagerBean implements Serializable {
             RequestContext.getCurrentInstance().update("f:new-event");
             RequestContext.getCurrentInstance().update("form:next_event");
         }
+    }
+
+    /**
+     * @return the selectedEvtAccessible
+     */
+    public boolean isSelectedEvtAccessible() {
+        return selectedEvtAccessible;
     }
 }

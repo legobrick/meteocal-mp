@@ -153,12 +153,12 @@ em{color:	red;}
 
 /* dio porco primefaces di merda:	regole per pulsanti */
 
-[id$=notification_button] {
+.notif_btn {
     background-color:	rgb(30,130,201);
     color:rgba(255, 255, 255, 0.75);
     border-width:2px;
-    display: table-cell;
-    vertical-align: middle;
+    display: table-cell!important;
+    vertical-align: middle!important;
     border-color:#e2173d;
     background-image:-ms-linear-gradient(top, #90C4FF, rgb(30,130,201));
     background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#90C4FF), to(rgb(30,130,201)));
@@ -181,7 +181,7 @@ em{color:	red;}
     text-shadow:	0.03em 0 .03em rgba(255, 255, 255, 0.87);
 }
 
-[id$=logout_button] {
+.logout_btn {
     
     color:rgba(255, 255, 255, 0.75);
     background-color:#e2173d;

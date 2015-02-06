@@ -113,16 +113,40 @@
                     <h:form id="dialog-form"> 
                         <p:dialog header="Event's Info" widgetVar="eventDialog" modal="true" showEffect="clip" hideEffect="clip" resizable="false">
                             <p:outputPanel id="carDetail" style="text-align:center;">
-                                <p:panelGrid style="width:300px" columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
-                                    <h:outputText value="Name" />
-                                    <h:outputText value="#{eventManagerBean.selectEvent.name}" /> 
-                                    <h:outputText value="Where" />
-                                    <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
-                                    <h:outputText value="Start" />
-                                    <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
-                                    <h:outputText value="End" />
-                                    <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
-                                </p:panelGrid>
+                                <c:if test="#{eventManagerBean.selectedEvtAccessible}">
+                                    <p:panelGrid style="width:300px" columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+                                        <h:outputText value="Name" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.name}" />
+                                        <h:outputText value="Where" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
+                                        <h:outputText value="Start" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.start}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText> 
+                                        <h:outputText value="End" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.end}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </p:panelGrid>
+                                </c:if>
+                                <c:if test="#{!eventManagerBean.selectedEvtAccessible}">
+                                    <p:panelGrid style="width:300px" columns="2" rendered="#{not empty eventManagerBean.selectEvent}" columnClasses="label,value">
+                                        <h:outputText value="Name" />
+                                        <h:outputText value="#{eventManagerBean.selectEvent.name}" />
+                                    </p:panelGrid>
+                                    <div class="ui-messages ui-widget" aria-live="polite" data-global="false" data-summary="data-summary" data-detail="data-detail" data-severity="all,error" data-redisplay="true" style="margin: .8em 0;">
+                                        <div class="ui-messages-warn ui-corner-all" style="display: table-cell;">
+                                            <span class="ui-messages-warn-icon"></span>
+                                            <ul style="width: initial;">
+                                                <li>
+                                                    <span class="ui-messages-warn-summary">Warning!</span>
+                                                    <span class="ui-messages-warn-detail">The event is private.</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </c:if>
+                                <ui:insert name="evt_detail_btns">
                                 <script type="text/javascript">
                                     function DoAllThese() {
                                         PF('myschedule').update();
@@ -137,6 +161,7 @@
                                     <p:commandButton value="Maybe" action="#{eventManagerBean.changeAvailability('forse')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
                                     <p:commandButton value="Join" action="#{eventManagerBean.changeAvailability('si')}" oncomplete="DoAllThese()"><f:param name="action" value="#{eventManagerBean.selectEvent.id}" /></p:commandButton>
                                 </div>
+                                </ui:insert>
 
                             </p:outputPanel>
                         </p:dialog>
@@ -153,7 +178,7 @@
                                 <h2><ui:insert name="welcome_msg">Welcome, #{userBean.username}</ui:insert></h2>
                             </li>
                             <li>
-                                <p:selectBooleanButton widgetVar="notif-button"  onLabel="#{eventManagerBean.numberOfNot()}" offLabel="#{eventManagerBean.numberOfNot()}" id="notification_button" value="#{eventManagerBean.lettoNonLetto}">
+                                <p:selectBooleanButton widgetVar="notif-button"  onLabel="#{eventManagerBean.numberOfNot()}" offLabel="#{eventManagerBean.numberOfNot()}" id="notification_button" value="#{eventManagerBean.lettoNonLetto}" styleClass="notif_btn">
                                     <p:ajax  listener="#{eventManagerBean.changeNotificationToRead()}" />
                                 </p:selectBooleanButton>
                                 <p:overlayPanel id="imagePanel" styleClass="notificadiocane" style="width:300px" dynamic="true" for="notification_button" hideEffect="fade">
@@ -171,9 +196,13 @@
                                             <h:outputText value="Where" />
                                             <h:outputText value="#{eventManagerBean.selectEvent.placeDescription}" /> 
                                             <h:outputText value="Start" />
-                                            <h:outputText value="#{eventManagerBean.selectEvent.start.hour}:#{eventManagerBean.selectEvent.start.minute}" /> 
+                                            <h:outputText value="#{eventManagerBean.selectEvent.start}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                            </h:outputText> 
                                             <h:outputText value="End" />
-                                            <h:outputText value="#{eventManagerBean.selectEvent.end.hour}:#{eventManagerBean.selectEvent.end.minute}" /> 
+                                            <h:outputText value="#{eventManagerBean.selectEvent.end}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                            </h:outputText>
                                         </p:panelGrid>
                                         <div class="ui-grid ui-grid-responsive" style="width:200px">
                                             <div class="ui-grid-row">
@@ -195,7 +224,7 @@
                                 </p:dialog>
                             </li>
                             <li>
-                                <p:commandButton id="logout_button" value="Logout" action="#{loginBean.logout()}"/>
+                                <p:commandButton id="logout_button" value="Logout" action="#{loginBean.logout()}" styleClass="logout_btn"/>
                             </li>
                         </ul>
                     </h:form>
@@ -232,8 +261,10 @@
                                         styleClass="tabella"
                                         widgetVar="myschedule"
                                         draggable="false"
-
+                                        timeZone="UTC"
+                                        ignoreTimezone="false"
                                         resizable="false"
+                                        timeFormat="H:mm"
                                         firstHour="0"  >
                                         <p:ajax event="eventSelect" listener="#{eventManagerBean.onEventSelect}" update=":dialog-form:carDetail" oncomplete="PF('eventDialog').show();" />
 
@@ -259,8 +290,8 @@
                                     <div class="ui-grid-col-1" style="width: 100%; padding-right: 92px; margin-right: -85px; margin-top: 2px;">
                                         <p:autoComplete id="user" multiple="false" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
                                                         var="user" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="true">
-                                            <p:column style="width:10%">
-                                                <h:outputText value="#{user.firstName}"/>
+                                            <p:column style="width:60%">
+                                                <h:outputText value="#{user.firstName} #{user.lastName}"/>
                                             </p:column>
 
                                             <p:column>
@@ -274,6 +305,7 @@
                                 </h:form>
                             </div>
                         </div>
+                        <ui:insert name="right_content">
                         <div id="backboneForecast">
                             <div class="ui-grid-row">
                                 <div class="ui-grid ui-grid-responsive">
@@ -302,13 +334,13 @@
                                                     </div>-->
                         </div>
 
-                    <div style="margin-top:50px;margin-rigth:10px">
-                        <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" value="" class="text-center">Next events</h3>
-                        <h:form id="form">
-                            <p:dataScroller styleClass="madonna-la-cantante" id="next_event" widgetVar="nextEvent" rows="4" value="#{eventManagerBean.loggedEventUsr('si',true)}" var="event" chunkSize="4" style="margin-right:10px">
-                                <p:outputPanel>
-                                    <h:panelGrid columns="2" cellpadding="5">
-                                            <p:commandButton  value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" style="width:300px;height:30px; margin-top:5px;" update=":dialog-form:carDetail" oncomplete="PF('eventDialog').show()" title="View Detail">
+                        <div style="margin-top:50px;margin-rigth:10px">
+                            <h3 style="margin-top:.4em;margin-bottom:.4em;font-weight:600;" value="" class="text-center">Next events</h3>
+                            <h:form id="form">
+                                <p:dataScroller styleClass="madonna-la-cantante" id="next_event" widgetVar="nextEvent" rows="4" value="#{eventManagerBean.loggedEventUsr('si',true)}" var="event" chunkSize="4" style="margin-right:10px">
+                                    <p:outputPanel>
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                                <p:commandButton  value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" style="width:300px;height:30px; margin-top:5px;" update=":dialog-form:carDetail" oncomplete="PF('eventDialog').show()" title="View Detail">
 
                                                 <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
                                             </p:commandButton>
@@ -321,6 +353,8 @@
                         <h:form id="pub" style="margin-top:20px">
                             <h3 class="text-center" style="font-weight:600"> Calendar Visibility </h3><p:commandButton class="text-center"  icon="#{eventManagerBean.calVisibility()}" id="pubButton" value="#{eventManagerBean.calVisibilityTit()}" action="#{eventManagerBean.changeCalendarVisibility()}"/>
                         </h:form>
+                            
+                        </ui:insert>
                     </div>
                 </div>
             </ui:insert>

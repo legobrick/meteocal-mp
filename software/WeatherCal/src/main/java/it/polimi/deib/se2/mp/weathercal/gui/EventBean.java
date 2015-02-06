@@ -10,15 +10,13 @@ import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.WeatherConstraintManager;
 import it.polimi.deib.se2.mp.weathercal.boundary.WeatherStateConstraintManager;
 import it.polimi.deib.se2.mp.weathercal.entity.Event;
+import it.polimi.deib.se2.mp.weathercal.entity.LocalizedEvent;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
 import it.polimi.deib.se2.mp.weathercal.entity.ParticipationPK;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherConstraint;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint.State;
-import it.polimi.deib.se2.mp.weathercal.util.UtilTimeConverter;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -32,9 +30,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.inject.Named;
-import javax.inject.Inject;
-import javax.persistence.Query;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -66,6 +61,7 @@ public class EventBean {
     @EJB
     WeatherConstraintManager wcManager;
     private Event event;
+    private LocalizedEvent lEvent;
     private WeatherConstraint weatherC;
     private boolean hasConstraint = false;
     private final String centerGeoMap = "45.47803760760912, 9.229593882060279";
@@ -74,7 +70,6 @@ public class EventBean {
     private String createButtonText = "Create";
     private String pageTitle = "New Event";
     private Long editId;
-    private String userTimezone;
 
     private List<State> states;
 
@@ -91,11 +86,13 @@ public class EventBean {
     public void init() {
         if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id") == null){
             event = new Event();
+            lEvent = new LocalizedEvent();
             weatherC = new WeatherConstraint();
         } else {
             event = manager.find(Long.parseLong(
                     FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id")
             ));
+            lEvent = LocalizedEvent.from(event, null);
             weatherC = event.getValueConstraints().isEmpty()? new WeatherConstraint(): event.getValueConstraints().iterator().next();
         }
     }
@@ -119,22 +116,22 @@ public class EventBean {
     /**
      * @return the event
      */
-    public Event getEvent() {
-        return event;
+    public LocalizedEvent getEvent() {
+        return lEvent;
     }
 
     /**
      * @param event the event to set
      */
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setEvent(LocalizedEvent event) {
+        this.lEvent = event;
     }
 
-    private LocalDate startDate;
-    private LocalTime startTime;
+    private Date startDate;
+    private Date startTime;
     private ZoneOffset startZone;
-    private LocalDate endDate;
-    private LocalTime endTime;
+    private Date endDate;
+    private Date endTime;
     private ZoneOffset endZone;
 
     public List<Long> allCalId(Iterator i) {
@@ -149,7 +146,6 @@ public class EventBean {
     }
 
     public String save() {
-        int userTimezone = Integer.valueOf(this.userTimezone);
         //startZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(startDate, startTime)) - userTimezone);
         //endZone = manager.getTimezone(manager.getTimezoneOffset(event, LocalDateTime.of(endDate, endTime)) - userTimezone);
 //        System.out.println("========================================");
@@ -160,10 +156,17 @@ public class EventBean {
 //        System.out.println("Start enddatetime:" +ZonedDateTime.of(endDate, endTime, ZoneId.ofOffset("UTC", manager.getTimezone(userTimezone))).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
 //        System.out.println("========================================");
 
-        event.setDatesTogether(
-                ZonedDateTime.of(startDate, startTime, ZoneId.of("UTC")).plusDays(1).plusHours(1).toLocalDateTime(),
-                ZonedDateTime.of(endDate, endTime, ZoneId.of("UTC")).plusDays(1).plusHours(1).toLocalDateTime()
+        lEvent.setDatesTogether(
+                new Date(
+                        startDate.getYear(), startDate.getMonth(), startDate.getDay(),
+                        startTime.getHours(), startTime.getMinutes(), startTime.getSeconds()
+                ),
+                new Date(
+                        endDate.getYear(), endDate.getMonth(), endDate.getDay(),
+                        endTime.getHours(), endTime.getMinutes(), endTime.getSeconds()
+                )
         );
+        event = lEvent.toServerEvent();
         if(hasConstraint){
             weatherC.setEvent(event);
             this.setValueConstraints(weatherC);
@@ -263,56 +266,56 @@ public class EventBean {
      * @return the startDate
      */
     public Date getStartDate() {
-        return UtilTimeConverter.localDateToUtilDate(startDate);
+        return startDate;
     }
 
     /**
      * @param startDate the startDate to set
      */
     public void setStartDate(Date startDate) {
-        this.startDate = UtilTimeConverter.utilDateToLocalDate(startDate);
+        this.startDate = startDate;
     }
 
     /**
      * @return the startTime
      */
     public Date getStartTime() {
-        return UtilTimeConverter.localTimeToUtilDate(startTime);
+        return startTime;
     }
 
     /**
      * @param startTime the startTime to set
      */
     public void setStartTime(Date startTime) {
-        this.startTime = UtilTimeConverter.utilDateToLocalTime(startTime);
+        this.startTime = startTime;
     }
 
     /**
      * @return the endDate
      */
     public Date getEndDate() {
-        return UtilTimeConverter.localDateToUtilDate(endDate);
+        return endDate;
     }
 
     /**
      * @param endDate the endDate to set
      */
     public void setEndDate(Date endDate) {
-        this.endDate = UtilTimeConverter.utilDateToLocalDate(endDate);
+        this.endDate = endDate;
     }
 
     /**
      * @return the endTime
      */
     public Date getEndTime() {
-        return UtilTimeConverter.localTimeToUtilDate(endTime);
+        return endTime;
     }
 
     /**
      * @param endTime the endTime to set
      */
     public void setEndTime(Date endTime) {
-        this.endTime = UtilTimeConverter.utilDateToLocalTime(endTime);
+        this.endTime = endTime;
     }
 
     /**
@@ -327,20 +330,6 @@ public class EventBean {
      */
     public void setStates(List<State> states) {
         this.states = states;
-    }
-
-    /**
-     * @return the userTimezone
-     */
-    public String getUserTimezone() {
-        return userTimezone;
-    }
-
-    /**
-     * @param userTimezone the userTimezone to set
-     */
-    public void setUserTimezone(String userTimezone) {
-        this.userTimezone = userTimezone;
     }
 
     /**
@@ -412,7 +401,7 @@ public class EventBean {
     /**
      * @param editingEvent the editingEvent to set
      */
-    public void setEditingEvent(Event editingEvent) {
+    private void setEditingEvent(Event editingEvent) {
         if(editingEvent == null) return;
         createButtonText = "Modify";
         pageTitle = "Edit Event";
@@ -421,23 +410,24 @@ public class EventBean {
         hasConstraint = !wcs.isEmpty();
         weatherC = hasConstraint? wcs.iterator().next(): new WeatherConstraint();
         LocalDateTime eventStart = event.getStart();
-        ZonedDateTime startZdt = ZonedDateTime.of(eventStart, ZoneId.of("UTC")).withZoneSameInstant(
-                manager.getTimezone(manager.getTimezoneOffset(
-                                event, LocalDateTime.of(eventStart.toLocalDate(), eventStart.toLocalTime()))
-                )
-        );
+        ZonedDateTime startZdt = ZonedDateTime.of(eventStart, ZoneId.of("UTC"));//.withZoneSameInstant(
+//                manager.getTimezone(manager.getTimezoneOffset(
+//                                event, LocalDateTime.of(eventStart.toLocalDate(), eventStart.toLocalTime()))
+//                )
+//        );
         requestContextInstance.execute(String.format("startDT='%s'", startZdt.toLocalDateTime().toString()));
         LocalDateTime eventEnd = event.getEnd();
-        ZonedDateTime endZdt = ZonedDateTime.of(eventEnd, ZoneId.of("UTC")).withZoneSameInstant(
-                manager.getTimezone(manager.getTimezoneOffset(
-                                event, LocalDateTime.of(eventEnd.toLocalDate(), eventEnd.toLocalTime()))
-                )
-        );
+        ZonedDateTime endZdt = ZonedDateTime.of(eventEnd, ZoneId.of("UTC"));//.withZoneSameInstant(
+//                manager.getTimezone(manager.getTimezoneOffset(
+//                                event, LocalDateTime.of(eventEnd.toLocalDate(), eventEnd.toLocalTime()))
+//                )
+//        );
         requestContextInstance.execute(String.format("endDT='%s'", endZdt.toLocalDateTime().toString()));
         states = new ArrayList<>();
         event.getStateConstraints().iterator().forEachRemaining(
                 st -> states.add(st.toState())
         );
+        lEvent = LocalizedEvent.from(event, ZoneId.of("UTC"));
     }
 
     /**

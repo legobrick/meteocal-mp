@@ -25,12 +25,12 @@ define(['moment', 'underscore'], function (moment, _) {
             this.exportPF(['startTime', 'startDate', 'endTime', 'endDate', 'userTimezone']);
             this.$userTimezone.val(moment().utcOffset());
             if(!_.isNull(startDT)){
-               var start = moment.utc(startDT).local(moment().utcOffset());
+               var start = moment.utc(startDT).local();
                this.$startDate.val(start.format("DD/MM/YYYY"));
                this.$startTime.val(start.format("HH:mm"));
             }
             if(!_.isNull(endDT)){
-               var end = moment.utc(endDT).local(moment().utcOffset());
+               var end = moment.utc(endDT).local();
                this.$endDate.val(end.format("DD/MM/YYYY"));
                this.$endTime.val(end.format("HH:mm"));
             }

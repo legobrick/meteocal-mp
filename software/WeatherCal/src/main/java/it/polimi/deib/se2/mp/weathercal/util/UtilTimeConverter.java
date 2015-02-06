@@ -7,6 +7,7 @@ package it.polimi.deib.se2.mp.weathercal.util;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -26,12 +27,22 @@ public class UtilTimeConverter {
     }
 
     public static LocalTime utilDateToLocalTime(Date input){
-        return input == null? null: LocalTime.ofSecondOfDay(((long)input.getTime()/1000) % 86400);
+        return input == null? null: input.toInstant().atZone(ZoneId.of("UTC")).toLocalTime();
     }
     public static Date localTimeToUtilDate(LocalTime input){
         if(input == null) return null;
         ZonedDateTime zdt = input.atDate(LocalDate.now()).atZone(ZoneId.of("UTC"));
         Instant i = zdt.toInstant();
         return Date.from(i);
+    }
+    
+    public static Date localDateTimeToUtilDate(LocalDateTime input){
+        return input == null? null: Date.from(input.atZone(ZoneId.of("UTC")).toInstant());
+    }
+    public static LocalDateTime utilDateToLocalDateTime(Date input){
+        return input == null? null: input.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+    }
+    public static LocalDateTime utilDateToLocalDateTime(Date input, ZoneId zone){
+        return input == null? null: input.toInstant().atZone(zone).toLocalDateTime();
     }
 }

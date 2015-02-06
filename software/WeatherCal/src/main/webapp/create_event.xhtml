@@ -65,7 +65,7 @@
                                     </div>
                                     <p:inputText value="#{eventBean.event.placeLatitude}" class="input-hidden" id="latitude" widgetVar="latitude"></p:inputText>
                                     <p:inputText value="#{eventBean.event.placeLongitude}" class="input-hidden" id="longitude" widgetVar="longitude"></p:inputText>
-                                    <p:inputText value="#{eventBean.userTimezone}" class="input-hidden" id="user_timezone" widgetVar="userTimezone"></p:inputText>
+                                    <p:inputText value="#{eventBean.event.timezone}" class="input-hidden" id="user_timezone" widgetVar="userTimezone"></p:inputText>
                                 </div>
                             </div>
                         </div>
@@ -255,15 +255,6 @@
                                 <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
                             </p:commandButton>
                         </div>
-                        <c:if test='${ not empty param.evt }'>
-                        <div class="ui-grid-col-1">
-                            <h:form>
-                            <p:commandButton  value="Delete" actionListener="#{eventBean.deleteEvent}">
-                                <f:param name="id" value="#{eventBean.editingEvent.id}"/>
-                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-                            </p:commandButton></h:form>
-                        </div>
-                        </c:if>
                         <div class="ui-grid-col-1">
                             <p:commandButton  value="Cancel" immediate="true" action="#{eventBean.goToIndex()}"> </p:commandButton>
                         </div>
