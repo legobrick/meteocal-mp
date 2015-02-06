@@ -560,7 +560,7 @@ public class EventManagerBean implements Serializable {
             this.eventoLetto();
             RequestContext.getCurrentInstance().update("h:mySchedule");
             RequestContext.getCurrentInstance().update("header-form:notification_event");
-            RequestContext.getCurrentInstance().update("header-form:notification-button");
+            RequestContext.getCurrentInstance().update("header-form:notification_button");
             RequestContext.getCurrentInstance().update("f:new-event");
             RequestContext.getCurrentInstance().update("form:next_event");
         }
