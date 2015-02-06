@@ -127,7 +127,5 @@ public class searchUser {
             Logger.getLogger(EventConsistencyChecker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void onItemSelect(SelectEvent event) {
-        System.out.println("Item Selected"+ event.getObject().toString());
-    }
+   
 }
