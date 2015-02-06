@@ -13,7 +13,7 @@
         <ui:define name="welcome_msg">#{searchUser.reverted.username}'s calendar</ui:define>
         <ui:define name="main-content">
             <f:metadata>
-                <f:viewParam name="id" value="#{searchUser.searched}"/>
+                <f:viewParam name="mail" value="#{searchUser.searched}"/>
                 <f:event type="preRenderView" listener="#{searchUser.reverse}" />
             </f:metadata>
             <p:commandButton widgetVar="new_event_button" id="new-event" action="#{eventManagerBean.createNew()}" icon="fa fa-plus" value="New Event" style="display:none; width:8em; height:1.9em; font-size:1em;">

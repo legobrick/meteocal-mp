@@ -27,6 +27,7 @@ import javax.persistence.Query;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -66,8 +67,10 @@ public class searchUser {
      * Creates a new instance of EventBean
      */
     public void searchUser() throws IOException {
-
-        Query q = em.createNamedQuery("User.findByEmail");
+      if(this.searched==null){
+      System.out.println("è nullo");
+      }
+      else{  Query q = em.createNamedQuery("User.findByEmail");
         q.setParameter("email", this.searched);
         System.out.println("ricerca");
         if (q.getResultList().size() > 0) {
@@ -88,6 +91,8 @@ public class searchUser {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Not Found", "The email insert doesn't match any result");
             RequestContext.getCurrentInstance().showMessageInDialog(message);
         }
+        
+      }
     }
 
     public void editAction() {
@@ -104,11 +109,11 @@ public class searchUser {
 
     
     public void reverse(ComponentSystemEvent event) throws AbortProcessingException {
-        if(FacesContext.getCurrentInstance().isPostback() || searched == null)
+        if(FacesContext.getCurrentInstance().isPostback() || this.searched == null)
             throwError(FacesContext.getCurrentInstance(), "The value is not a valid User ID:" + searched);
 
         Query q = em.createNamedQuery("User.findByEmail");
-        q.setParameter("email", searched);
+        q.setParameter("email", this.searched);
         if (q.getResultList().isEmpty())
             throwError(FacesContext.getCurrentInstance(), "The value is not a valid User ID:" + searched);
         reverted = (User) q.getResultList().get(0);
@@ -121,5 +126,8 @@ public class searchUser {
         } catch (IOException ex) {
             Logger.getLogger(EventConsistencyChecker.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public void onItemSelect(SelectEvent event) {
+        System.out.println("Item Selected"+ event.getObject().toString());
     }
 }

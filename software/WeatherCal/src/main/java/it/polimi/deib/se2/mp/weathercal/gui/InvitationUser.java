@@ -43,21 +43,21 @@ public class InvitationUser {
     /**
      * Creates a new instance of EventBean
      */
-    public List<User> completeUser(String query) {
+    public List<String> completeUser(String query) {
 
         Query q = em.createNamedQuery("User.findAll");
 
         List<User> allUser = q.getResultList();
 
-        List<User> filteredUser = new ArrayList<User>();
-
+        List<String> filteredUser = new ArrayList<String>();
+        
         for (int i = 0; i < allUser.size(); i++) {
             User us = allUser.get(i);
             if (us.getEmail().equals(um.getLoggedUser().getEmail())) {
 
             } else {
                 if (us.getEmail().toLowerCase().startsWith(query)) {
-                    filteredUser.add(us);
+                    filteredUser.add(us.getEmail());
                 }
             }
         }
