@@ -9,6 +9,7 @@ import it.polimi.deib.se2.mp.weathercal.boundary.EventManager;
 import it.polimi.deib.se2.mp.weathercal.entity.WeatherStateConstraint.State;
 import static it.polimi.deib.se2.mp.weathercal.gui.WheaterChecker.getWeather;
 import static it.polimi.deib.se2.mp.weathercal.gui.WheaterChecker.getWeather16;
+import static it.polimi.deib.se2.mp.weathercal.util.UtilTimeConverter.getTimezone;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -83,7 +84,7 @@ public class ForecastResponse implements Serializable {
             JSONArray jArray1 = object2.getJSONObject(i).getJSONArray("weather");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.ofEpochSecond(Long.valueOf(date), 1, ZoneOffset.UTC);
-            ZonedDateTime zd= e.getStart().atZone(em.getTimezone(em.getTimezoneOffset(e,e.getStart())));
+            ZonedDateTime zd= e.getStart().atZone(getTimezone(em.getTimezoneOffset(e,e.getStart())));
            if (dateTime.isAfter(zd.toLocalDateTime())) {
                 int ora = zd.getHour();
                 String intervallogiorno = "day";

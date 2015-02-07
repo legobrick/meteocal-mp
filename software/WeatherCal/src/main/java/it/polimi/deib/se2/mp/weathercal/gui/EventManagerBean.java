@@ -179,7 +179,7 @@ public class EventManagerBean implements Serializable {
 
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
                         System.out.println("evento " + e.getName() + " " + colore);
-                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), le.getStart(), le.getEnd(), colore);
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getName(), le.getStartD(), le.getEndD(), colore);
                         evento.setData(e);
                         addEvent(evento);
                     }
@@ -286,7 +286,7 @@ public class EventManagerBean implements Serializable {
 
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
 
-                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getDescription(), le.getStart(), le.getEnd(), "empowner");
+                        DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getName(), le.getStartD(), le.getEndD(), "empowner");
                         if (soloEventiPubblici == true) {
 
                             addEvent(evento);

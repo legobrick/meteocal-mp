@@ -65,7 +65,7 @@
                                     </div>
                                     <p:inputText value="#{eventBean.event.placeLatitude}" class="input-hidden" id="latitude" widgetVar="latitude"></p:inputText>
                                     <p:inputText value="#{eventBean.event.placeLongitude}" class="input-hidden" id="longitude" widgetVar="longitude"></p:inputText>
-                                    <p:inputText value="#{eventBean.event.timezone}" class="input-hidden" id="user_timezone" widgetVar="userTimezone"></p:inputText>
+                                    <p:inputText value="#{eventBean.event.minutesTimezone}" class="input-hidden" id="user_timezone" widgetVar="userTimezone"></p:inputText>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +139,6 @@
                                     <div class="ui-grid-col-7">
                                         <p:inputText onkeypress="if (event.keyCode == 13) {  return false; }" value="#{eventBean.startDate}" id="start_date" widgetVar="startDate" class="start date" placeholder="Start date" styleClass="input-wide">
                                             <p:ajax update="startd_msg" event="blur"/>
-                                            <f:convertDateTime pattern="d/M/yyyy"/>
                                         </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-3" >
@@ -153,7 +152,6 @@
                                     <div class="ui-grid-col-7">
                                         <p:inputText onkeypress="if (event.keyCode == 13) {  return false; }" value="#{eventBean.endDate}" id="end_date" widgetVar="endDate" class="end date" placeholder="End date" styleClass="input-wide">
                                             <p:ajax update="endd_msg" event="blur"/>
-                                            <f:convertDateTime pattern="d/M/yyyy"/>
                                         </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-3" >
@@ -168,7 +166,6 @@
                                     <div class="ui-grid-col-3">
                                         <p:inputText onkeypress="if (event.keyCode == 13) {  return false; }" value="#{eventBean.startTime}" placeholder="7:00" id="start_time" widgetVar="startTime" class="start time">
                                             <p:ajax update="startt_msg" event="blur"/>
-                                            <f:convertDateTime pattern="H:m"/>
                                         </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-1 text-center">
@@ -177,7 +174,6 @@
                                     <div class="ui-grid-col-3">
                                         <p:inputText onkeypress="if (event.keyCode == 13) {  return false; }" value="#{eventBean.endTime}" placeholder="8:00" id="end_time" widgetVar="endTime" class="end time">
                                             <p:ajax update="endt_msg" event="blur"/>
-                                            <f:convertDateTime pattern="H:m"/>
                                         </p:inputText>
                                     </div>
                                     <div class="ui-grid-col-1">
@@ -194,8 +190,14 @@
                                     </div>
                                     <div class="ui-grid-col-7">
                                         <div >
-                                            <p:autoComplete onkeypress="if (event.keyCode == 13) {  return false; }" id="user-search" multiple="true" value="#{eventBean.invitedUser}" completeMethod="#{invitationUser.completeUser}"
-                                                     styleClass="input-wide"forceSelection="true">
+                                            <p:autoComplete onkeypress="if (event.keyCode == 13) {  return false; }" id="user-search" multiple="true" value="#{eventBean.invitedUsers}" completeMethod="#{invitationUser.completeUser}"
+                                                    var="user" styleClass="input-wide" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="false">
+                                                <p:column >
+                                                    <h:outputText value="#{user.firstName}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <h:outputText value="#{user.email}"/>
+                                                </p:column>
                                             </p:autoComplete> 
                                         </div>
                                     </div>

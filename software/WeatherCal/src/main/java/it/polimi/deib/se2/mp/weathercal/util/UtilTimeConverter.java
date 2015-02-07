@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
@@ -44,5 +45,17 @@ public class UtilTimeConverter {
     }
     public static LocalDateTime utilDateToLocalDateTime(Date input, ZoneId zone){
         return input == null? null: input.toInstant().atZone(zone).toLocalDateTime();
+    }
+    
+    /**
+     *
+     * @param resultOffset the offset expressed in minutes
+     * @return
+     */
+    public static ZoneOffset getTimezone(int resultOffset) {
+        return ZoneOffset.of(
+                String.format("%.1s%02d:%02d", resultOffset < 0? "-": "+",
+                        Math.abs(resultOffset / 60), resultOffset % 60)
+        );
     }
 }
