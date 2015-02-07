@@ -181,7 +181,7 @@
                                 <p:selectBooleanButton widgetVar="notif-button"  onLabel="#{eventManagerBean.numberOfNot()}" offLabel="#{eventManagerBean.numberOfNot()}" id="notification_button" value="#{eventManagerBean.lettoNonLetto}" styleClass="notif_btn">
                                     <p:ajax  listener="#{eventManagerBean.changeNotificationToRead()}" />
                                 </p:selectBooleanButton>
-                                <p:overlayPanel id="imagePanel" styleClass="notificadiocane" style="width:300px;height:200px" dynamic="true" for="notification_button" hideEffect="fade">
+                                <p:overlayPanel id="imagePanel" styleClass="notificadiocane" style="padding-bottom: 10px;width:300px;min-height:200px;height:200px;overflow-y:auto;" dynamic="true" for="notification_button" hideEffect="fade">
                                     <p:dataScroller id="notification_event" value="#{eventManagerBean.nonLetti('nonletto',false)}" var="event" chunkSize="4" style="float:left;width:300px;height:200px;margin-right:50px">
                                         <p:commandButton value="#{event.start.dayOfMonth} #{event.start.month} #{event.description}" update=":header-form:evDetail" style="width:200px;height:30px" oncomplete="PF('notificationDialog').show()" title="View Detail">
                                             <f:setPropertyActionListener value="#{event}" target="#{eventManagerBean.selectEvent}" />
