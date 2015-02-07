@@ -210,19 +210,21 @@ public class WheaterChecker implements Serializable {
 
                 nexttemp = fr.getTemperatura();
                 float state = fr.getWeatherState();
-                System.out.println("In check " + nexttemp + state + fr.getState());
-                if (!e.getValueConstraints().isEmpty()) {
+               
+                System.out.println("In check " + nexttemp + state + fr.getState() +e.getValueConstraints().size());
+                if (e.getValueConstraints().size()>0) {
                     WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
+                    System.out.println("emo="+temperatura.getTemperature().floatValue());
                    if (temperatura.getIsTemperatureLowerThan() == true && nexttemp >= temperatura.getTemperature().floatValue()) {
                         attention = "Temperature is higher then the desired one";
-
+                        
+                   System.out.println("alto");
                     } else if (temperatura.getIsTemperatureLowerThan() == false && nexttemp < temperatura.getTemperature().floatValue()) {
                           attention = "The temperature is lower then the desired one";
-                    } else {
-                        
+                           System.out.println("bassa");
                     }
 
-                }
+                
                 boolean weather = false;
                 if (!e.getStateConstraints().isEmpty()) {
                     Collection<WeatherStateConstraint> collState = e.getStateConstraints();
@@ -230,21 +232,25 @@ public class WheaterChecker implements Serializable {
                     for (WeatherStateConstraint sta : collState) {
                         if (!sta.getWeatherState().equals(fr.getState().toString())) {
                             System.out.println("Diverse" + sta.toString());
+                       weather = true;
                         } else {
-                            weather = true;
+                            
                             System.out.println("Uguale");
                         }
                     }
-
-                    if (!weather) {
+                }
+                    if (weather) {
                         attention = attention + " The state is different from the one you specified.";
                     }
 
+                     
                     if (attention.equals("")) {
                     } else {
+                         System.out.println("scrivo");
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                         String giorno;
-                        if (fr.weatherDailyNext(e).format(formatter) == null) {
+                        LocalDateTime ls=fr.weatherDailyNext(e);
+                        if (ls == null) {
                             giorno = " Sorry no closest day that matches with your desired constraint were found.";
                         } else {
                             giorno = "The closest day that match with your constraint is "+fr.weatherDailyNext(e).format(formatter);
@@ -255,6 +261,7 @@ public class WheaterChecker implements Serializable {
                     
                     }
                 }
+            
             }
         }
     }

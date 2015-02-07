@@ -32,7 +32,8 @@ public class ForecastResponse implements Serializable {
     private State state;
     private LocalDateTime closestSunny;
    @EJB
-    EventManager em;
+    EventManager em=new EventManager();
+   
     public double getTemperatura() {
         return temperatura;
     }
@@ -83,8 +84,7 @@ public class ForecastResponse implements Serializable {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.ofEpochSecond(Long.valueOf(date), 1, ZoneOffset.UTC);
             ZonedDateTime zd= e.getStart().atZone(em.getTimezone(em.getTimezoneOffset(e,e.getStart())));
-            System.out.println("lora eeee:"+zd.getHour()+"vecchia"+e.getStart().getHour());
-            if (dateTime.isAfter(zd.toLocalDateTime())) {
+           if (dateTime.isAfter(zd.toLocalDateTime())) {
                 int ora = zd.getHour();
                 String intervallogiorno = "day";
                 if (ora >= 18) {
@@ -99,6 +99,8 @@ public class ForecastResponse implements Serializable {
 
                 JSONObject jArray2 = object2.getJSONObject(i).getJSONObject("temp");
                 double temp = Double.valueOf(jArray2.getString(intervallogiorno)) - 273.15;
+                System.out.println("lora:"+zd.getHour()+"vecchia"+e.getStart().getHour()+" temp"+temp);
+                
                 WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
                 boolean stateok = false;
                 if (!e.getStateConstraints().isEmpty()) {
@@ -113,15 +115,29 @@ public class ForecastResponse implements Serializable {
                             System.out.println("Uguale");
                         }
                     }
-                }
-
-                if (temperatura.getIsTemperatureLowerThan() && temp < temperatura.getTemperature().doubleValue() && stateok) {
+                //qui fa controllo incorciato tra temperatura e stato
+                if (temperatura.getIsTemperatureLowerThan()==true && temp < temperatura.getTemperature().doubleValue() && stateok) {
                     System.out.println(dateTime + " " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
                     return dateTime;
-                } else if (!temperatura.getIsTemperatureLowerThan() && temp > temperatura.getTemperature().doubleValue() && stateok) {
+                } else if (temperatura.getIsTemperatureLowerThan()==false && temp > temperatura.getTemperature().doubleValue() && stateok) {
                     System.out.println("No " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
                     return dateTime;
                 }
+                
+                }
+                //controllo solo sulla temperatura
+                else{
+                    if (temperatura.getIsTemperatureLowerThan()==true && temp < temperatura.getTemperature().doubleValue() ) {
+                    System.out.println(dateTime + " " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
+                    return dateTime;
+                } else if (temperatura.getIsTemperatureLowerThan()==false && temp > temperatura.getTemperature().doubleValue() ) {
+                    System.out.println("No " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
+                    return dateTime;
+                }
+                
+                }
+
+                
               //   JSONObject jArray3 =object2.getJSONObject(i).getJSONObject("weather");
 
             }
