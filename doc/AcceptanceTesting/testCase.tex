@@ -29,6 +29,7 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Expected Result} & The result that should be observed from a succesfull test\\
   \hline  {\bf Actual Result} & The result which is observed after applying the test steps\\
   \hline  {\bf Conclusion} & F: Failed, N: Not tested, S: Succesful, M: manually tested\\
+  \hline  {\bf Notes} & Observations regarding the test performed\\
   \hline
 \end{tabularx}
 
@@ -38,10 +39,10 @@ Test cases and their results are going to be documented as follows\\
 
   \hline   {\bf Test Case Id} &  TC1\\
   \hline  {\bf Goal} & Log in to or out from the system\\
-  
   \hline  {\bf Expected Result} & The system redirects the user to its home page\\
-  \hline  {\bf Actual Result} & The system redirects the user to its home page\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Actual Result} & The system redirects the user to its home page.\\
+  \hline  {\bf Conclusion} & F, M\\
+  \hline  {\bf Notes} &  The system redirects the user to its home page the first time but if I log out from the system and I try to perform the login with the same credentials it results in an "OK" message without spawning to the user's page \\
   \hline
   
 \end{tabularx}
@@ -54,7 +55,8 @@ Test cases and their results are going to be documented as follows\\
   
   \hline  {\bf Expected Result} & The system creates a new Registered User and its associated calendar\\
   \hline  {\bf Actual Result} & The system creates and new Registered User and its associated calendar\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Conclusion} & S, M\\
+  \hline  {\bf Notes} & Not so much intuitive since you have the same form for the login and the title just invites you to log in. Usage of oddities inside the fields is permitted and no check is performed on that\\
   \hline
   
 \end{tabularx}
@@ -66,8 +68,9 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Create new event\\
   
   \hline  {\bf Expected Result} & The system creates a new Event and notify all of its participant\\
-  \hline  {\bf Actual Result} & The system creates a new Event and notify all of its participant\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Actual Result} & The system doesn't creates a new Event nor notify all of its participant\\
+  \hline  {\bf Conclusion} & M, F\\
+  \hline  {\bf Notes} & The system allows you to give name and notes for the event but since you are not able to select a location because of an empty result list I cannot proceed with the creation of the event. The "Back" button is not working\\
   \hline
   
 \end{tabularx}
@@ -78,8 +81,9 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Delete a existing event\\
   
   \hline  {\bf Expected Result} & The system modifies the event's information\\
-  \hline  {\bf Actual Result} & The system modifies the event's information\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\
   \hline
   
 \end{tabularx}
@@ -90,9 +94,10 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Notify the event deletion to its participant\\
  
   \hline  {\bf Expected Result} & The system modifies the event visibility\\
-  \hline  {\bf Actual Result} & The system modifies the event visibility\\
-  \hline  {\bf Conclusion} & M\\
-  \hline
+
+    \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\  \hline
   
 \end{tabularx}
 
@@ -101,8 +106,9 @@ Test cases and their results are going to be documented as follows\\
 \hline   {\bf Test Case Id} &  TC6\\
   \hline  {\bf Goal} & Modify the event info\\
    \hline  {\bf Expected Result} & The system modifies the calendar visibility\\
-  \hline  {\bf Actual Result} & The system modifies the calendar visibility\\
-  \hline  {\bf Conclusion} & M\\
+   \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\
   \hline
   
 \end{tabularx}
@@ -115,8 +121,10 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Load the schedule of the logged user\\
  
   \hline  {\bf Expected Result} & The system correctly shows the calendar an it public event associated\\
-  \hline  {\bf Actual Result} & The system correctly shows the calendar an it public event associated\\
-  \hline  {\bf Conclusion} & M\\
+
+    \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\
   \hline
   
 \end{tabularx}
@@ -127,9 +135,9 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Invite other user to the event\\
  
   \hline  {\bf Expected Result} & The system notifies the participant and the owner\\
-  \hline  {\bf Actual Result} & The system notifies the participant and the owner\\
-  \hline  {\bf Conclusion} & M\\
-  \hline
+  \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\  \hline
   
 \end{tabularx}
 
@@ -139,8 +147,9 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Check the notification received\\
   
   \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\
   \hline
   
 \end{tabularx}
@@ -150,8 +159,9 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Change event visibility\\
   
   \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\
   \hline
   
 \end{tabularx}
@@ -161,9 +171,10 @@ Test cases and their results are going to be documented as follows\\
 \hline   {\bf Test Case Id} &  TC11\\
   \hline  {\bf Goal} & Change calendar visibility\\
   
-  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Expected Result} & I can change the visibility of my calendar\\
+  \hline  {\bf Actual Result} &  I can change the visibility of my calendar\\
+  \hline  {\bf Conclusion} & M,S\\
+    \hline  {\bf Notes} & I managed to discover this functionalities by looking up directly inside the database\\
   \hline
   
 \end{tabularx}
@@ -172,9 +183,10 @@ Test cases and their results are going to be documented as follows\\
 \hline   {\bf Test Case Id} &  TC12\\
   \hline  {\bf Goal} & Search for other user\\
   
-  \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Expected Result} & Redirect to the user's page and show its calendar if public\\
+  \hline  {\bf Actual Result} & It redirects to the other user page and it always displays a calendar even if it's private\\ 
+  \hline  {\bf Conclusion} & M, F\\
+    \hline  {\bf Notes} & I can see my profile as an other user's profile\\
   \hline
   
 \end{tabularx}
@@ -184,8 +196,9 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Notify in case of bad weather conditions\\
   
   \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Conclusion} & M\\
+  \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\
   \hline
   
 \end{tabularx}
@@ -195,8 +208,9 @@ Test cases and their results are going to be documented as follows\\
   \hline  {\bf Goal} & Know the closest sunny day in case of bad weather conditions\\
   
   \hline  {\bf Expected Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Actual Result} & The system notifies and suggest the owner\\
-  \hline  {\bf Conclusion} & M\\
+   \hline  {\bf Actual Result} & Cannot test\\
+  \hline  {\bf Conclusion} & N\\
+  \hline  {\bf Notes} & Not tested since we cannot create an event\\
   \hline
   
 \end{tabularx}
