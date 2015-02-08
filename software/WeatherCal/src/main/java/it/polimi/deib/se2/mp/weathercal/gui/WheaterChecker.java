@@ -156,44 +156,52 @@ public class WheaterChecker implements Serializable {
                 String attention = "";
                 Event e = checkEv.get(i);
                 fr.weatherJson(e);
+
                 nexttemp = fr.getTemperatura();
                 float state = fr.getWeatherState();
-                System.out.println("In check " + nexttemp + state + fr.getState());
-                if (!e.getValueConstraints().isEmpty()) {
+               
+                System.out.println("part In check " + nexttemp + state + fr.getState() +e.getValueConstraints().size());
+                if (e.getValueConstraints().size()>0) {
                     WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
-                    if (temperatura.getIsTemperatureLowerThan() == true && nexttemp >= temperatura.getTemperature().floatValue()) {
+                    System.out.println("emo="+temperatura.getTemperature().floatValue());
+                   if (temperatura.getIsTemperatureLowerThan() == true && nexttemp >= temperatura.getTemperature().floatValue()) {
                         attention = "Temperature is higher then the desired one";
-
+                        
+                   System.out.println("alto part");
                     } else if (temperatura.getIsTemperatureLowerThan() == false && nexttemp < temperatura.getTemperature().floatValue()) {
                           attention = "The temperature is lower then the desired one";
-                    }  else {
-                        
+                           System.out.println("bassa part");
                     }
-
                 }
+                System.out.println("vincoli: "+e.getId() + e.getStateConstraints().size());
                 boolean weather = false;
-                if (!e.getStateConstraints().isEmpty()) {
+                if (e.getStateConstraints().size()>0) {
                     Collection<WeatherStateConstraint> collState = e.getStateConstraints();
                     System.out.println("vincoli: " + e.getStateConstraints().size());
                     for (WeatherStateConstraint sta : collState) {
                         if (!sta.getWeatherState().equals(fr.getState().toString())) {
                             System.out.println("Diverse" + sta.toString());
+                       weather = true;
                         } else {
-                            weather = true;
+                            
                             System.out.println("Uguale");
                         }
                     }
-
-                    if (!weather) {
+                }
+                    if (weather) {
                         attention = attention + " The state is different from the one you specified.";
                     }
 
+                     
                     if (attention.equals("")) {
                     } else {
-                        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Attenzione", "The weather forecast for the event " + e.getName() + " scheduled for " + e.getStart().getYear() + "/" + e.getStart().getMonthValue() + "/" + e.getStart().getDayOfMonth() + ". " + attention + " Do you want to attend the event to?");
+                         System.out.println("scrivo part");
+                        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning", "The weather forecast for the event " + e.getName() + " scheduled for " + e.getStart().getYear() + "/" + e.getStart().getMonthValue() + "/" + e.getStart().getDayOfMonth() + ". " + attention + " Do you want to attend the event to?");
                         RequestContext.getCurrentInstance().showMessageInDialog(message);
+                    
                     }
-                }
+                
+            
             }
         }
     }
