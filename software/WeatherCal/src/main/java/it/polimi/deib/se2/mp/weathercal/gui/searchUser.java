@@ -6,12 +6,15 @@
 package it.polimi.deib.se2.mp.weathercal.gui;
 
 import it.polimi.deib.se2.mp.weathercal.boundary.UserManager;
+import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
 import it.polimi.deib.se2.mp.weathercal.util.EventConsistencyChecker;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Named;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -60,14 +63,16 @@ public class searchUser {
         this.searched = email;
     }
 
-    public String getSearched() {
-        return this.searched;
+    public Object getSearched() {
+        return searched == null? null: um.find(searched);
     }
 
     /**
      * Creates a new instance of EventBean
+     * @throws java.io.IOException
      */
     public void searchUser() throws IOException {
+        System.out.println("DIODIODIDIDIODIOD" + this.searched);
       if(this.searched==null){
       System.out.println("è nullo");
       FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid Input", "" + "No user matches with your input");
@@ -91,23 +96,27 @@ public class searchUser {
                 RequestContext.getCurrentInstance().showMessageInDialog(message);
             }
         } else {
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Not Found", "The email insert doesn't match any result");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Not Found", "The searched email doesn\\'t match any result");
             RequestContext.getCurrentInstance().showMessageInDialog(message);
         }
         
       }
     }
 
-    public void editAction() {
-        Map<String, String> params
-                = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String action = params.get("action");
-        //calid = Long.parseLong(action);
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", "" + action);
-        RequestContext.getCurrentInstance().showMessageInDialog(message);
-        //  RequestContext.getCurrentInstance().update("schedule1");
-
-        RequestContext.getCurrentInstance().update("f:schedule1");
+    public void editAction(SelectEvent se) throws IOException {
+        Object bound = se.getObject();
+        Pattern userRegex = Pattern.compile("(" + Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email=") + ")(.+)(" + Matcher.quoteReplacement(" ]") + ")");
+        if(bound instanceof String){
+            System.out.println("lamadonna" + bound);
+            if(userRegex.matcher((String)bound).matches())
+                this.searched = ((String) bound)
+                        .replaceAll(Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email="), "")
+                        .replaceAll(Matcher.quoteReplacement(" ]"), "");
+            else
+                this.searched = ((String) bound);
+        } else
+            this.searched = um.find(bound).getEmail();
+        searchUser();
     }
 
     

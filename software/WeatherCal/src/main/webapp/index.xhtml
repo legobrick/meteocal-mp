@@ -289,14 +289,14 @@
                                 <h:form style="width:100%">
                                     <div class="ui-grid-col-1" style="width: 100%; padding-right: 92px; margin-right: -85px; margin-top: 2px;">
                                         <p:autoComplete id="user" multiple="false" value="#{searchUser.searched}" completeMethod="#{invitationUser.completeUser}"
-                                                         forceSelection="true">
-                                           <!-- <p:column>
+                                                         itemLabel="#{user.email}" itemValue="#{user.email}" var="user" forceSelection="false">
+                                           <p:column>
                                                 <h:outputText value="#{user.firstName} #{user.lastName}"/>
                                             </p:column>
                                             <p:column>
                                                 <h:outputText value="#{user.email}"/>
                                             </p:column>
-                                            <p:ajax event="itemSelect" listener="#{searchUser.editAction()}" />-->
+                                            <p:ajax event="itemSelect" listener="#{searchUser.editAction}" />
                                         </p:autoComplete>
                                     </div>
                                     <div class="ui-grid-col-1" style="width:78px;">
