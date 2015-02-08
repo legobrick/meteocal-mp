@@ -127,7 +127,7 @@ public class EventBean {
     }
 
     public void setInvitedUsers(List<User> inUs) {
-        if(inUs == null || inUs.isEmpty()) return;
+        if(inUs == null) inUs = new ArrayList<>();
         Collection<Participation> oldParts = event.getParticipation();
         List<CalendarEntity> newCals = new ArrayList<>();
         Pattern userRegex = Pattern.compile("(" + Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email=") + ")(.+)(" + Matcher.quoteReplacement(" ]") + ")");
@@ -151,7 +151,7 @@ public class EventBean {
             if (!(newCals.contains(p.getCalendar()) || ownerCals.contains(p.getCalendar()))) {
                 toRemove.add(p);
                 p.getCalendar().getParticipationCollection().remove(p);
-                //manager.removeParticipation(p);
+                //participationM.remove(p);
             } else {
                 retainCals.add(p.getCalendar());
             }
