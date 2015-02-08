@@ -13,6 +13,7 @@ import it.polimi.deib.se2.mp.weathercal.entity.Event;
 import it.polimi.deib.se2.mp.weathercal.entity.LocalizedEvent;
 import it.polimi.deib.se2.mp.weathercal.entity.Owner;
 import it.polimi.deib.se2.mp.weathercal.entity.Participation;
+import it.polimi.deib.se2.mp.weathercal.entity.ParticipationPK;
 import it.polimi.deib.se2.mp.weathercal.entity.User;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -131,7 +132,7 @@ public class EventManagerBean implements Serializable {
 
             this.lazyModel2 = lazySchedule(userCalendarId(), true, "output");
             this.lazySearch = searchedCal();
-
+            
         }
     }
 
@@ -184,11 +185,11 @@ public class EventManagerBean implements Serializable {
                         addEvent(evento);
                     }
 
-                }
+                } 
 
             }
         };
-
+System.out.println("Schedule count "+ lazyModel.getEventCount());
         return lazyModel;
     }
 
@@ -266,16 +267,18 @@ public class EventManagerBean implements Serializable {
     }
 
     public ScheduleModel lazyScheduleSearch(Long calId, boolean soloEventiPubblici, String output) {
-
-        ScheduleModel lazyModel2 = new LazyScheduleModel() {
+    System.out.println("Carico altro cal");
+        ScheduleModel lazyModel3 = new LazyScheduleModel() {
             @Override
             public void loadEvents(Date start, Date end) {
                 int n;
                 
                 LocalizedEvent le = null;
-
-                for (n = 0; n < allEventByAvailability("si", calId, false).size(); n++) {
-                    Event e = allEventByAvailability("si", calId, false).get(n);
+                List<Event>searchEvents=allEventByAvailability("si", calId, false);
+                System.out.println("size: "+searchEvents.size());
+                for (n = 0; n < searchEvents.size(); n++) {
+                   
+                    Event e=searchEvents.get(n);
                     le = LocalizedEvent.from(e, ZoneId.of("UTC"));
 
                     //colore="empno";
@@ -284,11 +287,13 @@ public class EventManagerBean implements Serializable {
                     Instant instant2 = Instant.ofEpochMilli(end.getTime());
                     LocalDateTime endCalDate = LocalDateTime.ofInstant(instant2, ZoneId.of("UTC"));
 
+                   
+                    
                     if (e.getStart().isAfter(startCalDate) && e.getStart().isBefore(endCalDate)) {
-
+ 
                         DefaultScheduleEvent evento = new DefaultScheduleEvent(e.getName(), le.getStartD(), le.getEndD(), "empowner");
                         if (soloEventiPubblici == true) {
-
+    System.out.println("search ev"+evento.getTitle());
                             addEvent(evento);
                             evento.setData(e);
 
@@ -301,8 +306,8 @@ public class EventManagerBean implements Serializable {
 
             }
         };
-
-        return lazyModel2;
+        System.out.println("Schedule count search "+ lazyModel3.getEventCount());
+        return lazyModel3;
     }
 
     public List<Event> allEventByNotAvailability(String availability, Long CalId, boolean lista) {
@@ -388,26 +393,26 @@ public class EventManagerBean implements Serializable {
 
     public void onEventSelectSearch(SelectEvent selectEventt) throws IOException {
         event = (ScheduleEvent) selectEventt.getObject();
-        this.selectEvent = LocalizedEvent.from((Event) event.getData(), ZoneId.of("UTC"));
+        Event ev=(Event)event.getData();
+        this.selectEvent = LocalizedEvent.from(ev, ZoneId.of("UTC"));
+        //serve per saper se il loggato partecipa all'evento cercato
+        Participation p = new Participation(new ParticipationPK(this.userCalendarId(), ev.getId()), "si");
+        p.setCalendar(um.getLoggedUser().getCalendarCollection().iterator().next());
+        p.setEvent(ev);
         selectedEvtAccessible = selectEvent.getOwners().iterator().next()
                 .getCalendar()
                 .getUserCollection()
                 .contains(
                         um.getLoggedUser()
-                ) || selectEvent.getIsPublic();
+                ) || selectEvent.getIsPublic()||selectEvent.getParticipation().contains(p); 
 
-        System.out.println("non esiste" + selectEvent.getName() + " " + lazyModel2.getEventCount());
+        System.out.println("non esiste search " + selectEvent.getName());
     }
 
     public void onEventSelect(SelectEvent selectEventt) throws IOException {
         event = (ScheduleEvent) selectEventt.getObject();
         selectEvent = LocalizedEvent.from((Event) event.getData(), ZoneId.of("UTC"));
-        selectedEvtAccessible = selectEvent.getOwners().iterator().next()
-                .getCalendar()
-                .getUserCollection()
-                .contains(
-                        um.getLoggedUser()
-                ) || selectEvent.getIsPublic();
+        selectedEvtAccessible =true;
         if (selectEventt.getObject() == null) {
             System.out.println("non nullo");
 

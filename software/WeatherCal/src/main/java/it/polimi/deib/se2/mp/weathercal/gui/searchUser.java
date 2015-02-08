@@ -18,6 +18,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ComponentSystemEvent;
@@ -69,6 +70,8 @@ public class searchUser {
     public void searchUser() throws IOException {
       if(this.searched==null){
       System.out.println("è nullo");
+      FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Invalid Input", "" + "No user matches with your input");
+        RequestContext.getCurrentInstance().showMessageInDialog(message);
       }
       else{  Query q = em.createNamedQuery("User.findByEmail");
         q.setParameter("email", this.searched);
@@ -109,14 +112,34 @@ public class searchUser {
 
     
     public void reverse(ComponentSystemEvent event) throws AbortProcessingException {
-        if(FacesContext.getCurrentInstance().isPostback() || this.searched == null)
-            throwError(FacesContext.getCurrentInstance(), "The value is not a valid User ID:" + searched);
+        if(FacesContext.getCurrentInstance().isPostback() || this.searched == null){}
+        else{ 
 
         Query q = em.createNamedQuery("User.findByEmail");
         q.setParameter("email", this.searched);
-        if (q.getResultList().isEmpty())
-            throwError(FacesContext.getCurrentInstance(), "The value is not a valid User ID:" + searched);
-        reverted = (User) q.getResultList().get(0);
+        if (q.getResultList().isEmpty()){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", "The user searched is not a valid user");
+        RequestContext.getCurrentInstance().showMessageInDialog(message);
+         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext(); 
+            try {
+                context.redirect("index.xhtml");
+            } catch (IOException ex) {
+                Logger.getLogger(searchUser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else{reverted = (User) q.getResultList().get(0);
+        if (!reverted.getCalendarCollection().iterator().next().getIsPublic()||reverted.getEmail().equals(um.getLoggedUser().getEmail())){
+            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext(); 
+            try {
+                context.redirect("index.xhtml");
+            } catch (IOException ex) {
+                Logger.getLogger(searchUser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Forbidden", "" + "private");
+        RequestContext.getCurrentInstance().showMessageInDialog(message);
+        }
+        }
+        }
     }
     
     private void throwError(FacesContext context, String errorText){

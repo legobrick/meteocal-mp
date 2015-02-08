@@ -81,7 +81,7 @@ public class EventBean {
     private String createButtonText = "Create";
     private String pageTitle = "New Event";
     private Long editId;
-
+     private List<User> invitedUsers=new <User>ArrayList();
     private List<State> states;
 
     /**

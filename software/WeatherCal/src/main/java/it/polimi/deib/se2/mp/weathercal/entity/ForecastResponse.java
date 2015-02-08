@@ -100,7 +100,7 @@ public class ForecastResponse implements Serializable {
 
                 JSONObject jArray2 = object2.getJSONObject(i).getJSONObject("temp");
                 double temp = Double.valueOf(jArray2.getString(intervallogiorno)) - 273.15;
-                System.out.println("lora:"+zd.getHour()+"vecchia"+e.getStart().getHour()+" temp"+temp);
+               
                 
                 WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
                 boolean stateok = false;
@@ -118,10 +118,8 @@ public class ForecastResponse implements Serializable {
                     }
                 //qui fa controllo incorciato tra temperatura e stato
                 if (temperatura.getIsTemperatureLowerThan()==true && temp < temperatura.getTemperature().doubleValue() && stateok) {
-                    System.out.println(dateTime + " " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
-                    return dateTime;
+                   return dateTime;
                 } else if (temperatura.getIsTemperatureLowerThan()==false && temp > temperatura.getTemperature().doubleValue() && stateok) {
-                    System.out.println("No " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
                     return dateTime;
                 }
                 
@@ -129,11 +127,9 @@ public class ForecastResponse implements Serializable {
                 //controllo solo sulla temperatura
                 else{
                     if (temperatura.getIsTemperatureLowerThan()==true && temp < temperatura.getTemperature().doubleValue() ) {
-                    System.out.println(dateTime + " " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
-                    return dateTime;
+                   return dateTime;
                 } else if (temperatura.getIsTemperatureLowerThan()==false && temp > temperatura.getTemperature().doubleValue() ) {
-                    System.out.println("No " + jArray1.getJSONObject(0).getString("id") + " " + temp + " Condizioni: " + jArray1.getJSONObject(0).getString("main") + " " + e.getStart() + " " + " " + date + " " + dateTime.getDayOfMonth());
-                    return dateTime;
+                   return dateTime;
                 }
                 
                 }

@@ -64,5 +64,27 @@ public class InvitationUser {
 
         return filteredUser;
     }
+    
+    public List<User> completeUsers(String query) {
+
+        Query q = em.createNamedQuery("User.findAll");
+
+        List<User> allUser = q.getResultList();
+
+        List<User> filteredUser = new ArrayList<User>();
+        
+        for (int i = 0; i < allUser.size(); i++) {
+            User us = allUser.get(i);
+            if (us.getEmail().equals(um.getLoggedUser().getEmail())) {
+
+            } else {
+                if (us.getEmail().toLowerCase().startsWith(query)) {
+                    filteredUser.add(us);
+                }
+            }
+        }
+
+        return filteredUser;
+    }
 
 }

@@ -190,7 +190,7 @@
                                     </div>
                                     <div class="ui-grid-col-7">
                                         <div >
-                                            <p:autoComplete onkeypress="if (event.keyCode == 13) {  return false; }" id="user-search" multiple="true" value="#{eventBean.invitedUsers}" completeMethod="#{invitationUser.completeUser}"
+                                            <p:autoComplete onkeypress="if (event.keyCode == 13) {  return false; }" id="user-search" multiple="true" value="#{eventBean.invitedUsers}" completeMethod="#{invitationUser.completeUsers}"
                                                     var="user" styleClass="input-wide" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="false">
                                                 <p:column >
                                                     <h:outputText value="#{user.firstName}"/>
@@ -198,6 +198,8 @@
                                                 <p:column>
                                                     <h:outputText value="#{user.email}"/>
                                                 </p:column>
+
+        
                                             </p:autoComplete> 
                                         </div>
                                     </div>
