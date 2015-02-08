@@ -83,7 +83,8 @@ public class EventBean {
     private Long editId;
      private List<User> invitedUsers=new <User>ArrayList();
     private List<State> states;
-
+    List<CalendarEntity> newCals;
+    List<CalendarEntity> ownerCals;
     /**
      * Creates a new instance of EventBean
      */
@@ -129,7 +130,7 @@ public class EventBean {
     public void setInvitedUsers(List<User> inUs) {
         if(inUs == null) inUs = new ArrayList<>();
         Collection<Participation> oldParts = event.getParticipation();
-        List<CalendarEntity> newCals = new ArrayList<>();
+        newCals = new ArrayList<>();
         Pattern userRegex = Pattern.compile("(" + Matcher.quoteReplacement("it.polimi.deib.se2.mp.entity.User[ email=") + ")(.+)(" + Matcher.quoteReplacement(" ]") + ")");
         for(Object u: inUs){
             if(u instanceof String){
@@ -142,7 +143,7 @@ public class EventBean {
             for(CalendarEntity uc: ((User) u).getCalendarCollection())
                 if(!newCals.contains(uc)) newCals.add(uc);
         }
-        List<CalendarEntity> ownerCals = new ArrayList<>();
+        ownerCals = new ArrayList<>();
         for(Owner o: event.getOwners())
             ownerCals.add(o.getCalendar());
         List<Participation> toRemove = new ArrayList<>();
@@ -157,25 +158,8 @@ public class EventBean {
             }
         }
         oldParts.removeAll(toRemove);
-        newCals.removeAll(retainCals);
-        ownerCals.removeAll(retainCals);
-        Participation p;
-        for (CalendarEntity cal : newCals) {
-            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "nonletto");
-            p.setCalendar(cal);
-            p.setEvent(event);
-            //manager.createParticipation(p);
-            oldParts.add(p);
-            cal.getParticipationCollection().add(p);
-        }
-        for (CalendarEntity cal : ownerCals) {
-            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "si");
-            p.setCalendar(cal);
-            p.setEvent(event);
-            //manager.createParticipation(p);
-            oldParts.add(p);
-            cal.getParticipationCollection().add(p);
-        }
+        this.newCals.removeAll(retainCals);
+        this.ownerCals.removeAll(retainCals);
         event.setParticipation(oldParts);
     }
 
@@ -274,7 +258,9 @@ public class EventBean {
             manager.create(event);
             
             CalendarEntity c = um.getLoggedUser().getCalendarCollection().iterator().next();
-            Participation p = new Participation(c.getId(), event.getId(), pageTitle);
+            Participation p = new Participation(c.getId(), event.getId(), "si");
+            p.setEvent(event);
+            p.setCalendar(c);
             //participationM.create(p);
             event.getParticipation().add(p);
             c.getParticipationCollection().add(p);
@@ -294,6 +280,24 @@ public class EventBean {
         } else {
             event.setId(editId);
             //saveParticipation();
+        }
+        Participation p;
+        Collection<Participation> parts = event.getParticipation();
+        for (CalendarEntity cal : newCals) {
+            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "nonletto");
+            p.setCalendar(cal);
+            p.setEvent(event);
+            //manager.createParticipation(p);
+            parts.add(p);
+            cal.getParticipationCollection().add(p);
+        }
+        for (CalendarEntity cal : ownerCals) {
+            p = new Participation(new ParticipationPK(cal.getId(), event.getId()), "si");
+            p.setCalendar(cal);
+            p.setEvent(event);
+            //manager.createParticipation(p);
+            parts.add(p);
+            cal.getParticipationCollection().add(p);
         }
         manager.edit(event);
         RequestContext.getCurrentInstance().showMessageInDialog(
