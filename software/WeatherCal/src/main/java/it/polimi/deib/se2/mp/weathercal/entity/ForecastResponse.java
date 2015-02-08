@@ -101,8 +101,7 @@ public class ForecastResponse implements Serializable {
                 JSONObject jArray2 = object2.getJSONObject(i).getJSONObject("temp");
                 double temp = Double.valueOf(jArray2.getString(intervallogiorno)) - 273.15;
                
-                
-                WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
+               
                 boolean stateok = false;
                 if (!e.getStateConstraints().isEmpty()) {
                     Collection<WeatherStateConstraint> collState = e.getStateConstraints();
@@ -117,15 +116,28 @@ public class ForecastResponse implements Serializable {
                         }
                     }
                 //qui fa controllo incorciato tra temperatura e stato
+                    
+                    if (e.getValueConstraints().size()>0){ 
+                WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
                 if (temperatura.getIsTemperatureLowerThan()==true && temp < temperatura.getTemperature().doubleValue() && stateok) {
                    return dateTime;
                 } else if (temperatura.getIsTemperatureLowerThan()==false && temp > temperatura.getTemperature().doubleValue() && stateok) {
                     return dateTime;
                 }
-                
+               }
+                    else{
+                    if (stateok) {
+                   return dateTime;
+                } 
                 }
+                    }
+                    
+                
+                
+                
                 //controllo solo sulla temperatura
                 else{
+                WeatherConstraint temperatura = e.getValueConstraints().iterator().next();
                     if (temperatura.getIsTemperatureLowerThan()==true && temp < temperatura.getTemperature().doubleValue() ) {
                    return dateTime;
                 } else if (temperatura.getIsTemperatureLowerThan()==false && temp > temperatura.getTemperature().doubleValue() ) {

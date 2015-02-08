@@ -223,10 +223,10 @@ public class WheaterChecker implements Serializable {
                           attention = "The temperature is lower then the desired one";
                            System.out.println("bassa");
                     }
-
-                
+                }
+                System.out.println("vincoli: "+e.getId() + e.getStateConstraints().size());
                 boolean weather = false;
-                if (!e.getStateConstraints().isEmpty()) {
+                if (e.getStateConstraints().size()>0) {
                     Collection<WeatherStateConstraint> collState = e.getStateConstraints();
                     System.out.println("vincoli: " + e.getStateConstraints().size());
                     for (WeatherStateConstraint sta : collState) {
@@ -260,7 +260,7 @@ public class WheaterChecker implements Serializable {
                         RequestContext.getCurrentInstance().showMessageInDialog(message);
                     
                     }
-                }
+                
             
             }
         }
