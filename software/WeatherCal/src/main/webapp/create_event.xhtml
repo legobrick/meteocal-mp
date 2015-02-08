@@ -193,7 +193,7 @@
                                             <p:autoComplete onkeypress="if (event.keyCode == 13) {  return false; }" id="user-search" multiple="true" value="#{eventBean.invitedUsers}" completeMethod="#{invitationUser.completeUsers}"
                                                     var="user" styleClass="input-wide" itemLabel="#{user.email}" itemValue="#{user.email}" forceSelection="false">
                                                 <p:column >
-                                                    <h:outputText value="#{user.firstName}"/>
+                                                    <h:outputText value="#{user.firstName} #{user.lastName}"/>
                                                 </p:column>
                                                 <p:column>
                                                     <h:outputText value="#{user.email}"/>
