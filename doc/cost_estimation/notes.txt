@@ -1,0 +1,25 @@
+paolo@ux31a ~ $ Downloads/cloc-1.62.pl src/meteocal-mp/software/WeatherCal/
+     166 text files.
+     113 unique files.                                          
+       6 files ignored.
+
+http://cloc.sourceforge.net v 1.62  T=0.57 s (191.3 files/s, 56501.2 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Javascript                      11             25             69            444
+Javascript                       1              4             39             24
+total Javascript                31           2383           3196          17307
+Java                            53            842            860           4568
+CSS                              5            110             43           1367
+JavaServer Faces                 4             46              2            821
+XML                             10              1             22            255
+HTML                             4              0              0             94
+Maven                            1              0            182             93
+SQL                              1              0              0              1
+-------------------------------------------------------------------------------
+SUM:                           109           3382           4305          24506
+-------------------------------------------------------------------------------
+
+RSUM                           100           1028           1217           7667
+
