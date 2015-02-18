@@ -19,13 +19,13 @@ The system allows the users to partecipate in various scenarios:
 \item Log on to and log out from the platform.
 \item Create, Modify, Delete an event.
 \item Invite other users.
-\item Manage invitation (accept, refuse).
+\item Manage participations (accept, refuse, ...).
 \item Manage event visibility (decide if an event's infos should be accessible only by its invited). 
-\item View other users' profiles (see other users's calendar only if it's set public and see the event's calendar if they mark public too)
+\item View other users' profiles (see other users's calendar only if it's set public and see the events' details if they mark public too or you are invited to them)
 \end{itemize}
 The system is the leading actor in:
 \begin{itemize}
-\item {Warn all the participants to an event which will occur the following day that there will be bad weather conditions.} 
+\item {Warning all the participants to an event which will occur the following day that there will be bad weather conditions if so.} 
 \item Notify to an event's owner three day before the scheduled data that there will be bad conditions for it suggesting the closest available sunny day.
 \end{itemize}
 The Anonymous Users are only able to:
@@ -42,8 +42,8 @@ The WeatherCal system should offer and fulfill these main features:
 \end{itemize}
 \section{Non Functional Requirements}
 \subsection{User Interfaces}
-The WeatherCal system is a Web application intended to be used trough desktop device.  Its interface is designed in a simple way so that  the user can either easily understand what the system can offer to him and reaches all the main features of the system from a unique view.\\
-Once that a user logs in to the system trough a defined web page he is redirected to the main page. This page is divided in two portion. The left one, which occupies most of the page, displays a monthly calendar in which the user manages its events while the right one shows the weather forecast for the following days and also shows the closest events.\\In the figure~\ref{fig:mockup} is shown a first sketch of the main user's page.\\ \\  
+The WeatherCal system is a Web application intended to be used trough a desktop device.  Its interface is designed in a simple way so that  the user can either easily understand what the system can offer to him and reache all the main features of the system from a unique view.\\
+Once that a user logs in to the system trough a defined web page he is redirected to the main page. This page is divided in two portions. The left one, which occupies the largest portion of the page, displays a monthly calendar in which the user manages its events while the right one shows the weather forecast for the following days and also shows the closest events.\\In the figure~\ref{fig:mockup} is shown a first sketch of the main user's page.\\ \\  
  \begin{center}
  \begin{figure}
     \includegraphics[width=0.9\textwidth]{immagini/UserPage.png}
@@ -54,5 +54,4 @@ Once that a user logs in to the system trough a defined web page he is redirecte
 \subsection{Performance}
 The system offers the users the possibility to use it without major slowdowns. Multiuser usage is allowed and it can be bore by the server application under reasonable conditions, basing on the server hardware.
 \subsection{Security}
-The system relies on HTTP protocol for transferring data over the Internet, so information sent both from the user to the server and vice-versa will be exposed to possible man-in-the-middle attacks. Unless this issue data stored on the server will be accessible only if valid credentials are provided and there is no possibility for a user to bypass privacy constraints, i.e. users will not be able to see non-public events of other users and modify events for which they are not owners.
-
+The system relies on HTTP protocol for transferring data over the Internet, so information sent both from the user to the server and vice-versa will be exposed to possible man-in-the-middle attacks. Unless this issue data stored on the server will be accessible only if valid credentials are provided and there is no possibility for a user to bypass privacy constraints, i.e. users will not be able to see non-public events of other users and modify events for which they are not owners. This will be accomplished from the server by performing checks on the data requested by the client (authorization politics).

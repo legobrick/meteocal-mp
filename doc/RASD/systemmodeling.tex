@@ -5,17 +5,17 @@
 The use case in figure~\ref{fig:eventusecase} shows how a user can manage his agenda. After he logs into the platform he will see his calendar and being able to see schedule of his events. 
  \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/use_case/EventManagmentUseCase/EventManagment.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/use_case/EventManagmentUseCase/EventManagment.png}
     \caption{Event Management Use Case}
      \label{fig:eventusecase}
      \end{figure}
    \end{center}  
-As the user enter the platform he will be redirected to the main page of the system in which he will be able to manage in several different way its agenda. From that point he can either view his events and every events' details or create a new one. Whenever he creates a new event he will be able to set the place and the date and of course invite his friend. Naturally once a user created a event he will be capable of deleting the event whenever he wants.
+As the user enters the platform he will be redirected to the main page of the system in which he will be able to manage in several different way its agenda. From that point he can either view his events and every events' details or create a new one. Whenever he creates a new event he will be able to set the place and the date and of course invite his friend. Naturally once a user created a event he will be capable of deleting the event whenever he wants.
 \subsubsection{Invitation}
 The use case in figure \ref{fig:invitusecase} explains what the user can do when he receive an invitation to an event from an other user. 
  \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/use_case/Invitation/Invitation.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/use_case/Invitation/Invitation.png}
     \caption{Invitation Use Case}
      \label{fig:invitusecase}
      \end{figure}
@@ -24,18 +24,18 @@ Once a user invites an other user to his event, the guest receives a notificatio
 \subsubsection{View other users' profiles}
 The use case in figure \ref{fig:otherprofileusecase} shows how an user can reach the profile of an other user and view his agenda.  \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/use_case/ViewOtherProfiles/UseCaseDiagram0.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/use_case/ViewOtherProfiles/UseCaseDiagram0.png}
     \caption{See Other User Profile Use Case}
      \label{fig:otherprofileusecase}
      \end{figure}
    \end{center}  
-After the user logs in to the platform he will be able to search an user and see his profile, as soon as he reaches the user's profile he will be authorized to view other user's calendar only if it was set public by its owner, but even if a calendar was marked public the observing user is capable to see the calendar's events's details only if also the event was set as public.
+After the user logs in to the platform he will be able to search an user and see his profile, as soon as he reaches the user's profile he will be authorized to view other user's calendar only if it was set public by its owner, but even if a calendar was marked public the observing user is capable to see the details of the events in the calendar only if also the event was set as public. Exception is made if the user was invited to that event: in this case, if the user's calendar is public, the user will be able to see the event details in any case.
 
 \subsubsection{Bad Weather}
 The use case in figure \ref{fig:otherprofileusecase} explains how an user can behave when he get notified by the platform in case of bad weather condition.
  \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1.1\textwidth]{../UMLDiagram/use_case/BadWeather/BadWeather.png}
+    \includegraphics[width=1.1\textwidth]{./UMLDiagram/use_case/BadWeather/BadWeather.png}
     \caption{Bad Weather Use Case}
      \label{fig:badweatherusecase}
      \end{figure}
@@ -45,7 +45,7 @@ Whenever an user receives a bad weather notifications he can perform two differe
 Once the requirements of our platform have been defined we are able to compose the class diagram  of the system, as shown in figure~\ref{fig:classdiagram}.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/class/WeatherCalClassDiagram/ClassDiagram0.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/class/WeatherCalClassDiagram/ClassDiagram0.png}
     \caption{Class Diagram}
      \label{fig:classdiagram}
      \end{figure}
@@ -55,18 +55,18 @@ Once the requirements of our platform have been defined we are able to compose t
 In figure \ref{fig:invstatediagram} the state diagram of an invitation to an event is shown.
  \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth ]{../UMLDiagram/InvitationStatechart/InvitationStatechart.png}
+    \includegraphics[width=1\textwidth ]{./UMLDiagram/InvitationStatechart/InvitationStatechart.png}
     \caption{Invitation State Diagram}
      \label{fig:invstatediagram}
      \end{figure}
    \end{center}
-As the event owner invites a user, an invitation is created, having an unknown participation, which is defined by the first state. When an invitation is in this state means that an invitation for a user to an event has been made, but he didn't seen that yet. When he logs onto the platform the state of the invitation changes to unresponded, since it has been shown to the user, but he didn't choose what to do yet. As the user responds to the notification, the state of the invitation becomes definite, so in can be "Yes", "No" or "Maybe". This will not necessarily happen when the user is notified about an invitation. After the user chosen what to do, he can then change his participation among the defined states (marked in green), and consequentially the state, until the event has ended. Infact, after the end of the event the modification of the participation will be disallowed.
+As the event owner invites a user, an invitation is created, having an unknown participation, which is defined by the first state. When an invitation is in this state means that an invitation for a user to an event has been made, but he didn't seen that yet. When he logs onto the platform the state of the invitation changes to unresponded, since it has been shown to the user, but he didn't choose what to do yet. As the user responds to the notification, the state of the invitation becomes definite, so in can be "Yes", "No" or "Maybe". This will not necessarily happen when the user is notified about an invitation. After the user chooses what to do, he can then change his participation among the defined states (marked in green), and consequentially the state, until the event has ended. Infact, after the end of the event the modification of the participation will be disallowed.
  \subsection{Sequence Diagrams}
 \subsubsection{User Registration}
 Figure \ref{fig:regseqdiag} shows the process for the registration of a new user into the WeatherCal platform. As a user accesses the system, it will prompt it either to login or to register to the system. If the user chooses the latter this is what happens.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/UserRegister/UserRegister.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/sequence/UserRegister/UserRegister.png}
     \caption{Sequence diagram of user registration}
      \label{fig:regseqdiag}
      \end{figure}
@@ -77,7 +77,7 @@ The user will see a registration form in which he will input his data and the cr
 The diagram represented in figure \ref{fig:logseqdiag} describes the login phase for a registered user in the system. As the user enters the platform the login form is showed him and this process begins.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/LoginDiagram/LoginDiagram.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/sequence/LoginDiagram/LoginDiagram.png}
     \caption{Login Sequence Diagram}
      \label{fig:logseqdiag}
      \end{figure}
@@ -87,17 +87,17 @@ First of all the user fills the form with his username and password, which he de
 In the diagram represented in figure \ref{fig:createseqdiag} the user will create a new event and customize it as he wants. The user will be able to start this procedure by clicking on the calendar and choosing to create a new event, making a form for inputing event data appear.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/CreateEvent/CreateEvent.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/sequence/CreateEvent/CreateEvent.png}
     \caption{Create Event Sequence Diagram}
      \label{fig:createseqdiag}
      \end{figure}
    \end{center}
-As the form opens the user is able to set all the parameters he desires for the event, such name, place, time, visibility and so on. He will be also able to set the constraints he prefers for the event, i.e. a temperature higher than a certain value, or that the sky must be sunny. After that all the required fields are filled, inputed data is valid and the user submits the form, the event is created and shown in his calendar. If data is not valid or required fields were not filled, an appropriate exception will be thrown and the user will be warned.
+As the form opens the user is able to set all the parameters he desires for the event, such name, place, time, visibility and so on. He will be also able to set the constraints he prefers for the event, i.e. a temperature higher than a certain value, or that the sky must be sunny. After that all the required fields are filled, inputed data is validated and the user submits the form, the event is created and shown in his calendar. If data is not valid or required fields were not filled, an appropriate exception will be thrown and the user will be warned.
 \subsubsection{Event modification}
 When a user selects an event he will be able to enter a form in which he can modify certain parameters. This behaviour is described in figure \ref{fig:modseqdiag}.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/ModifyEvent/ModifyEvent.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/sequence/ModifyEvent/ModifyEvent.png}
     \caption{Sequence Diagram of event's modification}
      \label{fig:modseqdiag}
      \end{figure}
@@ -107,7 +107,7 @@ When a modification of an event is requested, it is fetched and displayed to the
 In this diagram, shown in figure \ref{fig:delseqdiag}, the process with which a user deletes an event is described.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/DeleteEvent/DeleteEvent.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/sequence/DeleteEvent/DeleteEvent.png}
     \caption{Sequence Diagram of event's deletion}
      \label{fig:delseqdiag}
      \end{figure}
@@ -118,18 +118,18 @@ Starting from the calendar, a user selects an event for which is owner, and clic
 Figure \ref{fig:invitseqdiag} shows the steps for inviting a user to an event. This process begins with a user selecting an event for which he is the owner.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth,height=1\textwidth]{../UMLDiagram/sequence/InvitationDiagram/InvitationDiagram.png}
+    \includegraphics[width=1\textwidth,height=1\textwidth]{./UMLDiagram/sequence/InvitationDiagram/InvitationDiagram.png}
     \caption{Sequence Diagram of an invitation}
      \label{fig:invitseqdiag}
      \end{figure}
    \end{center}
-As he does so, the event is loaded and the user is able to look for people to invite to his event. As the users are selected, and the modification is confirmed, the invitation are created. This makes the invitation to be notified at the invited users' next login. Anyway this process can end with an error, and then an exception, when a user tries to invite people for an event for which he is not owner. This will be not allowed as an authorization politic and so any invitation will be created.
+As he does so, the event is loaded and the user is able to look for people to invite to his event. As the users are selected and the modification is confirmed, the invitations are created. This makes the invitation to be notified at the invited users' next login. Anyway this process can end with an error, and then an exception, when a user tries to invite people to an event for which he is not owner. This will be not allowed as an authorization politic and so any invitation will be created.
 \newpage
 \subsubsection{Invite notification}
 Here the invite notification is described, and shown in figure \ref{fig:notseqdiagr}. The behaviour described in the former paragraph asynchronously triggers this procedure.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth,height=1\textwidth]{../UMLDiagram/sequence/InvitationNotificationDiagram/InvitationNotificationDiagram.png}
+    \includegraphics[width=1\textwidth,height=1\textwidth]{./UMLDiagram/sequence/InvitationNotificationDiagram/InvitationNotificationDiagram.png}
     \caption{Sequence Diagram of an invitation's notification}
      \label{fig:notseqdiagr}
      \end{figure}
@@ -139,7 +139,7 @@ As the user logs onto the platform and his calendar starts to be loaded he can n
 In the figure \ref{fig:modpartseqdiag} a description of what happens when the user changes his mind about the participation to an event is illustrated.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{../UMLDiagram/sequence/ModifyParticipation/ModifyParticipation.png}
+    \includegraphics[width=1\textwidth]{./UMLDiagram/sequence/ModifyParticipation/ModifyParticipation.png}
     \caption{Modify participation Sequence Diagram}
      \label{fig:modpartseqdiag}
      \end{figure}
@@ -215,7 +215,7 @@ run show
 As shown in figure~\ref{fig:asser} the {\it Assertion} hence even the {\it Facts} made in the listing~\ref{list:alloycode} are verified because no counterexample was found therefore our system is designed in a coherent way.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=0.6\textwidth]{../Alloy/checkassert.png}
+    \includegraphics[width=0.6\textwidth]{./Alloy/checkassert.png}
     \caption{Assertion verified}
      \label{fig:asser}
      \end{figure}
@@ -227,7 +227,7 @@ In this section are reported some of the various scenarios representing the mode
 The model in figure ~\ref{fig:allint} represents a scenario in which all the users are both event's owner and event's invited. As we can observe from the model an  event's owner cannot be a guest of the invitation and all the event should refer to one at only one owner.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1\textwidth,height=0.5\textwidth]{../Alloy/allInteration.png}
+    \includegraphics[width=1\textwidth,height=0.5\textwidth]{./Alloy/allInteration.png}
     \caption{All user interaction model}
      \label{fig:allint}
      \end{figure}
@@ -236,7 +236,7 @@ The model in figure ~\ref{fig:allint} represents a scenario in which all the use
 The model in figure ~\ref{fig:mixint} represents a scenario in which only some users are interacting and other users are not invited at none of the scheduled event.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=1.1\textwidth,height=0.7\textwidth]{../Alloy/mixInt.png}
+    \includegraphics[width=1.1\textwidth,height=0.7\textwidth]{./Alloy/mixInt.png}
     \caption{Mixed interaction model}
      \label{fig:mixint}
      \end{figure}
@@ -245,7 +245,7 @@ The model in figure ~\ref{fig:mixint} represents a scenario in which only some u
 The model in figure ~\ref{fig:noint} represents a scenario in which the users are not interacting each other, it could represent some users that sign in to the platform but never use it.
 \begin{center}
  \begin{figure}[H]
-    \includegraphics[width=0.6\textwidth]{../Alloy/noInteration.png}
+    \includegraphics[width=0.6\textwidth]{./Alloy/noInteration.png}
     \caption{No interaction model}
      \label{fig:noint}
      \end{figure}

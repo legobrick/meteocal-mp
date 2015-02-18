@@ -28,6 +28,33 @@
             pdfauthor={Marco Edemanti},
             pdftitle={RASD WeatherCal},
             pdfsubject={}]{hyperref}
+\makeatletter
+\newcommand*{\textlabel}[2]{%
+  \edef\@currentlabel{#1}% Set target label
+  \phantomsection% Correct hyper reference link
+  #1\label{#2}% Print and store label
+}
+\newcommand{\myparagraph}[1]{\paragraph{#1}\mbox{}\\}
+\renewenvironment{thebibliography}[1]
+     {\section{References}% <-- this line was changed from \chapter* to \section*
+      \@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\makeatother
 
 \title{RASD WeatherCal}
 \author{Edemanti Marco}
@@ -56,6 +83,7 @@
   morestring=[b]',
   morestring=[b]"
 }
+\setcounter{secnumdepth}{5}
 \lstset{ %
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
   basicstyle=\footnotesize,        % the size of the fonts that are used for the code
@@ -80,11 +108,11 @@
   tabsize=2,                       % sets default tabsize to 2 spaces
 }
  \begin{center}
-    \includegraphics[width=4cm]{immagini/polilogo.png}
+    \includegraphics[width=4cm]{../RASD/immagini/polilogo.png}
     \end{center}
 \begin{center}
 
-{\huge{\bf\uppercase {Requirements Analysis  \\and \vspace*{0.5cm} \\Specification Documents}}}
+{\huge{\bf\uppercase {Design Document}}}
 
 
 \end{center}
@@ -108,22 +136,20 @@
 \section*{Revisions}
 \begin{tabularx}{\linewidth}{|r|X|}
   \hline Date & Comments\\
-  \hline Nov, \nth{16}, 2014 & First version\\
-  \hline Dec., \nth{7}, 2014 & Revision of Class Diagram\\
-  \hline Feb., \nth{17}, 2015 & \nth{2} Revision of Class Diagram\\
+  \hline Dic, \nth{7}, 2014 & First version\\
+  \hline Feb., \nth{17}, 2015 & Revision of Class and MVC diagrams\\
   \hline
 \end{tabularx}
 
-\input{./introduzione.tex}
-\input{./overalldescription.tex}
-\input{./systemmodeling.tex}
-\chapter*{Time Reporting}
+\input{introduzione.tex}
+\input{SystemInterfaces.tex}
+\input{DataManagement.tex}
+\chapter*{Time reporting}
 \begin{tabularx}{\linewidth}{|r|X|X|}
   \hline  & {\bf Paolo Polidori} & {\bf Marco Edemanti}\\
-  \hline RASD writing & 19 hours & 19 hours\\
-  \hline RASD revision & 4 hours & 0 hours\\
+  \hline DD writing & 35 hours & 28 hours\\
+  \hline DD revision & 6 hours & 0 hours\\
   \hline
 \end{tabularx}\\
 \listoffigures
-\lstlistoflistings
 \end{document}
