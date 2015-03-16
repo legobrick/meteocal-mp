@@ -1,0 +1,1 @@
+The project for the 2014/15 SE2 Course@PoliMI developed by Paolo Polidori and Marco Edemanti
